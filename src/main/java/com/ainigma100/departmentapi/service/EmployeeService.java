@@ -51,7 +51,7 @@ public class EmployeeService {
 			return new ResponseEntity<>(returnedValue, HttpStatus.OK);
 		}
 
-		throw new RecordNotFoundException("Employee with id " + employeeId + " was not found");
+		throw new RecordNotFoundException("Employee with id '" + employeeId + "' was not found");
 	}
 
 
@@ -82,12 +82,12 @@ public class EmployeeService {
 		if (employeeFromDb.isPresent()) {
 
 			employeeRepository.deleteById(employeeId);
-			String deletionMessage = "Employee with id " + employeeId + " has been deleted";
+			String deletionMessage = "Employee with id '" + employeeId + "' has been deleted";
 
 			return new ResponseEntity<>(deletionMessage, HttpStatus.OK);
 		}
 
-		throw new RecordNotFoundException("Employee with id " + employeeId + " was not found");
+		throw new RecordNotFoundException("Employee with id '" + employeeId + "' was not found");
 	}
 
 

@@ -57,7 +57,7 @@ public class DepartmentService {
 			return new ResponseEntity<>(returnedValue, HttpStatus.OK);
 		}
 		
-		throw new RecordNotFoundException("Department with id " + departmentId + " was not found");
+		throw new RecordNotFoundException("Department with id '" + departmentId + "' was not found");
 	}
 
 
@@ -67,7 +67,7 @@ public class DepartmentService {
 		Department departmentFromDb = departmentRepository.findByDepNameIgnoreCase(departmentRequestModel.getDepName());
 
 		if (departmentFromDb != null) {
-			throw new RecordAlreadyExistException("Department with name " + departmentRequestModel.getDepName() + " already exists");
+			throw new RecordAlreadyExistException("Department with name '" + departmentRequestModel.getDepName() + "' already exists");
 		}
 
 		Department departmentToBeSaved = Utils.map(departmentRequestModel, Department.class);
@@ -94,12 +94,12 @@ public class DepartmentService {
 			// you can also use delete by using the actual object retrieved from the database
 //			departmentRepository.delete(departmentFromDb.get());
 			
-			String deletionMessage = "Department with id " + departmentId + " has been deleted";
+			String deletionMessage = "Department '" + departmentFromDb.get().getDepName() + "' with id '" + departmentId + "' has been deleted";
 			
 			return new ResponseEntity<>(deletionMessage, HttpStatus.OK);
 		}
 		
-		throw new RecordNotFoundException("Department with id " + departmentId + " was not found");
+		throw new RecordNotFoundException("Department with id '" + departmentId + "' was not found");
 	}
 
 
