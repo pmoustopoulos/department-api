@@ -86,7 +86,10 @@ public class DepartmentService {
 		Optional<Department> departmentFromDb = departmentRepository.findById(departmentId);
 		
 		if (departmentFromDb.isPresent()) {
-			
+
+			// remove from all the employees the associated department
+			employeeRepository.removeDepartmentFromEmployeeBy(departmentFromDb.get());
+
 			departmentRepository.deleteById(departmentId);
 			// you can also use delete by using the actual object retrieved from the database
 //			departmentRepository.delete(departmentFromDb.get());
