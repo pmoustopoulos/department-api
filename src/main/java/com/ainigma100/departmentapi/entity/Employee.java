@@ -37,7 +37,7 @@ public class Employee {
     private Double salary;
     
     // Many Employees are associated to one specific Department
-    @ManyToOne(fetch = FetchType.LAZY,
+    @ManyToOne(fetch = FetchType.EAGER,
             // we did not add the CascadeType.REMOVE because we do not want to propagate the deletion to the associated table
             // If we delete an Employee we do not want to delete a Department and vice versa
             cascade = {CascadeType.PERSIST, CascadeType.MERGE,
