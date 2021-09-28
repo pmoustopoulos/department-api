@@ -3,9 +3,13 @@ package com.ainigma100.departmentapi.service;
 import java.util.List;
 import java.util.Optional;
 
+import com.ainigma100.departmentapi.entity.Department;
 import com.ainigma100.departmentapi.model.request.EmployeeRequestModel;
+import com.ainigma100.departmentapi.model.response.DepartmentResponseModel;
 import com.ainigma100.departmentapi.model.response.EmployeeResponseModel;
 import com.ainigma100.departmentapi.util.Utils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -36,6 +40,18 @@ public class EmployeeService {
 		}
 
 		return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+	}
+
+
+	public Page<EmployeeResponseModel> getAllEmployeesUsingPagination(Integer page, Integer size) {
+
+		// this pageable will be used for the pagination.
+		Pageable pageable = Utils.createPageableBasedOnPageAndSizeAndSorting(null, page, size);
+
+		Page<Employee> listOfEmployeeFromDB = employeeRepository.findAll(pageable);
+
+		return Utils.mapPage(listOfEmployeeFromDB, EmployeeResponseModel.class);
+
 	}
 
 

@@ -8,6 +8,8 @@ import com.ainigma100.departmentapi.model.request.DepartmentRequestModel;
 import com.ainigma100.departmentapi.model.response.DepartmentResponseModel;
 import com.ainigma100.departmentapi.repository.EmployeeRepository;
 import com.ainigma100.departmentapi.util.Utils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -43,6 +45,17 @@ public class DepartmentService {
 		return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
 	}
 
+
+	public Page<DepartmentResponseModel> getAllDepartmentsUsingPagination(Integer page, Integer size) {
+
+		// this pageable will be used for the pagination.
+		Pageable pageable = Utils.createPageableBasedOnPageAndSizeAndSorting(null, page, size);
+
+		Page<Department> listOfDepartmentFromDB = departmentRepository.findAll(pageable);
+
+		return Utils.mapPage(listOfDepartmentFromDB, DepartmentResponseModel.class);
+
+	}
 
 
 	public ResponseEntity<DepartmentResponseModel> getDepartmentById(Integer departmentId) {
@@ -119,4 +132,6 @@ public class DepartmentService {
 
 		return new ResponseEntity<>(returnedValue, HttpStatus.CREATED);
     }
+
+
 }

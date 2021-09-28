@@ -1,9 +1,11 @@
 package com.ainigma100.departmentapi.controller;
 
 import com.ainigma100.departmentapi.model.request.EmployeeRequestModel;
+import com.ainigma100.departmentapi.model.response.DepartmentResponseModel;
 import com.ainigma100.departmentapi.model.response.EmployeeResponseModel;
 import com.ainigma100.departmentapi.service.EmployeeService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,6 +25,16 @@ public class EmployeeController {
 	public ResponseEntity<List<EmployeeResponseModel>> getAllEmployees() {
 		return employeeService.getAllEmployees();
 	}
+
+
+	@GetMapping("/pagination")
+	public Page<EmployeeResponseModel> getAllEmployeesUsingPagination(
+			@RequestParam(value = "page") Integer page,
+			@RequestParam(value = "size") Integer size
+	) {
+		return employeeService.getAllEmployeesUsingPagination(page, size);
+	}
+
 
 	@GetMapping("/{employeeId}")
 	public ResponseEntity<EmployeeResponseModel> getEmployeeById(@PathVariable("employeeId") Integer employeeId) {

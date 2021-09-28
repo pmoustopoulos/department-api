@@ -4,6 +4,7 @@ import com.ainigma100.departmentapi.model.request.DepartmentRequestModel;
 import com.ainigma100.departmentapi.model.response.DepartmentResponseModel;
 import com.ainigma100.departmentapi.service.DepartmentService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,6 +22,15 @@ public class DepartmentController {
 	@GetMapping
 	public ResponseEntity<List<DepartmentResponseModel>> getAllDepartments() {
 		return departmentService.getAllDepartments();
+	}
+
+
+	@GetMapping("/pagination")
+	public Page<DepartmentResponseModel> getAllDepartmentsUsingPagination(
+			@RequestParam(value = "page") Integer page,
+			@RequestParam(value = "size") Integer size
+	) {
+		return departmentService.getAllDepartmentsUsingPagination(page, size);
 	}
 	
 	
