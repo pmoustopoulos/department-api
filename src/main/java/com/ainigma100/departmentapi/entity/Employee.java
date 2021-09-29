@@ -21,16 +21,16 @@ public class Employee {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer empId;
 
-    @Column(name = "first_name", nullable = false)
+    @Column(name = "first_name", nullable = false, length = 50)
     private String firstName;
 
-    @Column(name = "last_name", nullable = false)
+    @Column(name = "last_name", nullable = false, length = 200)
     private String lastName;
 
     @Column(name = "birth_date")
     private LocalDate birthDate;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 1)
     private char sex;
 
     @Column(nullable = false)

@@ -20,7 +20,7 @@ public class Department {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer depId;
 
-    @Column(name = "dep_name", nullable = false)
+    @Column(name = "dep_name", nullable = false, length = 200)
     private String depName;
 
     // A Department can have many Employees
