@@ -25,7 +25,7 @@ public class EmployeeRequestModel implements Serializable {
 
     @NotNull(message = "sex cannot be null")
     @Size(min = 1, max = 1, message = "sex must be 1 character long")
-    @Sex
+//    @Sex
     private char sex;
 
     @NotNull(message = "salary cannot be null")
