@@ -20,13 +20,18 @@ public class EmployeeRequestModel implements Serializable {
     @Size(min = 2, max = 200, message = "lastName can be between 2 and 200 characters")
     private String lastName;
 
+    @NotEmpty(message = "email cannot be null or empty")
+    @NotBlank(message = "email cannot have only whitespaces")
+//    @Email    I did not use this annotation because it does not validate correctly
+    @Pattern(regexp = "^[\\w!#$%&'*+/=?`{|}~^-]+(?:\\.[\\w!#$%&'*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$", message = "Email is not valid")
+    private String email;
+
     @Past(message = "birthDate should have a past value")
     private LocalDate birthDate;
 
     @NotNull(message = "sex cannot be null")
-    @Size(min = 1, max = 1, message = "sex must be 1 character long")
-//    @Sex
-    private char sex;
+    @Sex
+    private String sex;
 
     @NotNull(message = "salary cannot be null")
     private Double salary;

@@ -74,11 +74,11 @@ public class EmployeeService {
 
 	public ResponseEntity<EmployeeResponseModel> createEmployee(EmployeeRequestModel employeeRequestModel) {
 
-//		Optional<Employee> employeeFromDb = employeeRepository.;
-//
-//		if (employeeFromDb.isPresent()) {
-//			throw new RecordAlreadyExistException("Employee with id " + employee.getEmpId() + " already exists");
-//		}
+		Optional<Employee> employeeFromDb = employeeRepository.findEmployeeByEmail(employeeRequestModel.getEmail());
+
+		if (employeeFromDb.isPresent()) {
+			throw new RecordAlreadyExistException("Employee with email '" + employeeRequestModel.getEmail() + "' already exists");
+		}
 
 		Employee employeeTobeSaved = Utils.map(employeeRequestModel, Employee.class);
 

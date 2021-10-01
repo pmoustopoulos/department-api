@@ -16,17 +16,10 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 public @interface Sex
 {
 
-    String message() default "sex value is not valid";
+    String message() default "sex value is not valid. Value must be M or F";
 
     Class<?>[] groups() default {};
 
     Class<? extends Payload>[] payload() default {};
 
-    @Target({ FIELD, METHOD, ANNOTATION_TYPE })
-    @Retention(RUNTIME)
-    @Documented
-    @interface List
-    {
-        Sex[] value();
-    }
 }

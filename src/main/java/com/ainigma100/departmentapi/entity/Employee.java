@@ -27,6 +27,9 @@ public class Employee {
     @Column(name = "last_name", nullable = false, length = 200)
     private String lastName;
 
+    @Column(name = "email", unique = true, nullable = false)
+    private String email;
+
     @Column(name = "birth_date")
     private LocalDate birthDate;
 

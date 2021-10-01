@@ -215,7 +215,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"firstName\": \"Marco\",\r\n    \"lastName\": \"Polo\",\r\n    \"birthDate\": \"1999-01-02\",\r\n    \"sex\": \"M\",\r\n    \"salary\": 65000\r\n}",
+							"raw": "{\r\n    \"firstName\": \"Marco\",\r\n    \"lastName\": \"Polo\",\r\n    \"email\": \"mpolo@gmail.com\",\r\n    \"birthDate\": \"1999-01-02\",\r\n    \"sex\": \"M\",\r\n    \"salary\": 65000\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"

@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 
 public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
 
@@ -19,4 +20,6 @@ public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
             "SET emp.department = null " +
             "WHERE emp.department = :department")
     void removeDepartmentFromEmployeeBy(Department department);
+
+    Optional<Employee> findEmployeeByEmail(String email);
 }
