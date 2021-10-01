@@ -13,6 +13,7 @@ public class EmployeeResponseModel implements Serializable {
     private String firstName;
     private String lastName;
     private LocalDate birthDate;
+    private String email;
     private char sex;
     private Double salary;
     private Department department;
