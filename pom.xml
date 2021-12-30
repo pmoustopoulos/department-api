@@ -15,7 +15,7 @@
 	<description>Demo project for Spring Boot</description>
 	<properties>
 		<java.version>11</java.version>
-		<modelmapper.version>2.4.4</modelmapper.version>
+		<modelmapper.version>2.4.5</modelmapper.version>
 	</properties>
 	<dependencies>
 		<dependency>
