@@ -61,7 +61,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         List<String> details = new ArrayList<>();
         details.add(ex.getLocalizedMessage());
 
-        ErrorMessage error = new ErrorMessage("Contraint Violation", details);
+        ErrorMessage error = new ErrorMessage("Constraint Violation", details);
 
         return handleExceptionInternal(ex, error, new HttpHeaders(), HttpStatus.NOT_ACCEPTABLE, request);
     }
@@ -78,7 +78,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
         ErrorMessage error = new ErrorMessage("Record Not Found", details);
 
-        return handleExceptionInternal(ex, error, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
+        return handleExceptionInternal(ex, error, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
     }
     
     
@@ -99,24 +99,19 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
-        
-//        List<String> details = new ArrayList<>();
-//
-//        for(ObjectError error : ex.getBindingResult().getAllErrors()) {
-//            details.add(error.getDefaultMessage());
-//        }
-//
-//        ErrorMessage error = new ErrorMessage("Validation Failed", details);
-    	
+
         Map<String, String> errors = new HashMap<>();
-        ex.getBindingResult().getAllErrors().forEach((error) -> {
-        	
+        ex.getBindingResult().getAllErrors().forEach(error -> {
+
             String fieldName = ((FieldError) error).getField();
             String errorMessage = error.getDefaultMessage();
             errors.put(fieldName, errorMessage);
-            
+
+            String rejectedValue = ((FieldError) error).getRejectedValue() == null ? null : ((FieldError) error).getRejectedValue().toString();
+            errors.put("rejectedValue", rejectedValue);
+
         });
-        
+
         log.error(errors.toString());
 
         return handleExceptionInternal(ex, errors, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
