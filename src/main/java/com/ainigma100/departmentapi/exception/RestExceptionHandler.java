@@ -1,5 +1,6 @@
 package com.ainigma100.departmentapi.exception;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -33,7 +34,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         List<String> details = new ArrayList<>();
         details.add(ex.getLocalizedMessage());
 
-        ErrorMessage error = new ErrorMessage("Server Error", details);
+        ErrorMessage error = new ErrorMessage(LocalDateTime.now(), "Server Error", details);
 
         return handleExceptionInternal(ex, error, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR, request);
     }
@@ -47,7 +48,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         List<String> details = new ArrayList<>();
         details.add(ex.getLocalizedMessage());
 
-        ErrorMessage error = new ErrorMessage("Null Pointer Exception", details);
+        ErrorMessage error = new ErrorMessage(LocalDateTime.now(),"Null Pointer Exception", details);
 
         return handleExceptionInternal(ex, error, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR, request);
     }
@@ -61,7 +62,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         List<String> details = new ArrayList<>();
         details.add(ex.getLocalizedMessage());
 
-        ErrorMessage error = new ErrorMessage("Constraint Violation", details);
+        ErrorMessage error = new ErrorMessage(LocalDateTime.now(),"Constraint Violation", details);
 
         return handleExceptionInternal(ex, error, new HttpHeaders(), HttpStatus.NOT_ACCEPTABLE, request);
     }
@@ -76,7 +77,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         List<String> details = new ArrayList<>();
         details.add(ex.getLocalizedMessage());
 
-        ErrorMessage error = new ErrorMessage("Record Not Found", details);
+        ErrorMessage error = new ErrorMessage(LocalDateTime.now(),"Record Not Found", details);
 
         return handleExceptionInternal(ex, error, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
     }
@@ -90,7 +91,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         List<String> details = new ArrayList<>();
         details.add(ex.getLocalizedMessage());
 
-        ErrorMessage error = new ErrorMessage("Record Already Exist", details);
+        ErrorMessage error = new ErrorMessage(LocalDateTime.now(),"Record Already Exist", details);
 
         return handleExceptionInternal(ex, error, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
     }
