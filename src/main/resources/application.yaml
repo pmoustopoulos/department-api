@@ -1,0 +1,27 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: department-api
+  datasource:
+    url: jdbc:mysql://localhost:3306/mydb
+    username: root
+    password: pass
+  jpa:
+#    show-sql: true
+    properties:
+      hibernate:
+#        format_sql: true
+        dialect: org.hibernate.dialect.MySQLDialect
+        hbm2ddl:
+          auto: update
+  output:
+    ansi:
+      enabled: always
+
+springdoc:
+  swagger-ui:
+    use-root-path: true
+    default-models-expand-depth: -1
+  version: '@springdoc-openapi-starter-webmvc-ui.version@'
