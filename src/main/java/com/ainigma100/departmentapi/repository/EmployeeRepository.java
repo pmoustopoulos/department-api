@@ -23,4 +23,5 @@ public interface EmployeeRepository extends JpaRepository<Employee, String> {
             Pageable pageable);
 
 
+    Employee findByEmail(String email);
 }

@@ -5,6 +5,7 @@ import com.ainigma100.departmentapi.dto.EmployeeSearchCriteriaDTO;
 import com.ainigma100.departmentapi.entity.Department;
 import com.ainigma100.departmentapi.entity.Employee;
 import com.ainigma100.departmentapi.exception.BusinessLogicException;
+import com.ainigma100.departmentapi.exception.ResourceAlreadyExistException;
 import com.ainigma100.departmentapi.exception.ResourceNotFoundException;
 import com.ainigma100.departmentapi.mapper.EmployeeMapper;
 import com.ainigma100.departmentapi.repository.DepartmentRepository;
@@ -34,6 +35,12 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public EmployeeDTO createEmployee(Long departmentId, EmployeeDTO employeeDTO) {
+
+        Employee employeeRecordFromDB = employeeRepository.findByEmail(employeeDTO.getEmail());
+
+        if (employeeRecordFromDB != null) {
+            throw new ResourceAlreadyExistException("Employee", "email", employeeDTO.getEmail());
+        }
 
         Employee employee = employeeMapper.employeeDtoToEmployee(employeeDTO);
 

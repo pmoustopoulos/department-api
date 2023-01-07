@@ -17,7 +17,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 
 @AllArgsConstructor
@@ -31,9 +30,9 @@ public class DepartmentServiceImpl implements DepartmentService {
     @Override
     public DepartmentDTO createDepartment(DepartmentDTO departmentDTO) {
 
-        Optional<Department> recordFromDB = departmentRepository.findByDepartmentCode(departmentDTO.getDepartmentCode());
+        Department recordFromDB = departmentRepository.findByDepartmentCode(departmentDTO.getDepartmentCode());
 
-        if (recordFromDB.isPresent()) {
+        if (recordFromDB != null) {
             throw new ResourceAlreadyExistException("Department", "departmentCode", departmentDTO.getDepartmentCode());
         }
 
