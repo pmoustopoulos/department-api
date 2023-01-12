@@ -1,5 +1,6 @@
 # Department API - Spring Boot 3
 
+A RESTful API created using Spring Boot 3, MySQL, Docker, and JasperReport. The API allows for CRUD operations on departments and employees and includes functionality for generating Excel and PDF reports using JasperReport. MySQL database runs as a Docker container, which enables ease of setup and deployment. Additionally, Swagger is integrated for easy API documentation and testing.
 
 ## Prerequisites
 Make sure you have installed all the following prerequisites on your development machine:
