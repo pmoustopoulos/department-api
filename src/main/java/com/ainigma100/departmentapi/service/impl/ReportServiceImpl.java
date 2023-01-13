@@ -15,13 +15,16 @@ import com.ainigma100.departmentapi.utils.jasperreport.SimpleReportExporter;
 import com.ainigma100.departmentapi.utils.jasperreport.SimpleReportFiller;
 import lombok.AllArgsConstructor;
 import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -117,6 +120,45 @@ public class ReportServiceImpl implements ReportService {
 
         String base64String = Base64.encodeBase64String(reportAsByteArray);
 
+
+        FileDTO fileDTO = new FileDTO();
+        fileDTO.setFileContent(base64String);
+        fileDTO.setFileName(fileName);
+
+        return fileDTO;
+    }
+
+    @Override
+    public FileDTO generateAndZipReports() throws JRException, IOException {
+
+        String dateAsString = this.getCurrentDateAsString();
+
+
+        List<Employee> employeeList = employeeRepository.findAll();
+        List<EmployeeReportDTO> employeeReportRecords = employeeMapper.employeeToEmployeeReportDto(employeeList);
+        String employeeFileName = "Employee_Report_" + dateAsString + ".xlsx";
+
+        JasperPrint jasperPrintEmployees = reportExporter.extractResultsToJasperPrint(employeeReportRecords, employeeFileName, "jrxml/excel/employeesExcelReport");
+
+
+        List<Department> departmentList = departmentRepository.findAll();
+        List<DepartmentReportDTO> departmentReportRecords = departmentMapper.departmentToDepartmentReportDto(departmentList);
+        String departmentFileName = "Department_Report_" + dateAsString + ".xlsx";
+
+        JasperPrint jasperPrintDepartments = reportExporter.extractResultsToJasperPrint(departmentReportRecords, departmentFileName, "jrxml/excel/departmentsExcelReport");
+
+
+        List<JasperPrint> listOfJasperPrints = new ArrayList<>();
+
+        listOfJasperPrints.add(jasperPrintEmployees);
+        listOfJasperPrints.add(jasperPrintDepartments);
+
+        byte[] reportAsByteArray = reportExporter.zipJasperPrintList(listOfJasperPrints);
+
+
+        String base64String = Base64.encodeBase64String(reportAsByteArray);
+
+        String fileName = "Multiple_Reports_" + dateAsString + ".zip";
 
         FileDTO fileDTO = new FileDTO();
         fileDTO.setFileContent(base64String);
