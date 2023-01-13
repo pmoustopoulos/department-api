@@ -14,7 +14,10 @@ import org.springframework.stereotype.Component;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.*;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 @AllArgsConstructor
 @Component
@@ -216,6 +219,47 @@ public class SimpleReportExporter {
 
         return bytes;
     }
+
+
+    /**
+     * This method is used to zip a List<JasperPrint> and then return them as a byte[].
+     *
+     * @param listOfJasperPrints
+     * @return zipped list as a byte array
+     * @throws IOException
+     * @throws JRException
+     */
+    public byte[] zipJasperPrintList(List<JasperPrint> listOfJasperPrints) throws IOException, JRException {
+
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        ZipOutputStream zipFile = new ZipOutputStream(byteArrayOutputStream);
+
+        for (int j = 0; j < listOfJasperPrints.size(); j++) {
+
+            byte[] reportAsBytes = null;
+            byte[] buffer = new byte[1024];
+
+            reportAsBytes = this.exportJasperPrintToByteArray(listOfJasperPrints.get(j));
+
+            ByteArrayInputStream fis = new ByteArrayInputStream(reportAsBytes);
+            zipFile.putNextEntry(new ZipEntry(listOfJasperPrints.get(j).getName()));
+            int length;
+
+            while ((length = fis.read(buffer, 0, 1024)) > 0) {
+                zipFile.write(buffer, 0, length);
+            }
+
+            zipFile.closeEntry();
+
+            // close the InputStream
+            fis.close();
+
+        }
+
+        zipFile.close();
+        return byteArrayOutputStream.toByteArray();
+    }
+
 
 
 }

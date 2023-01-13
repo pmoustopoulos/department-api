@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 
 @AllArgsConstructor
@@ -91,11 +92,11 @@ public class ReportController {
 
     }
 
-    @Operation(summary = "Generate a PDF report containing all the departments along with all the employees")
+    @Operation(summary = "Generate a zip file which contains two excel reports")
     @GetMapping("/zip")
-    public ResponseEntity<InputStreamResource> generateAndZipReports() throws JRException {
+    public ResponseEntity<InputStreamResource> generateAndZipReports() throws JRException, IOException {
 
-        FileDTO report = reportService.generatePdfFullReport();
+        FileDTO report = reportService.generateAndZipReports();
 
         byte[] file = Base64.decodeBase64(report.getFileContent());
         InputStream targetStream = new ByteArrayInputStream(file);
