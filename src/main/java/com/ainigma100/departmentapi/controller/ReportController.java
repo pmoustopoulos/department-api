@@ -42,6 +42,7 @@ public class ReportController {
                 .ok()
                 .headers(httpHeaders)
                 .contentType(MediaType.parseMediaType(MediaType.APPLICATION_OCTET_STREAM_VALUE))
+                .contentLength(file.length)
                 .body(new InputStreamResource(targetStream));
 
     }
@@ -63,6 +64,7 @@ public class ReportController {
                 .ok()
                 .headers(httpHeaders)
                 .contentType(MediaType.parseMediaType(MediaType.APPLICATION_OCTET_STREAM_VALUE))
+                .contentLength(file.length)
                 .body(new InputStreamResource(targetStream));
 
     }
@@ -84,6 +86,28 @@ public class ReportController {
                 .ok()
                 .headers(httpHeaders)
                 .contentType(MediaType.parseMediaType(MediaType.APPLICATION_OCTET_STREAM_VALUE))
+                .contentLength(file.length)
+                .body(new InputStreamResource(targetStream));
+
+    }
+
+    @Operation(summary = "Generate a PDF report containing all the departments along with all the employees")
+    @GetMapping("/zip")
+    public ResponseEntity<InputStreamResource> generateAndZipReports() throws JRException {
+
+        FileDTO report = reportService.generatePdfFullReport();
+
+        byte[] file = Base64.decodeBase64(report.getFileContent());
+        InputStream targetStream = new ByteArrayInputStream(file);
+
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("Content-Disposition", "attachment; filename=".concat(report.getFileName()));
+
+        return ResponseEntity
+                .ok()
+                .headers(httpHeaders)
+                .contentType(MediaType.parseMediaType(MediaType.APPLICATION_OCTET_STREAM_VALUE))
+                .contentLength(file.length)
                 .body(new InputStreamResource(targetStream));
 
     }
