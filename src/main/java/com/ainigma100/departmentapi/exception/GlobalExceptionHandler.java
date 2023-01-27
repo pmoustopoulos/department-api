@@ -82,7 +82,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(BusinessLogicException.class)
-    public ResponseEntity<?> handleBlogAPIException(BusinessLogicException exception) {
+    public ResponseEntity<?> handleBusinessLogicException(BusinessLogicException exception) {
 
         log.error(exception.getMessage());
 
