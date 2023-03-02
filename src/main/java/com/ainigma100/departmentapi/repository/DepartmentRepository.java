@@ -13,10 +13,12 @@ public interface DepartmentRepository extends JpaRepository<Department, Long> {
     Department findByDepartmentCode(String departmentCode);
 
 
-    @Query(value = "select dep from Department dep " +
-            "where ( :#{#criteria.departmentCode} IS NULL OR dep.departmentCode LIKE :#{#criteria.departmentCode}% ) " +
-            "and ( :#{#criteria.departmentName} IS NULL OR dep.departmentName LIKE :#{#criteria.departmentName}% ) " +
-            "and ( :#{#criteria.departmentDescription} IS NULL OR dep.departmentDescription LIKE %:#{#criteria.departmentDescription}% ) ")
+    @Query(value = """
+            select dep from Department dep
+            where ( :#{#criteria.departmentCode} IS NULL OR dep.departmentCode LIKE :#{#criteria.departmentCode}% )
+            and ( :#{#criteria.departmentName} IS NULL OR dep.departmentName LIKE :#{#criteria.departmentName}% )
+            and ( :#{#criteria.departmentDescription} IS NULL OR dep.departmentDescription LIKE %:#{#criteria.departmentDescription}% )
+            """)
     Page<Department> getAllDepartmentsUsingPagination(
             @Param("criteria") DepartmentSearchCriteriaDTO departmentSearchCriteriaDTO,
             Pageable pageable);
