@@ -6,10 +6,12 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
 @Getter
+@RequiredArgsConstructor
 public class DepartmentSearchCriteriaDTO {
 
     private String departmentCode;
@@ -30,4 +32,6 @@ public class DepartmentSearchCriteriaDTO {
 
     private List<SortItem> sortList;
 
+    public DepartmentSearchCriteriaDTO(int page, int size, List<SortItem> sortList) {
+    }
 }
