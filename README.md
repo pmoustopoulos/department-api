@@ -2,6 +2,13 @@
 
 A RESTful API created using Spring Boot 3, MySQL, Docker, and JasperReport. The API allows for CRUD operations on departments and employees and includes functionality for generating Excel and PDF reports using JasperReport. MySQL database runs as a Docker container, which enables ease of setup and deployment. Additionally, Swagger is integrated for easy API documentation and testing.
 
+## Run with an In-Memory H2 Database
+If you want to run the application with an **in-memory H2 database**, use the `h2-database` branch. 
+This branch includes the necessary configuration files and dependencies to set up and use H2 as the database for the application. 
+To get started, simply switch to the `h2-database branch` and run the application, but all data and related information 
+will be persisted to a file on the local file system.
+
+
 ## Prerequisites
 Make sure you have installed all the following prerequisites on your development machine:
 
