@@ -1,0 +1,6 @@
+#FileLock
+#Mon Apr 10 23:27:54 EEST 2023
+server=192.168.1.7\:51801
+hostName=petross-mbp
+method=file
+id=1876cda895d39f87df9c8c6a20594cd093cb839eb88

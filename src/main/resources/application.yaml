@@ -5,20 +5,24 @@ spring:
   application:
     name: department-api
   datasource:
-    url: jdbc:mysql://localhost:3306/mydb
+    url: jdbc:h2:file:./data/my-db;AUTO_SERVER=true
     username: root
     password: pass
+    driver-class-name: org.h2.Driver
   jpa:
-#    show-sql: true
+    #    show-sql: true
     properties:
       hibernate:
-#        format_sql: true
-        dialect: org.hibernate.dialect.MySQLDialect
+        #        format_sql: true
         hbm2ddl:
           auto: update
+    database-platform: org.hibernate.dialect.H2Dialect
   output:
     ansi:
       enabled: always
+  h2:
+    console:
+      enabled: true
 
 springdoc:
   swagger-ui:
