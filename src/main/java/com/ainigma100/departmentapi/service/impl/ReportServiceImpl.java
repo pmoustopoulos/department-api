@@ -34,12 +34,12 @@ import java.util.Map;
 @Service
 public class ReportServiceImpl implements ReportService {
 
-    private DepartmentRepository departmentRepository;
-    private EmployeeRepository employeeRepository;
-    private DepartmentMapper departmentMapper;
-    private EmployeeMapper employeeMapper;
-    private SimpleReportExporter reportExporter;
-    private SimpleReportFiller simpleReportFiller;
+    private final DepartmentRepository departmentRepository;
+    private final EmployeeRepository employeeRepository;
+    private final DepartmentMapper departmentMapper;
+    private final EmployeeMapper employeeMapper;
+    private final SimpleReportExporter reportExporter;
+    private final SimpleReportFiller simpleReportFiller;
 
 
     @ExecutionTime
