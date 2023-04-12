@@ -27,9 +27,9 @@ import java.util.List;
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
 
-    private EmployeeRepository employeeRepository;
-    private DepartmentRepository departmentRepository;
-    private EmployeeMapper employeeMapper;
+    private final EmployeeRepository employeeRepository;
+    private final DepartmentRepository departmentRepository;
+    private final EmployeeMapper employeeMapper;
 
 
 

@@ -21,8 +21,8 @@ import java.util.List;
 @RestController
 public class EmployeeController {
 
-    private EmployeeService employeeService;
-    private EmployeeMapper employeeMapper;
+    private final EmployeeService employeeService;
+    private final EmployeeMapper employeeMapper;
 
 
     private final String SUCCESS = "Success";

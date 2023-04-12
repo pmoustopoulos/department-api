@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class FiltersConfig {
 
-    private LoggingFilter loggingFilter;
+    private final LoggingFilter loggingFilter;
 
     @Bean
     public FilterRegistrationBean loggingFilterBean() {

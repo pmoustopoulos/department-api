@@ -24,7 +24,7 @@ import java.io.InputStream;
 public class ReportController {
 
 
-    private ReportService reportService;
+    private final ReportService reportService;
 
 
     @Operation(summary = "Generate an Excel report containing all the departments")
