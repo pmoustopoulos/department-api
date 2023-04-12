@@ -20,8 +20,8 @@ import org.springframework.web.bind.annotation.*;
 public class DepartmentController {
 
 
-    private DepartmentService departmentService;
-    private DepartmentMapper departmentMapper;
+    private final DepartmentService departmentService;
+    private final DepartmentMapper departmentMapper;
     private final String SUCCESS = "Success";
 
 
