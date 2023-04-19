@@ -1,6 +1,6 @@
 # Department API - Spring Boot 3
 
-A RESTful API created using Spring Boot 3, MySQL, Docker, and JasperReport. The API allows for CRUD operations on departments and employees and includes functionality for generating Excel and PDF reports using JasperReport. MySQL database runs as a Docker container, which enables ease of setup and deployment. Additionally, Swagger is integrated for easy API documentation and testing.
+A RESTful API created using Spring Boot 3, Postgres, Docker, and JasperReport. The API allows for CRUD operations on departments and employees and includes functionality for generating Excel and PDF reports using JasperReport. Postgres database runs as a Docker container, which enables ease of setup and deployment. Additionally, Swagger is integrated for easy API documentation and testing.
 
 ## Run with an In-Memory H2 Database
 If you want to run the application with an **in-memory H2 database**, use the `h2-database` branch. 
@@ -27,11 +27,11 @@ used by Java to create excel snd pdf reports. This application is optional becau
 view or modify the template files.
 
 
-## Start MySQL as a Docker container.
-Start `Docker Desktop` and then execute the following command to start a docker container which will be running MySQL <br>
+## Start Postgres as a Docker container.
+Start `Docker Desktop` and then execute the following command to start a docker container which will be running Postgres <br>
 
 ```shell
-docker run -p 3306:3306 -d --name my-sql-db -e MYSQL_ROOT_PASSWORD=pass -e MYSQL_DATABASE=mydb mysql
+docker run -p 5432:5432 -d --name my-postgres-db -e POSTGRES_PASSWORD=pass -e POSTGRES_DB=mydb postgres
 ```
 
 ## Start the application
