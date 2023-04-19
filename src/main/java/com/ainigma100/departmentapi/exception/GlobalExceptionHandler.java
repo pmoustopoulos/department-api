@@ -2,11 +2,13 @@ package com.ainigma100.departmentapi.exception;
 
 import com.ainigma100.departmentapi.dto.APIResponse;
 import com.ainigma100.departmentapi.dto.ErrorDTO;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingPathVariableException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
@@ -21,159 +23,88 @@ import java.util.List;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    private final String FAILED = "Failed";
+    private static final String FAILED = "Failed";
 
-
-
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<Object> handleAllExceptions(Exception exception) {
+    @ExceptionHandler({RuntimeException.class, NullPointerException.class})
+    public ResponseEntity<Object> handleRuntimeExceptions(RuntimeException exception) {
 
         log.error(exception.getMessage());
 
         APIResponse<ErrorDTO> response = new APIResponse<>();
-
         response.setStatus(FAILED);
-        response.setErrors(Collections.singletonList(new ErrorDTO("", exception.getMessage())));
-
-        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-
-    }
-
-
-    @ExceptionHandler(NullPointerException.class)
-    public ResponseEntity<Object> handleNullPointerException(NullPointerException exception) {
-
-        log.error(exception.getMessage());
-
-        APIResponse<ErrorDTO> response = new APIResponse<>();
-
-        response.setStatus(FAILED);
-        response.setErrors(Collections.singletonList(new ErrorDTO("", exception.getMessage())));
+        response.setErrors(Collections.singletonList(new ErrorDTO("", "An internal server error occurred")));
 
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-
-    @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<Object> handleResourceNotFoundException(ResourceNotFoundException exception) {
+    @ExceptionHandler({ResourceNotFoundException.class})
+    public ResponseEntity<Object> handleResourceNotFoundExceptions(ResourceNotFoundException exception) {
 
         log.error(exception.getMessage());
 
         APIResponse<ErrorDTO> response = new APIResponse<>();
-
         response.setStatus(FAILED);
-        response.setErrors(Collections.singletonList(new ErrorDTO("", exception.getMessage())));
+        response.setErrors(Collections.singletonList(new ErrorDTO("", "The requested resource was not found")));
 
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 
-
-    @ExceptionHandler(ResourceAlreadyExistException.class)
-    public ResponseEntity<?> handleResourceAlreadyExistException(ResourceAlreadyExistException exception) {
-
-        log.error(exception.getMessage());
-
-        APIResponse<ErrorDTO> response = new APIResponse<>();
-
-        response.setStatus(FAILED);
-        response.setErrors(Collections.singletonList(new ErrorDTO("", exception.getMessage())));
-
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-    }
-
-    @ExceptionHandler(BusinessLogicException.class)
-    public ResponseEntity<?> handleBusinessLogicException(BusinessLogicException exception) {
+    @ExceptionHandler({ResourceAlreadyExistException.class, BusinessLogicException.class, DataAccessException.class})
+    public ResponseEntity<Object> handleOtherExceptions(Exception exception) {
 
         log.error(exception.getMessage());
 
         APIResponse<ErrorDTO> response = new APIResponse<>();
-
         response.setStatus(FAILED);
-        response.setErrors(Collections.singletonList(new ErrorDTO("", exception.getMessage())));
+        response.setErrors(Collections.singletonList(new ErrorDTO("", "An error occurred while processing your request")));
 
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
-
-
-    @ExceptionHandler(DataAccessException.class)
-    public ResponseEntity<Object> handleDataAccessException(DataAccessException exception) {
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    public ResponseEntity<Object> handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException exception) {
 
         log.error(exception.getMessage());
 
-        APIResponse<?> response = new APIResponse<>();
-
+        APIResponse<ErrorDTO> response = new APIResponse<>();
         response.setStatus(FAILED);
-        response.setErrors(Collections.singletonList(new ErrorDTO("", exception.getMessage())));
+        response.setErrors(Collections.singletonList(new ErrorDTO("", "The requested URL does not support this method")));
 
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(response, HttpStatus.METHOD_NOT_ALLOWED);
     }
 
+    @ExceptionHandler({MethodArgumentNotValidException.class, MissingServletRequestParameterException.class, MissingPathVariableException.class})
+    public ResponseEntity<Object> handleValidationExceptions(Exception exception) {
 
-
-    /**
-     * This method is used to handle the errors that occur if the annotations above the fields are not satisfied
-     *
-     * @param exception
-     * @return
-     */
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Object> handleMethodArgumentNotValidException(
-            MethodArgumentNotValidException exception) {
+        APIResponse<ErrorDTO> response = new APIResponse<>();
+        response.setStatus(FAILED);
 
         List<ErrorDTO> errors = new ArrayList<>();
+        if (exception instanceof MethodArgumentNotValidException) {
 
-        exception.getBindingResult().getAllErrors().forEach(error -> {
+            MethodArgumentNotValidException ex = (MethodArgumentNotValidException) exception;
+            ex.getBindingResult().getAllErrors().forEach(error -> {
+                String fieldName = ((FieldError) error).getField();
+                String errorMessage = error.getDefaultMessage();
+                errors.add(new ErrorDTO(fieldName, errorMessage));
+            });
 
-            String fieldName = ((FieldError) error).getField();
-            String errorMessage = error.getDefaultMessage();
-            errors.add( new ErrorDTO( fieldName, errorMessage) );
+        } else if (exception instanceof MissingServletRequestParameterException) {
 
-        });
+            MissingServletRequestParameterException ex = (MissingServletRequestParameterException) exception;
+            String parameterName = ex.getParameterName();
+            errors.add(new ErrorDTO("", "Required parameter is missing: " + parameterName));
 
-        APIResponse<?> response = new APIResponse<>();
+        } else if (exception instanceof MissingPathVariableException) {
 
-        response.setStatus(FAILED);
+            MissingPathVariableException ex = (MissingPathVariableException) exception;
+            String variableName = ex.getVariableName();
+            errors.add(new ErrorDTO("", "Missing path variable: " + variableName));
+        }
+
         response.setErrors(errors);
-
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
-
-
-    @ExceptionHandler(MissingServletRequestParameterException.class)
-    public ResponseEntity<Object> handleMissingServletRequestParameterException(
-            MissingServletRequestParameterException exception) {
-
-        log.error(exception.getMessage());
-
-        String parameterName = exception.getParameterName();
-
-        APIResponse<?> response = new APIResponse<>();
-
-        response.setStatus(FAILED);
-        response.setErrors(Collections.singletonList(new ErrorDTO(parameterName, exception.getMessage())));
-
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-    }
-
-
-
-    @ExceptionHandler(MissingPathVariableException.class)
-    public ResponseEntity<Object> handleMissingPathVariableException(
-            MissingPathVariableException exception) {
-
-        log.error(exception.getMessage());
-
-        String variableName = exception.getVariableName();
-
-        APIResponse<?> response = new APIResponse<>();
-
-        response.setStatus(FAILED);
-        response.setErrors(Collections.singletonList(new ErrorDTO(variableName, exception.getMessage())));
-
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-
-    }
-
 
 }
+
