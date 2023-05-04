@@ -18,8 +18,8 @@
 	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
 	<property name="net.sf.jasperreports.export.xls.one.page.per.sheet" value="true"/>
 	<property name="net.sf.jasperreports.page.break.no.pagination" value="apply"/>
-	<propertyExpression name="net.sf.jasperreports.export.xlsx.sheet.names.1"><![CDATA[$P{firstSheetName}]]></propertyExpression>
-	<propertyExpression name="net.sf.jasperreports.export.xlsx.sheet.names.2"><![CDATA[$P{secondSheetName}]]></propertyExpression>
+	<propertyExpression name="net.sf.jasperreports.export.xls.sheet.names.1"><![CDATA[$P{firstSheetName}]]></propertyExpression>
+	<propertyExpression name="net.sf.jasperreports.export.xls.sheet.names.2"><![CDATA[$P{secondSheetName}]]></propertyExpression>
 	<parameter name="departmentSubReport" class="net.sf.jasperreports.engine.JasperReport"/>
 	<parameter name="departmentSubDataSource" class="net.sf.jasperreports.engine.data.JRBeanCollectionDataSource"/>
 	<parameter name="employeeSubReport" class="net.sf.jasperreports.engine.JasperReport"/>
