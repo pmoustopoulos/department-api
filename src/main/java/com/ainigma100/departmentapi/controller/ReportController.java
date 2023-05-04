@@ -114,4 +114,25 @@ public class ReportController {
     }
 
 
+    @Operation(summary = "Generate an Excel report containing all the departments")
+    @GetMapping("/multi-sheet-excel")
+    public ResponseEntity<InputStreamResource> generateMultiSheetExcelReport() throws JRException {
+
+        FileDTO report = reportService.generateMultiSheetExcelReport();
+
+        byte[] file = Base64.decodeBase64(report.getFileContent());
+        InputStream targetStream = new ByteArrayInputStream(file);
+
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("Content-Disposition", "attachment; filename=".concat(report.getFileName()));
+
+        return ResponseEntity
+                .ok()
+                .headers(httpHeaders)
+                .contentType(MediaType.parseMediaType(MediaType.APPLICATION_OCTET_STREAM_VALUE))
+                .contentLength(file.length)
+                .body(new InputStreamResource(targetStream));
+    }
+
+
 }

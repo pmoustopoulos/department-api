@@ -167,6 +167,53 @@ public class ReportServiceImpl implements ReportService {
         return fileDTO;
     }
 
+    @Override
+    public FileDTO generateMultiSheetExcelReport() throws JRException {
+
+        String dateAsString = this.getCurrentDateAsString();
+        String excelFileName = "Multi_Sheet_Report_" + dateAsString + ".xlsx";
+
+        List<Department> departmentList = departmentRepository.findAll();
+        List<DepartmentReportDTO> mappedDepartmentRecords = departmentMapper.departmentToDepartmentReportDto(departmentList);
+
+        List<Employee> employeeList = employeeRepository.findAll();
+        List<EmployeeReportDTO> mappedEmployeeRecords = employeeMapper.employeeToEmployeeReportDto(employeeList);
+
+        // prepare department sub report
+        JasperReport departmentSubReport = simpleReportFiller.compileReport("jrxml/excel/departmentsExcelReport");
+        JRBeanCollectionDataSource departmentSubDataSource = reportExporter.getSubReportDataSource(mappedDepartmentRecords);
+
+
+        // prepare employee sub report
+        JasperReport employeeSubReport = simpleReportFiller.compileReport("jrxml/excel/employeesExcelReport");
+        JRBeanCollectionDataSource employeeSubDataSource = reportExporter.getSubReportDataSource(mappedEmployeeRecords);
+
+
+        // add sub reports as parameters to Jasper Report
+        Map<String, Object> jasperParameters = new HashMap<>();
+        jasperParameters.put("departmentSubReport", departmentSubReport);
+        jasperParameters.put("departmentSubDataSource", departmentSubDataSource);
+        jasperParameters.put("employeeSubReport", employeeSubReport);
+        jasperParameters.put("employeeSubDataSource", employeeSubDataSource);
+
+        // set sheet names for each sub report
+        jasperParameters.put("firstSheetName", "DEPARTMENTS_REPORT");
+        jasperParameters.put("secondSheetName", "EMPLOYEES_REPORT");
+
+
+        byte[] reportAsByteArray = reportExporter.exportReportToByteArray(
+                null, jasperParameters, excelFileName, "jrxml/excel/multiSheetExcelReport");
+
+        String base64String = Base64.encodeBase64String(reportAsByteArray);
+
+
+        FileDTO fileDTO = new FileDTO();
+        fileDTO.setFileContent(base64String);
+        fileDTO.setFileName(excelFileName);
+
+        return fileDTO;
+    }
+
 
     private String getCurrentDateAsString() {
 
