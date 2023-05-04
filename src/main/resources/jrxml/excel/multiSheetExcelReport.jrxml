@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.20.0.final using JasperReports Library version 6.20.0-2bc7ab61c56f459e8176eb05c7705e145cd400ad  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="jasper_report_template" pageWidth="1000" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="980" leftMargin="0" rightMargin="20" topMargin="0" bottomMargin="20" isIgnorePagination="true" uuid="fc5d8984-0584-48c7-8a43-7788c009685e">
+	<property name="net.sf.jasperreports.print.keep.full.text" value="true"/>
+	<property name="ignoreCellBorder" value="false"/>
+	<property name="net.sf.jasperreports.export.xls.remove.empty.space.between.rows" value="true"/>
+	<property name="net.sf.jasperreports.export.xls.remove.empty.space.between.columns" value="true"/>
+	<property name="net.sf.jasperreports.export.xls.detect.cell.type" value="true"/>
+	<property name="net.sf.jasperreports.export.xls.white.page.background" value="false"/>
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
+	<property name="net.sf.jasperreports.export.xls.one.page.per.sheet" value="true"/>
+	<property name="net.sf.jasperreports.page.break.no.pagination" value="apply"/>
+	<propertyExpression name="net.sf.jasperreports.export.xlsx.sheet.names.1"><![CDATA[$P{firstSheetName}]]></propertyExpression>
+	<propertyExpression name="net.sf.jasperreports.export.xlsx.sheet.names.2"><![CDATA[$P{secondSheetName}]]></propertyExpression>
+	<parameter name="departmentSubReport" class="net.sf.jasperreports.engine.JasperReport"/>
+	<parameter name="departmentSubDataSource" class="net.sf.jasperreports.engine.data.JRBeanCollectionDataSource"/>
+	<parameter name="employeeSubReport" class="net.sf.jasperreports.engine.JasperReport"/>
+	<parameter name="employeeSubDataSource" class="net.sf.jasperreports.engine.data.JRBeanCollectionDataSource"/>
+	<parameter name="firstSheetName" class="java.lang.String"/>
+	<parameter name="secondSheetName" class="java.lang.String"/>
+	<field name="id" class="java.lang.Long"/>
+	<field name="departmentCode" class="java.lang.String"/>
+	<field name="departmentName" class="java.lang.String"/>
+	<field name="departmentDescription" class="java.lang.String"/>
+	<field name="totalEmployees" class="java.lang.Integer"/>
+	<field name="createdAt" class="java.time.LocalDateTime"/>
+	<field name="updatedAt" class="java.time.LocalDateTime"/>
+	<summary>
+		<band height="484">
+			<break>
+				<reportElement x="0" y="230" width="99" height="1" uuid="d9c0937b-47e5-4a8d-b10a-34a1220438be"/>
+			</break>
+			<subreport>
+				<reportElement x="0" y="10" width="980" height="200" uuid="68dd10fb-67dc-47b8-8687-44e22806c760"/>
+				<dataSourceExpression><![CDATA[$P{departmentSubDataSource}]]></dataSourceExpression>
+				<subreportExpression><![CDATA[$P{departmentSubReport}]]></subreportExpression>
+			</subreport>
+			<subreport>
+				<reportElement x="0" y="253" width="980" height="200" uuid="3aa21261-efab-4f8a-b54c-8d37b7a3158c"/>
+				<dataSourceExpression><![CDATA[$P{employeeSubDataSource}]]></dataSourceExpression>
+				<subreportExpression><![CDATA[$P{employeeSubReport}]]></subreportExpression>
+			</subreport>
+		</band>
+	</summary>
+</jasperReport>
