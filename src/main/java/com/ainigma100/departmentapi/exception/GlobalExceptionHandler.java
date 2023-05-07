@@ -80,24 +80,21 @@ public class GlobalExceptionHandler {
         response.setStatus(FAILED);
 
         List<ErrorDTO> errors = new ArrayList<>();
-        if (exception instanceof MethodArgumentNotValidException) {
+        if (exception instanceof MethodArgumentNotValidException ex) {
 
-            MethodArgumentNotValidException ex = (MethodArgumentNotValidException) exception;
             ex.getBindingResult().getAllErrors().forEach(error -> {
                 String fieldName = ((FieldError) error).getField();
                 String errorMessage = error.getDefaultMessage();
                 errors.add(new ErrorDTO(fieldName, errorMessage));
             });
 
-        } else if (exception instanceof MissingServletRequestParameterException) {
+        } else if (exception instanceof MissingServletRequestParameterException ex) {
 
-            MissingServletRequestParameterException ex = (MissingServletRequestParameterException) exception;
             String parameterName = ex.getParameterName();
             errors.add(new ErrorDTO("", "Required parameter is missing: " + parameterName));
 
-        } else if (exception instanceof MissingPathVariableException) {
+        } else if (exception instanceof MissingPathVariableException ex) {
 
-            MissingPathVariableException ex = (MissingPathVariableException) exception;
             String variableName = ex.getVariableName();
             errors.add(new ErrorDTO("", "Missing path variable: " + variableName));
         }
