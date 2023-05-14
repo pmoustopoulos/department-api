@@ -42,3 +42,5 @@ mvn spring-boot:run
 ## Swagger
 Swagger was set on the root path, and you can access it on this URL: http://localhost:8080/
 
+
+The API also allows for `generating various reports` using `JasperReport`, such as generating an Excel file, generating a PDF file, generating a zipped folder that contains reports, and generating a single Excel file that contains multiple sheets inside.
