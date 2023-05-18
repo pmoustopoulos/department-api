@@ -23,7 +23,7 @@ here: [Download & Install Java 17](https://www.oracle.com/java/technologies/down
 
 * **Jaspersoft Studio (Optional)** - [Download Jaspersoft Studio community edition](https://community.jaspersoft.com/project/jaspersoft-studio/releases)
 Jaspersoft studio was used to create template files (.jrxml). These template files along with the jasper dependency was
-used by Java to create excel snd pdf reports. This application is optional because you will need it only if you want to 
+used by Java to create excel and pdf reports. This application is optional because you will need it only if you want to 
 view or modify the template files.
 
 
