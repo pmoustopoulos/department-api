@@ -114,7 +114,7 @@ public class ReportController {
     }
 
 
-    @Operation(summary = "Generate an Excel report containing all the departments")
+    @Operation(summary = "Generate a multisheet Excel report containing departments and employees")
     @GetMapping("/multi-sheet-excel")
     public ResponseEntity<InputStreamResource> generateMultiSheetExcelReport() throws JRException {
 
