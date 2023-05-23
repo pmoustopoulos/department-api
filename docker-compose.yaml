@@ -1,0 +1,42 @@
+version: "3.0"
+
+services:
+  postgresdb:
+    image: postgres
+    container_name: postgresdb
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: pass
+      POSTGRES_DB: mydb
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d mydb -U postgres"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    networks:
+      springboot-postgres-net:
+
+  departmentapi:
+    container_name: departmentapi
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgresdb:
+        condition: service_healthy
+    networks:
+      springboot-postgres-net:
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgresdb:5432/mydb
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: pass
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+    restart: on-failure
+
+networks:
+  springboot-postgres-net:
+    driver: bridge
