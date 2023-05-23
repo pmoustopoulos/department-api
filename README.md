@@ -26,6 +26,33 @@ Jaspersoft studio was used to create template files (.jrxml). These template fil
 used by Java to create excel and pdf reports. This application is optional because you will need it only if you want to 
 view or modify the template files.
 
+## Start App as a Docker container.
+First build the application via maven wrapper:
+ ```shell
+ mvnw install -DskipTests 
+```
+Verify that the `jar` file is generated under the directory `target/department-api-0.0.1-SNAPSHOT.jar`
+
+
+Then start the `Docker Desktop` and execute the following command:
+```shell
+docker-compose up --build   
+```
+if you want to detach from the terminal simply add the `-d`
+```shell
+docker-compose up --build -d   
+```
+The application should be running normally under the predefined ports.
+
+Stopping the containers:
+```shell
+ docker-compose stop
+```
+Removing the containers:
+```shell
+ docker-compose down
+```
+
 
 ## Start Postgres as a Docker container.
 Start `Docker Desktop` and then execute the following command to start a docker container which will be running Postgres <br>
