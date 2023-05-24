@@ -3,55 +3,68 @@
 A RESTful API created using Spring Boot 3, Postgres, Docker, and JasperReport. The API allows for CRUD operations on departments and employees and includes functionality for generating Excel and PDF reports using JasperReport. Postgres database runs as a Docker container, which enables ease of setup and deployment. Additionally, Swagger is integrated for easy API documentation and testing.
 
 ## Run with an In-Memory H2 Database
-If you want to run the application with an **in-memory H2 database**, use the `h2-database` branch. 
-This branch includes the necessary configuration files and dependencies to set up and use H2 as the database for the application. 
-To get started, simply switch to the `h2-database branch` and run the application, but all data and related information 
+If you want to run the application with an **in-memory H2 database**, use the `h2-database` branch.
+This branch includes the necessary configuration files and dependencies to set up and use H2 as the database for the application.
+To get started, simply switch to the `h2-database branch` and run the application, but all data and related information
 will be persisted to a file on the local file system.
 
 
 ## Prerequisites
 Make sure you have installed all the following prerequisites on your development machine:
 
-* **Java 17** - You will need at least Java 17 installed on your machine because it is required by **Spring Boot 3**. 
-If you are using IntelliJ, you can easily download it directly from the IDE. 
-`File -> Project Structure -> Project -> SDK -> Add SDK -> Download JDK...`. Alternatively, you can download it from 
-here: [Download & Install Java 17](https://www.oracle.com/java/technologies/downloads/#java17) 
+* **Java 17** - You will need at least Java 17 installed on your machine because it is required by **Spring Boot 3**.
+  If you are using IntelliJ, you can easily download it directly from the IDE.
+  `File -> Project Structure -> Project -> SDK -> Add SDK -> Download JDK...`. Alternatively, you can download it from
+  here: [Download & Install Java 17](https://www.oracle.com/java/technologies/downloads/#java17)
 
 
 * **Docker** - [Download & Install Docker Desktop](https://www.docker.com/products/docker-desktop/)
 
 
 * **Jaspersoft Studio (Optional)** - [Download Jaspersoft Studio community edition](https://community.jaspersoft.com/project/jaspersoft-studio/releases)
-Jaspersoft studio was used to create template files (.jrxml). These template files along with the jasper dependency was
-used by Java to create excel and pdf reports. This application is optional because you will need it only if you want to 
-view or modify the template files.
+  Jaspersoft studio was used to create template files (.jrxml). These template files along with the jasper dependency was
+  used by Java to create excel and pdf reports. This application is optional because you will need it only if you want to
+  view or modify the template files.
 
 ## Start App as a Docker container.
-First build the application via maven wrapper:
+1. First, build the application using the Maven wrapper by running the following command in the terminal:
  ```shell
- mvnw install -DskipTests 
+./mvnw install -DskipTests
 ```
-Verify that the `jar` file is generated under the directory `target/department-api-0.0.1-SNAPSHOT.jar`
+This command will build the application and generate a jar file located at target/department-api-0.0.1-SNAPSHOT.jar.
 
+2. Make sure you have `Docker Desktop` installed and running on your machine.
 
-Then start the `Docker Desktop` and execute the following command:
+3. Start the Docker container by executing the following command:
 ```shell
 docker-compose up --build   
 ```
-if you want to detach from the terminal simply add the `-d`
+
+iThis command will build the Docker image and start the container. If you want to detach from the terminal and run the
+container in the background, you can add the `-d` flag
 ```shell
 docker-compose up --build -d   
 ```
-The application should be running normally under the predefined ports.
+The application should now be running normally within the Docker container, accessible via the predefined ports.
 
-Stopping the containers:
+4. To stop the containers and shut down the application, use the following command:
 ```shell
  docker-compose stop
 ```
-Removing the containers:
+
+5. To start the application without rebuilding the Docker images use the following command:
+```shell
+ docker-compose stop
+```
+
+If you want to remove the containers completely, including any associated networks and volumes,
+you can run the following command:
 ```shell
  docker-compose down
 ```
+This will stop and remove the containers, networks, and volumes created by Docker-compose.
+
+**Make sure you have Docker and Docker Compose properly installed and configured before following these steps.**
 
 
 ## Start Postgres as a Docker container.
