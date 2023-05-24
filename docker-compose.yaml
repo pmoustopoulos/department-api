@@ -16,7 +16,7 @@ services:
       timeout: 3s
       retries: 10
     networks:
-      springboot-postgres-net:
+      - springboot-postgres-net
 
   departmentapi:
     container_name: departmentapi
@@ -29,7 +29,7 @@ services:
       postgresdb:
         condition: service_healthy
     networks:
-      springboot-postgres-net:
+      - springboot-postgres-net
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgresdb:5432/mydb
       SPRING_DATASOURCE_USERNAME: postgres
