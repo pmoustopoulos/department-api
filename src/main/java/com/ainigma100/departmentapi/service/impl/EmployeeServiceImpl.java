@@ -143,7 +143,15 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 
     private boolean employeeBelongsToDepartment(Department departmentRecordFromDB, Employee employeeRecordFromDB) {
-        return employeeRecordFromDB.getDepartment().getId().equals(departmentRecordFromDB.getId());
+
+        if (departmentRecordFromDB == null || employeeRecordFromDB.getDepartment() == null) {
+            return false;
+        }
+
+        Long departmentId = employeeRecordFromDB.getDepartment().getId();
+        return departmentId != null && departmentId.equals(departmentRecordFromDB.getId());
     }
+
+
 
 }
