@@ -1,8 +1,8 @@
 package com.ainigma100.departmentapi.utils.jasperreport;
 
-import com.ainigma100.departmentapi.exception.BusinessLogicException;
 import com.ainigma100.departmentapi.exception.ReportGenerationException;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRParameter;
 import net.sf.jasperreports.engine.JasperExportManager;
@@ -19,7 +19,7 @@ import java.io.IOException;
 import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
-
+@Slf4j
 @AllArgsConstructor
 @Component
 public class SimpleReportExporter {
@@ -54,7 +54,7 @@ public class SimpleReportExporter {
 
         } catch (JRException e) {
 
-            e.printStackTrace();
+            log.error("Error generating report occurred in extractResultsToJasperPrint method.", e);
             throw new ReportGenerationException("Error generating report occurred in extractResultsToJasperPrint method.", e);
 
         } finally {

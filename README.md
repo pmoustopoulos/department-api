@@ -1,6 +1,9 @@
 # Department API - Spring Boot 3
 
-A RESTful API created using Spring Boot 3, Postgres, Docker, and JasperReport. The API allows for CRUD operations on departments and employees and includes functionality for generating Excel and PDF reports using JasperReport. Postgres database runs as a Docker container, which enables ease of setup and deployment. Additionally, Swagger is integrated for easy API documentation and testing.
+A RESTful API created using Spring Boot 3, Postgres, Docker, and JasperReport. The API allows for CRUD operations 
+on departments and employees and includes functionality for generating Excel and PDF reports using JasperReport. 
+Postgres database runs as a Docker container, which enables ease of setup and deployment. Additionally, 
+Swagger is integrated for easy API documentation and testing.
 
 ## Run with an In-Memory H2 Database
 If you want to run the application with an **in-memory H2 database**, use the `h2-database` branch.
@@ -18,7 +21,10 @@ Make sure you have installed all the following prerequisites on your development
   here: [Download & Install Java 17](https://www.oracle.com/java/technologies/downloads/#java17)
 
 
-* **Docker** - [Download & Install Docker Desktop](https://www.docker.com/products/docker-desktop/)
+* **Docker** - [Download & Install Docker Desktop](https://www.docker.com/products/docker-desktop/) 
+`Integration tests use Testcontainers`, which requires Docker Desktop to be installed and running
+  on your local machine. Docker Desktop provides the necessary environment to spin up containers for the tests. <br>
+  **NOTE**: Make sure Docker Desktop is installed and running before running the integration tests.
 
 
 * **Jaspersoft Studio (Optional)** - [Download Jaspersoft Studio community edition](https://community.jaspersoft.com/project/jaspersoft-studio/releases)
@@ -83,4 +89,23 @@ mvn spring-boot:run
 Swagger was set on the root path, and you can access it on this URL: http://localhost:8080/
 
 
-The API also allows for `generating various reports` using `JasperReport`, such as generating an Excel file, generating a PDF file, generating a zipped folder that contains reports, and generating a single Excel file that contains multiple sheets inside.
+The API also allows for `generating various reports` using `JasperReport`, such as generating an Excel file, generating 
+a PDF file, generating a zipped folder that contains reports, and generating a single Excel file that contains multiple 
+sheets inside.
+
+## Testing
+
+This application includes unit testing and integration testing using JUnit 5, Mockito, and Spring's `WebMvcTest`.
+The tests are written in a BDD (`Behavior-Driven Development`) style.
+
+
+### Unit Testing
+
+Unit tests are written using JUnit 5 and Mockito in a `BDD style`, focusing on describing the behavior of 
+individual units of code.
+
+
+### Integration Testing with Testcontainers
+`Integration tests` are performed `using Testcontainers`, a powerful Java library that provides lightweight, disposable
+containers for integration testing. Testcontainers allows spinning up containers for dependencies such as the
+`Postgres database`, providing an isolated and reproducible environment for integration testing.
