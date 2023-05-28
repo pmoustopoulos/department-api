@@ -82,7 +82,7 @@ docker run -p 5432:5432 -d --name my-postgres-db -e POSTGRES_PASSWORD=pass -e PO
 
 ## Start the application
 ```shell
-mvn spring-boot:run
+./mvnw spring-boot:run
 ```
 
 ## Swagger
@@ -109,3 +109,7 @@ individual units of code.
 `Integration tests` are performed `using Testcontainers`, a powerful Java library that provides lightweight, disposable
 containers for integration testing. Testcontainers allows spinning up containers for dependencies such as the
 `Postgres database`, providing an isolated and reproducible environment for integration testing.
+
+```shell
+./mvnw test
+```
