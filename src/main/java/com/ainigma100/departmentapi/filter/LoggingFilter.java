@@ -24,7 +24,6 @@ public class LoggingFilter implements Filter {
         if ( this.shouldLogRequest(httpServletRequest) ) {
 
             log.info("Request " + httpServletRequest.getRequestURL().toString() + ", method: " + httpServletRequest.getMethod());
-//            log.info("from uri: " + httpServletRequest.getRemoteAddr() + ", host: " + httpServletRequest.getRemoteHost());
 
         }
 

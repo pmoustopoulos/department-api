@@ -7,9 +7,11 @@ import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 import java.util.List;
 
+@Setter
 @Getter
 @RequiredArgsConstructor
 public class DepartmentSearchCriteriaDTO {
