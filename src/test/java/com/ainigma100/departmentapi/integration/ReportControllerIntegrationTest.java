@@ -4,7 +4,6 @@ import com.ainigma100.departmentapi.entity.Department;
 import com.ainigma100.departmentapi.entity.Employee;
 import com.ainigma100.departmentapi.repository.DepartmentRepository;
 import com.ainigma100.departmentapi.repository.EmployeeRepository;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -43,8 +42,9 @@ class ReportControllerIntegrationTest extends AbstractContainerBaseTest {
     private static List<Department> departmentList;
     private static List<Employee> employeeList;
 
-    @BeforeAll
-    public static void setupClass() {
+
+    @BeforeEach
+    public void setup() {
 
         Department department = new Department();
         department.setDepartmentCode("ABC");
@@ -76,12 +76,8 @@ class ReportControllerIntegrationTest extends AbstractContainerBaseTest {
 
         employeeList = Arrays.asList(employee, employee2);
 
-    }
-
-    @BeforeEach
-    public void setup() {
-        departmentRepository.saveAll(departmentList);
-        employeeRepository.saveAll(employeeList);
+        departmentRepository.deleteAll();
+        employeeRepository.deleteAll();
     }
 
 
@@ -91,6 +87,8 @@ class ReportControllerIntegrationTest extends AbstractContainerBaseTest {
     void givenNoInput_whenGenerateDepartmentsExcelReport_thenReturnInputStreamResource() throws Exception {
 
         // given - precondition or setup
+        departmentRepository.saveAll(departmentList);
+        employeeRepository.saveAll(employeeList);
 
         // when - action or behaviour that we are going to test
         ResultActions response = mockMvc.perform(get("/api/v1/reports/excel/departments"));
@@ -107,6 +105,8 @@ class ReportControllerIntegrationTest extends AbstractContainerBaseTest {
     void givenNoInput_whenGenerateEmployeesExcelReport_thenReturnInputStreamResource() throws Exception {
 
         // given - precondition or setup
+        departmentRepository.saveAll(departmentList);
+        employeeRepository.saveAll(employeeList);
 
         // when - action or behaviour that we are going to test
         ResultActions response = mockMvc.perform(get("/api/v1/reports/excel/employees"));
@@ -123,6 +123,8 @@ class ReportControllerIntegrationTest extends AbstractContainerBaseTest {
     void givenNoInput_whenGeneratePdfFullReport_thenReturnInputStreamResource() throws Exception {
 
         // given - precondition or setup
+        departmentRepository.saveAll(departmentList);
+        employeeRepository.saveAll(employeeList);
 
         // when - action or behaviour that we are going to test
         ResultActions response = mockMvc.perform(get("/api/v1/reports/pdf/full-report"));
@@ -141,6 +143,8 @@ class ReportControllerIntegrationTest extends AbstractContainerBaseTest {
     void givenNoInput_whenGenerateAndZipReports_thenReturnInputStreamResource() throws Exception {
 
         // given - precondition or setup
+        departmentRepository.saveAll(departmentList);
+        employeeRepository.saveAll(employeeList);
 
         // when - action or behaviour that we are going to test
         ResultActions response = mockMvc.perform(get("/api/v1/reports/zip"));
@@ -157,6 +161,8 @@ class ReportControllerIntegrationTest extends AbstractContainerBaseTest {
     void givenNoInput_whenGenerateMultiSheetExcelReport_thenReturnInputStreamResource() throws Exception {
 
         // given - precondition or setup
+        departmentRepository.saveAll(departmentList);
+        employeeRepository.saveAll(employeeList);
 
         // when - action or behaviour that we are going to test
         ResultActions response = mockMvc.perform(get("/api/v1/reports/multi-sheet-excel"));
