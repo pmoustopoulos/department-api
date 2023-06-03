@@ -3,6 +3,7 @@ package com.ainigma100.departmentapi.repository;
 import com.ainigma100.departmentapi.dto.DepartmentSearchCriteriaDTO;
 import com.ainigma100.departmentapi.entity.Department;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -18,6 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * are by default transactional and roll back at the end of each test.
  */
 @DataJpaTest
+@Tag("unit")
 class DepartmentRepositoryTest {
 
     @Autowired
