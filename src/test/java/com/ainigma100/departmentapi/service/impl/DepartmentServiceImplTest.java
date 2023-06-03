@@ -8,6 +8,7 @@ import com.ainigma100.departmentapi.exception.ResourceNotFoundException;
 import com.ainigma100.departmentapi.mapper.DepartmentMapper;
 import com.ainigma100.departmentapi.repository.DepartmentRepository;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -32,6 +33,7 @@ import static org.mockito.Mockito.*;
  * mockito annotations to mock the dependencies
  */
 @ExtendWith(MockitoExtension.class)
+@Tag("unit")
 class DepartmentServiceImplTest {
 
     @Mock

@@ -5,6 +5,7 @@ import com.ainigma100.departmentapi.service.ReportService;
 import com.ainigma100.departmentapi.utils.TestHelper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -24,6 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * to test the Controller layer. It will not load the service or repository layer components
  */
 @WebMvcTest(ReportController.class)
+@Tag("unit")
 class ReportControllerTest {
 
     @Autowired

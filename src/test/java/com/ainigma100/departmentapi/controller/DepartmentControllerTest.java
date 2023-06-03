@@ -7,6 +7,7 @@ import com.ainigma100.departmentapi.mapper.DepartmentMapper;
 import com.ainigma100.departmentapi.service.DepartmentService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -35,6 +36,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * to test the Controller layer. It will not load the service or repository layer components
  */
 @WebMvcTest(DepartmentController.class)
+@Tag("unit")
 class DepartmentControllerTest {
 
     @MockBean

@@ -104,12 +104,27 @@ The tests are written in a BDD (`Behavior-Driven Development`) style.
 Unit tests are written using JUnit 5 and Mockito in a `BDD style`, focusing on describing the behavior of 
 individual units of code.
 
+To run the unit tests, use the following command:
+```shell
+./mvnw test
+```
+
 
 ### Integration Testing with Testcontainers
 `Integration tests` are performed `using Testcontainers`, a powerful Java library that provides lightweight, disposable
 containers for integration testing. Testcontainers allows spinning up containers for dependencies such as the
 `Postgres database`, providing an isolated and reproducible environment for integration testing.
 
+To run the integration tests, follow these steps:
+1. Make sure Docker Desktop is installed and running on your local machine.
+2. Execute the following command:
+
 ```shell
-./mvnw test
+./mvnw verify -Pintegration-tests
 ```
+
+
+**Note**: Integration tests using Testcontainers require Docker Desktop to be installed and running before running the tests.
+
+By running the unit tests and integration tests separately, you can ensure the correctness and reliability of your 
+application's components in isolation as well as their interactions in a controlled environment.
