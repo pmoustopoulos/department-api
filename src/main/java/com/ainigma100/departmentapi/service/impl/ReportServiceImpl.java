@@ -10,6 +10,7 @@ import com.ainigma100.departmentapi.mapper.EmployeeMapper;
 import com.ainigma100.departmentapi.repository.DepartmentRepository;
 import com.ainigma100.departmentapi.repository.EmployeeRepository;
 import com.ainigma100.departmentapi.service.ReportService;
+import com.ainigma100.departmentapi.utils.Utils;
 import com.ainigma100.departmentapi.utils.annotation.ExecutionTime;
 import com.ainigma100.departmentapi.utils.jasperreport.SimpleReportExporter;
 import com.ainigma100.departmentapi.utils.jasperreport.SimpleReportFiller;
@@ -22,8 +23,6 @@ import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -49,7 +48,7 @@ public class ReportServiceImpl implements ReportService {
         List<Department> departmentList = departmentRepository.findAll();
         List<DepartmentReportDTO> reportRecords = departmentMapper.departmentToDepartmentReportDto(departmentList);
 
-        String dateAsString = this.getCurrentDateAsString();
+        String dateAsString = Utils.getCurrentDateAsString();
         String fileName = "Department_Report_" + dateAsString + ".xlsx";
 
         byte[] reportAsByteArray = reportExporter.exportReportToByteArray(
@@ -73,7 +72,7 @@ public class ReportServiceImpl implements ReportService {
         List<Employee> employeeList = employeeRepository.findAll();
         List<EmployeeReportDTO> reportRecords = employeeMapper.employeeToEmployeeReportDto(employeeList);
 
-        String dateAsString = this.getCurrentDateAsString();
+        String dateAsString = Utils.getCurrentDateAsString();
         String fileName = "Employee_Report_" + dateAsString + ".xlsx";
 
         byte[] reportAsByteArray = reportExporter.exportReportToByteArray(
@@ -100,7 +99,7 @@ public class ReportServiceImpl implements ReportService {
         List<Employee> employeeListSubReport = employeeRepository.findAll();
         List<EmployeeReportDTO> subReportRecords = employeeMapper.employeeToEmployeeReportDto(employeeListSubReport);
 
-        String dateAsString = this.getCurrentDateAsString();
+        String dateAsString = Utils.getCurrentDateAsString();
         String fileName = "Full_Report_" + dateAsString + ".pdf";
 
         // prepare the sub report
@@ -131,7 +130,7 @@ public class ReportServiceImpl implements ReportService {
     @Override
     public FileDTO generateAndZipReports() throws JRException, IOException {
 
-        String dateAsString = this.getCurrentDateAsString();
+        String dateAsString = Utils.getCurrentDateAsString();
 
 
         List<Employee> employeeList = employeeRepository.findAll();
@@ -170,7 +169,7 @@ public class ReportServiceImpl implements ReportService {
     @Override
     public FileDTO generateMultiSheetExcelReport() throws JRException {
 
-        String dateAsString = this.getCurrentDateAsString();
+        String dateAsString = Utils.getCurrentDateAsString();
         String excelFileName = "Multi_Sheet_Report_" + dateAsString + ".xlsx";
 
         List<Department> departmentList = departmentRepository.findAll();
@@ -215,12 +214,6 @@ public class ReportServiceImpl implements ReportService {
     }
 
 
-    private String getCurrentDateAsString() {
 
-        LocalDate localDate = LocalDate.now();
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-
-        return dateTimeFormatter.format(localDate);
-    }
 
 }

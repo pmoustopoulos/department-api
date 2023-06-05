@@ -2,7 +2,7 @@ package com.ainigma100.departmentapi.exception;
 
 import com.ainigma100.departmentapi.dto.APIResponse;
 import com.ainigma100.departmentapi.dto.ErrorDTO;
-import jakarta.servlet.http.HttpServletRequest;
+import jakarta.mail.MessagingException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
@@ -101,6 +101,18 @@ public class GlobalExceptionHandler {
 
         response.setErrors(errors);
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(MessagingException.class)
+    public ResponseEntity<Object> handleMessagingException(MessagingException exception) {
+
+        log.error(exception.getMessage());
+
+        APIResponse<ErrorDTO> response = new APIResponse<>();
+        response.setStatus(FAILED);
+        response.setErrors(Collections.singletonList(new ErrorDTO("", "An internal server error occurred")));
+
+        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
 }

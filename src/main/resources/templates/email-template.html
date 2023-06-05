@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Email Template</title>
+    <style>
+        /* Define your CSS styles here */
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            line-height: 1.6;
+            color: #333333;
+        }
+
+        h1 {
+            color: #007bff;
+        }
+
+        .paragraph {
+            margin-bottom: 10px;
+        }
+
+        .signature {
+            margin-top: 20px;
+            text-align: left;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .signature p {
+            margin: 0;
+        }
+
+        .signature-text {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .signature-name {
+            margin-top: 5px;
+        }
+
+        .signature-occupation {
+            font-style: italic;
+            margin-top: 2px;
+        }
+
+        .signature-image {
+            width: 100px;
+            height: auto;
+            margin-top: 10px;
+        }
+
+
+    </style>
+</head>
+<body>
+<h1>Email Content</h1>
+<p class="paragraph">Hello <span th:text="${recipientName}"></span>,</p>
+
+<div class="paragraph">
+    <p>Thank you for your interest in our services. We are pleased to provide you with the following information:</p>
+</div>
+
+<div class="paragraph">
+    <p>You can check my GitHub repository here: <a th:href="${githubRepoUrl}" target="_blank">Department API</a></p>
+</div>
+
+
+
+<div class="signature">
+    <p class="signature-text">Best regards,</p>
+    <p class="signature-name">Monkey D. Luffy</p>
+    <p class="signature-occupation">Pirate King</p>
+    <img src="cid:logo" alt="Signature" class="signature-image">
+</div>
+
+</body>
+</html>

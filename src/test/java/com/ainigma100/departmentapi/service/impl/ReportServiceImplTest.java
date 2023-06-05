@@ -259,8 +259,6 @@ class ReportServiceImplTest {
         given(employeeRepository.findAll()).willReturn(Collections.emptyList());
         given(employeeMapper.employeeToEmployeeReportDto(Collections.emptyList())).willReturn(Collections.emptyList());
 
-        byte[] reportAsByteArray = "Mocked Report Data".getBytes();
-
         given(simpleReportFiller.compileReport("jrxml/pdf/subReport")).willReturn(mock(JasperReport.class));
         given(reportExporter.getSubReportDataSource(anyList())).willReturn(mock(JRBeanCollectionDataSource.class));
         given(reportExporter.exportReportToByteArray(anyList(), anyMap(), anyString(), eq("jrxml/pdf/mainReport")))
