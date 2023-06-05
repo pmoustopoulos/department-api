@@ -23,6 +23,32 @@ spring:
   h2:
     console:
       enabled: true
+  # MailHog provides a local SMTP server for capturing and viewing emails during local development/testing.
+  mail:
+    host: localhost
+    port: 1025
+    protocol: smtp
+    properties:
+      mail:
+        smtp:
+          auth: false
+          starttls:
+            enable: false
+
+#  You can also use Mailtrap which is an Email Delivery Platform. You have to create an account https://mailtrap.io/
+#  mail:
+#    host: smtp.mailtrap.io
+#    port: 25
+#    protocol: smtp
+#    properties:
+#      mail:
+#        smtp:
+#          auth: true
+#          starttls:
+#            enable: true
+#    username: <put-your-smtp-username>
+#    password: <put-your-smtp-password>
+
 
 springdoc:
   swagger-ui:
