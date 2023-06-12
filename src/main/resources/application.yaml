@@ -21,7 +21,7 @@ spring:
       enabled: always
   # MailHog provides a local SMTP server for capturing and viewing emails during local development/testing.
   mail:
-    host: localhost
+    host: ${EMAIL_HOST:localhost}
     port: 1025
     protocol: smtp
     properties:
