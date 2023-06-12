@@ -35,8 +35,19 @@ services:
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: pass
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      EMAIL_HOST: mailhog
     restart: on-failure
 
+  mailhog:
+    container_name: mailhog
+    image: mailhog/mailhog:v1.0.1
+    ports:
+      - "8025:8025"
+      - "1025:1025"
+    networks:
+    - springboot-postgres-net
+    restart: always
+    
 networks:
   springboot-postgres-net:
     driver: bridge
