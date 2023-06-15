@@ -1,5 +1,6 @@
 package com.ainigma100.departmentapi.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -40,6 +41,7 @@ public class Employee {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
+    @JsonIgnoreProperties("employees")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "department_id", nullable = false)
     private Department department;

@@ -1,5 +1,6 @@
 package com.ainigma100.departmentapi.service.impl;
 
+import com.ainigma100.departmentapi.dto.EmployeeAndDepartmentDTO;
 import com.ainigma100.departmentapi.dto.EmployeeDTO;
 import com.ainigma100.departmentapi.dto.EmployeeSearchCriteriaDTO;
 import com.ainigma100.departmentapi.entity.Department;
@@ -64,6 +65,8 @@ class EmployeeServiceImplTest {
 
     private Employee updatedEmployee;
     private EmployeeDTO updatedEmployeeDTO;
+
+    private EmployeeAndDepartmentDTO employeeAndDepartmentDTO;
 
 
     @BeforeEach
@@ -131,6 +134,20 @@ class EmployeeServiceImplTest {
         updatedEmployeeDTO.setLastName("Polo");
         updatedEmployeeDTO.setEmail("mpolo@gmail.com");
         updatedEmployeeDTO.setSalary(BigDecimal.valueOf(8_000_000));
+
+
+        employeeAndDepartmentDTO = new EmployeeAndDepartmentDTO();
+        employeeAndDepartmentDTO.setId("emp01");
+        employeeAndDepartmentDTO.setFirstName("John");
+        employeeAndDepartmentDTO.setLastName("Wick");
+        employeeAndDepartmentDTO.setEmail("jwick@gmail.com");
+        employeeAndDepartmentDTO.setSalary(BigDecimal.valueOf(40_000_000));
+        employeeAndDepartmentDTO.setDepartment(new EmployeeAndDepartmentDTO.DepartmentDTO(
+                2L,
+                "DEP_ABC",
+                "Department Name ABC",
+                "Department Description ABC"
+        ));
 
     }
 
@@ -530,6 +547,45 @@ class EmployeeServiceImplTest {
                 .hasMessageContaining("Employee does not belong to Department");
 
         verify(employeeRepository, never()).delete(any(Employee.class));
+    }
+
+
+    @Test
+    @DisplayName("Given valid employee email, when get employee and department by employee email, then return employee and department")
+    void givenEmployeeEmail_whenGetEmployeeAndDepartmentByEmployeeEmail_thenReturnEmployeeAndDepartment() {
+
+        // given - precondition or setup
+        given(employeeRepository.getEmployeeAndDepartmentByEmployeeEmail(employee.getEmail())).willReturn(employee);
+        given(employeeMapper.employeeToEmployeeAndDepartmentDto(employee)).willReturn(employeeAndDepartmentDTO);
+
+        // when - action or behaviour that we are going to test
+        EmployeeAndDepartmentDTO result = employeeService.getEmployeeAndDepartmentByEmployeeEmail(employee.getEmail());
+
+        // then - verify the output
+        assertThat(result).isNotNull();
+        assertThat(result.getId()).isEqualTo(employeeAndDepartmentDTO.getId());
+        assertThat(result.getFirstName()).isEqualTo(employeeAndDepartmentDTO.getFirstName());
+        assertThat(result.getSalary()).isEqualByComparingTo(employeeAndDepartmentDTO.getSalary());
+
+        verify(employeeRepository, times(1)).getEmployeeAndDepartmentByEmployeeEmail(employee.getEmail());
+        verify(employeeMapper, times(1)).employeeToEmployeeAndDepartmentDto(employee);
+    }
+
+    @Test
+    @DisplayName("Given invalid employee email, when get employee and department by employee email, then throw ResourceNotFoundException")
+    void givenInvalidEmployeeEmail_whenGetEmployeeAndDepartmentByEmployeeEmail_thenThrowResourceNotFoundException() {
+
+        // given - precondition or setup
+        given(employeeRepository.getEmployeeAndDepartmentByEmployeeEmail(employee.getEmail())).willReturn(null);
+
+        // when - action or behaviour that we are going to test
+        assertThatThrownBy(() -> employeeService.getEmployeeAndDepartmentByEmployeeEmail(employee.getEmail()))
+                .isInstanceOf(ResourceNotFoundException.class)
+                .hasMessageContaining("Employee with email : '" + employee.getEmail() + "' not found");
+
+        // then - verify the output
+        verify(employeeRepository, times(1)).getEmployeeAndDepartmentByEmployeeEmail(employee.getEmail());
+        verify(employeeMapper, never()).employeeToEmployeeAndDepartmentDto(any(Employee.class));
     }
 
 

@@ -1,5 +1,6 @@
 package com.ainigma100.departmentapi.service;
 
+import com.ainigma100.departmentapi.dto.EmployeeAndDepartmentDTO;
 import com.ainigma100.departmentapi.dto.EmployeeDTO;
 import com.ainigma100.departmentapi.dto.EmployeeSearchCriteriaDTO;
 import org.springframework.data.domain.Page;
@@ -20,4 +21,5 @@ public interface EmployeeService {
 
     void deleteEmployee(Long departmentId, String employeeId);
 
+    EmployeeAndDepartmentDTO getEmployeeAndDepartmentByEmployeeEmail(String email);
 }

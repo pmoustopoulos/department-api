@@ -1,5 +1,6 @@
 package com.ainigma100.departmentapi.service.impl;
 
+import com.ainigma100.departmentapi.dto.EmployeeAndDepartmentDTO;
 import com.ainigma100.departmentapi.dto.EmployeeDTO;
 import com.ainigma100.departmentapi.dto.EmployeeSearchCriteriaDTO;
 import com.ainigma100.departmentapi.entity.Department;
@@ -139,6 +140,18 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         employeeRepository.delete(employeeRecordFromDB);
 
+    }
+
+    @Override
+    public EmployeeAndDepartmentDTO getEmployeeAndDepartmentByEmployeeEmail(String email) {
+
+        Employee employeeRecordFromDB = employeeRepository.getEmployeeAndDepartmentByEmployeeEmail(email);
+
+        if (employeeRecordFromDB == null) {
+            throw new ResourceNotFoundException("Employee", "email", email);
+        }
+
+        return employeeMapper.employeeToEmployeeAndDepartmentDto(employeeRecordFromDB);
     }
 
 

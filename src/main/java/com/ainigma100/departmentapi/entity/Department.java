@@ -1,5 +1,6 @@
 package com.ainigma100.departmentapi.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -41,6 +42,7 @@ public class Department {
 
     // order the elements of the set
 //    @OrderBy("id ASC")
+    @JsonIgnoreProperties("department")
     @OneToMany(mappedBy = "department", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Employee> employees = new HashSet<>();
 

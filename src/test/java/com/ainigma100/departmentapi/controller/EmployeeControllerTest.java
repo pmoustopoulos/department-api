@@ -1,5 +1,6 @@
 package com.ainigma100.departmentapi.controller;
 
+import com.ainigma100.departmentapi.dto.EmployeeAndDepartmentDTO;
 import com.ainigma100.departmentapi.dto.EmployeeDTO;
 import com.ainigma100.departmentapi.dto.EmployeeRequestDTO;
 import com.ainigma100.departmentapi.dto.EmployeeSearchCriteriaDTO;
@@ -63,6 +64,7 @@ class EmployeeControllerTest {
     private EmployeeSearchCriteriaDTO employeeSearchCriteria;
     private EmployeeDTO updatedEmployeeDTO;
     private EmployeeRequestDTO employeeRequestDTO;
+    private EmployeeAndDepartmentDTO employeeAndDepartmentDTO;
 
 
     @BeforeEach
@@ -114,6 +116,19 @@ class EmployeeControllerTest {
         employeeRequestDTO.setLastName("Wick");
         employeeRequestDTO.setEmail("jwick@gmail.com");
         employeeRequestDTO.setSalary(BigDecimal.valueOf(40_000_000));
+
+        employeeAndDepartmentDTO = new EmployeeAndDepartmentDTO();
+        employeeAndDepartmentDTO.setId("emp01");
+        employeeAndDepartmentDTO.setFirstName("John");
+        employeeAndDepartmentDTO.setLastName("Wick");
+        employeeAndDepartmentDTO.setEmail("jwick@gmail.com");
+        employeeAndDepartmentDTO.setSalary(BigDecimal.valueOf(40_000_000));
+        employeeAndDepartmentDTO.setDepartment(new EmployeeAndDepartmentDTO.DepartmentDTO(
+                2L,
+                "DEP_ABC",
+                "Department Name ABC",
+                "Department Description ABC"
+        ));
 
     }
 
@@ -261,5 +276,35 @@ class EmployeeControllerTest {
                 .andExpect(status().isOk());
     }
 
+
+    @Test
+    @DisplayName("Get an employee along with the department using the employee email")
+    void givenEmployeeEmail_whenGetEmployeeAndDepartmentByEmployeeEmail_thenReturnEmployeeAndDepartment() throws Exception {
+
+        // given - precondition or setup
+        given(employeeService.getEmployeeAndDepartmentByEmployeeEmail(any(String.class)))
+                .willReturn(employeeAndDepartmentDTO);
+
+
+        // when - action or behaviour that we are going to test
+        ResultActions response = mockMvc.perform(get("/api/v1/employees")
+                .contentType(MediaType.APPLICATION_JSON)
+                .param("email", "jwick@gmail.com"));
+
+        // then - verify the output
+        response.andDo(print())
+                // Verify the status code
+                .andExpect(status().isOk())
+                // Verify the returned value
+                .andExpect(jsonPath("$.results.firstName", is(employeeAndDepartmentDTO.getFirstName())))
+                .andExpect(jsonPath("$.results.lastName", is(employeeAndDepartmentDTO.getLastName())))
+                .andExpect(jsonPath("$.results.email", is(employeeAndDepartmentDTO.getEmail())))
+                .andExpect(jsonPath("$.results.salary", is(40_000_000)))
+                .andExpect(jsonPath("$.results.department.id", is(2)))
+                .andExpect(jsonPath("$.results.department.departmentCode", is(employeeAndDepartmentDTO.getDepartment().getDepartmentCode())))
+                .andExpect(jsonPath("$.results.department.departmentName", is(employeeAndDepartmentDTO.getDepartment().getDepartmentName())))
+                .andExpect(jsonPath("$.results.department.departmentDescription", is(employeeAndDepartmentDTO.getDepartment().getDepartmentDescription())));
+
+    }
 
 }

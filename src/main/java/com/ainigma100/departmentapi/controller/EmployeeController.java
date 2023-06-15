@@ -1,9 +1,6 @@
 package com.ainigma100.departmentapi.controller;
 
-import com.ainigma100.departmentapi.dto.APIResponse;
-import com.ainigma100.departmentapi.dto.EmployeeDTO;
-import com.ainigma100.departmentapi.dto.EmployeeRequestDTO;
-import com.ainigma100.departmentapi.dto.EmployeeSearchCriteriaDTO;
+import com.ainigma100.departmentapi.dto.*;
 import com.ainigma100.departmentapi.mapper.EmployeeMapper;
 import com.ainigma100.departmentapi.service.EmployeeService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -154,5 +151,24 @@ public class EmployeeController {
         return new ResponseEntity<>(responseDTO, HttpStatus.OK);
 
     }
+
+    @Operation(summary = "Get an employee along with the department using the employee email. " +
+            "Note: This endpoint was created just to demonstrate how to get a child and a parent object using the child's property")
+    @GetMapping("/employees")
+    public ResponseEntity<APIResponse<EmployeeAndDepartmentDTO>> getEmployeeAndDepartmentByEmployeeEmail(
+            @RequestParam("email") String email) {
+
+        EmployeeAndDepartmentDTO result = employeeService.getEmployeeAndDepartmentByEmployeeEmail(email);
+
+        // Builder Design pattern
+        APIResponse<EmployeeAndDepartmentDTO> responseDTO = APIResponse
+                .<EmployeeAndDepartmentDTO>builder()
+                .status(SUCCESS)
+                .results(result)
+                .build();
+
+        return new ResponseEntity<>(responseDTO, HttpStatus.OK);
+    }
+
 
 }
