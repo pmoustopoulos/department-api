@@ -24,7 +24,7 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -303,6 +303,53 @@ class EmployeeControllerIntegrationTest extends AbstractContainerBaseTest {
         response.andDo(print())
                 // Verify the status code
                 .andExpect(status().isOk());
+    }
+
+
+    @Test
+    @DisplayName("Get an employee along with the department using the employee email")
+    void givenEmployeeEmail_whenGetEmployeeAndDepartmentByEmployeeEmail_thenReturnEmployeeAndDepartment() throws Exception {
+
+        // given - precondition or setup
+        Department department = new Department();
+        department.setDepartmentCode("ABC");
+        department.setDepartmentName("Department 1");
+        department.setDepartmentDescription("Description 1");
+
+        departmentRepository.save(department);
+
+        Employee employee = new Employee();
+        employee.setFirstName("John");
+        employee.setLastName("Wick");
+        employee.setEmail("jwick@gmail.com");
+        employee.setSalary(BigDecimal.valueOf(10));
+        employee.setDepartment(department);
+
+        employeeRepository.save(employee);
+
+
+
+        // when - action or behaviour that we are going to test
+        ResultActions response = mockMvc.perform(get("/api/v1/employees")
+                .contentType(MediaType.APPLICATION_JSON)
+                .param("email", "jwick@gmail.com"));
+
+        // then - verify the output
+        response.andDo(print())
+                // verify the status code that is returned
+                .andExpect(status().isOk())
+                // verify the actual returned value and the expected value
+                // $ - root member of a JSON structure whether it is an object or array
+                .andExpect(jsonPath("$.results.id", is(not(nullValue()))))
+                .andExpect(jsonPath("$.results.firstName", is(employee.getFirstName())))
+                .andExpect(jsonPath("$.results.lastName", is(employee.getLastName())))
+                .andExpect(jsonPath("$.results.email", is(employee.getEmail())))
+                .andExpect(jsonPath("$.results.salary", is(10.00)))
+                .andExpect(jsonPath("$.results.department.id", is(not(nullValue()))))
+                .andExpect(jsonPath("$.results.department.departmentCode", is(department.getDepartmentCode())))
+                .andExpect(jsonPath("$.results.department.departmentName", is(department.getDepartmentName())))
+                .andExpect(jsonPath("$.results.department.departmentDescription", is(department.getDepartmentDescription())));
+
     }
 
 

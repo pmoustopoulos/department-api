@@ -128,4 +128,24 @@ class EmployeeRepositoryTest {
         assertThat(employeeFromDb.getDepartment()).isNotNull();
 
     }
+
+    @Test
+    void givenEmail_whenGetEmployeeAndDepartmentByEmployeeEmail_thenReturnEmployee() {
+
+        // given - precondition or setup
+        departmentRepository.save(department);
+        employeeRepository.save(employee1);
+
+        // when - action or behaviour that we are going to test
+        Employee employeeFromDb = employeeRepository.getEmployeeAndDepartmentByEmployeeEmail(employee1.getEmail());
+
+        // then - verify the output
+        assertThat(employeeFromDb).isNotNull();
+        assertThat(employeeFromDb.getFirstName()).isEqualTo("John");
+        assertThat(employeeFromDb.getLastName()).isEqualTo("Wick");
+        assertThat(employeeFromDb.getEmail()).isEqualTo("jwick@gmail.com");
+        assertThat(employeeFromDb.getSalary()).isEqualByComparingTo(BigDecimal.valueOf(40_000_000));
+        assertThat(employeeFromDb.getDepartment()).isNotNull();
+
+    }
 }
