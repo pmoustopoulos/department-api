@@ -9,6 +9,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 
 public class Utils {
@@ -18,22 +19,18 @@ public class Utils {
 
         List<Order> orders = new ArrayList<>();
 
-        if(sortList != null) {
+        if (sortList != null) {
             // iterate the SortList to see based on which attributes we are going to Order By the results.
             for(SortItem sortValue : sortList) {
                 orders.add(new Order(sortValue.getDirection(), sortValue.getField()));
             }
         }
 
-        if (page == null) {
-            page = 0;
-        }
 
-        if (size == null) {
-            size = 0;
-        }
-
-        return PageRequest.of(page, size, Sort.by(orders));
+        return PageRequest.of(
+                Optional.ofNullable(page).orElse(0),
+                Optional.ofNullable(size).orElse(10),
+                Sort.by(orders));
     }
 
     public static String getCurrentDateAsString() {
