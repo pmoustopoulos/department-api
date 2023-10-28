@@ -1,8 +1,15 @@
 spring:
+  flyway:
+    enabled: true
+    validate-on-migrate: true
+    locations: classpath:db/migration/h2
   datasource:
     url: jdbc:h2:mem:testdb
     driverClassName: org.h2.Driver
     username: sa
     password:
   jpa:
+    properties:
+      hibernate:
+        ddl-auto: validate
     database-platform: org.hibernate.dialect.H2Dialect

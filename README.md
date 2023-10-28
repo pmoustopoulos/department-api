@@ -1,10 +1,11 @@
 # Department API - Spring Boot 3
 
-A RESTful API created using Spring Boot 3, H2 Database, and JasperReport. The API allows for CRUD operations on
+A RESTful API created using Spring Boot 3, PostgreSQL, and JasperReport. The API allows for CRUD operations on
 departments and employees and includes functionality for generating Excel and PDF reports using JasperReport.
-Additionally, the API can send asynchronous emails using Thymeleaf to create the email body, including the ability
-to send attachments. MailHog is integrated as a local SMTP server for testing email functionality. Swagger is also
-integrated for easy API documentation and testing.
+Additionally, the API can send asynchronous emails using Thymeleaf to create the email body, including the ability to
+send attachments. MailHog is integrated as a local SMTP server for testing email functionality. Swagger is also
+integrated for easy API documentation and testing. Database migrations across different environments are managed
+seamlessly with Flyway.
 
 
 ## Table of Contents
@@ -22,10 +23,11 @@ integrated for easy API documentation and testing.
 
 
 ## Run with an In-Memory H2 Database
-If you want to run the application with an **in-memory H2 database**, use the `h2-database` branch.
-This branch includes the necessary configuration files and dependencies to set up and use H2 as the database for the application.
-To get started, simply switch to the `h2-database branch` and run the application, but all data and related information
-will be persisted to a file on the local file system.
+If you want to run the application with an **in-memory H2 database**, use the `h2-database` branch. This branch includes
+the necessary configuration files and dependencies to set up and use H2 as the database for the application.
+The migrations specific to H2 can be found under `db/migration/h2`. To get started, simply switch to the
+`h2-database branch` and run the application. Note that all data and related information will be persisted to a
+file on the local file system.
 
 
 ## Prerequisites
@@ -55,6 +57,21 @@ docker run --rm -p 1025:1025 -p 8025:8025 --name mailhog mailhog/mailhog
   Jaspersoft studio was used to create template files (.jrxml). These template files along with the jasper dependency was
   used by Java to create excel and pdf reports. This application is optional because you will need it only if you want to
   view or modify the template files.
+
+
+
+### Database Migrations with Flyway
+
+The application uses Flyway to handle database migrations. This ensures a consistent state across different environments. 
+Depending on the environment and database:
+
+- For the main application using **PostgreSQL**, migrations are located in `db/migration/postgresql`.
+- If you're on the `h2-database` branch using H2, migrations can be found in `db/migration/h2`.
+
+Whenever there are changes to the database schema, new migration scripts should be added. Flyway will automatically 
+apply these migrations during application startup, ensuring the database state aligns with the application's expectations.
+
+
 
 ## Start Postgres as a Docker container.
 Start `Docker Desktop` and then execute the following command to start a docker container which will be running Postgres <br>
