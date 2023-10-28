@@ -4,7 +4,8 @@ A RESTful API created using Spring Boot 3, H2 Database, and JasperReport. The AP
 departments and employees and includes functionality for generating Excel and PDF reports using JasperReport. 
 Additionally, the API can send asynchronous emails using Thymeleaf to create the email body, including the ability 
 to send attachments. MailHog is integrated as a local SMTP server for testing email functionality. Swagger is also 
-integrated for easy API documentation and testing.
+integrated for easy API documentation and testing. Database migrations across different environments are managed 
+seamlessly with Flyway.
 
 
 ## Table of Contents
@@ -20,10 +21,11 @@ integrated for easy API documentation and testing.
 
 
 ## Run with an In-Memory H2 Database
-If you want to run the application with an **in-memory H2 database**, use the `h2-database` branch.
-This branch includes the necessary configuration files and dependencies to set up and use H2 as the database for the application.
-To get started, simply switch to the `h2-database branch` and run the application, but all data and related information
-will be persisted to a file on the local file system.
+If you want to run the application with an **in-memory H2 database**, use the `h2-database` branch. This branch includes 
+the necessary configuration files and dependencies to set up and use H2 as the database for the application. 
+The migrations specific to H2 can be found under `db/migration/h2`. To get started, simply switch to the 
+`h2-database branch` and run the application. Note that all data and related information will be persisted to a 
+file on the local file system.
 
 
 ## Prerequisites
@@ -54,7 +56,15 @@ docker run --rm -p 1025:1025 -p 8025:8025 --name mailhog mailhog/mailhog
   used by Java to create excel and pdf reports. This application is optional because you will need it only if you want to
   view or modify the template files.
 
-  
+
+### Database Migrations with Flyway
+
+Before starting the application or running tests, ensure Flyway migrations are executed. Flyway manages database schema changes, ensuring consistency:
+
+- **H2 Migrations**: Used for the main application in the `h2-database` branch. Located under `db/migration/h2`.
+- **PostgreSQL Migrations**: For integration tests running against a PostgreSQL environment powered by Testcontainers. Located under `db/migration/postgresql`.
+
+
 
 ## Start the application
 ```shell

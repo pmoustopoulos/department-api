@@ -3,12 +3,14 @@ spring:
     url: jdbc:tc:postgresql://localhost:5432/mydb
     username: postgres
     password: pass
+  flyway:
+    enabled: true
+    locations: classpath:db/migration/postgresql
   jpa:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
-        hbm2ddl:
-          auto: update
+        ddl-auto: validate
   mail:
     host: localhost
     port: 1025
@@ -19,6 +21,3 @@ spring:
           auth: false
           starttls:
             enable: false
-  h2:
-    console:
-      enabled: true

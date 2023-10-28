@@ -241,7 +241,7 @@ class ReportControllerIntegrationTest extends AbstractContainerBaseTest {
         ResultActions response = mockMvc.perform( get( "/api/v1/reports/pdf/full-report" ) );
 
         // then - verify the output
-        response.andDo( print() )
+        response
                 // verify the status code that is returned
                 .andExpect( status().isOk() );
 
@@ -259,7 +259,7 @@ class ReportControllerIntegrationTest extends AbstractContainerBaseTest {
         ResultActions response = mockMvc.perform( get( "/api/v1/reports/zip" ) );
 
         // then - verify the output
-        response.andDo( print() )
+        response
                 // verify the status code that is returned
                 .andExpect( status().isOk() );
 
@@ -278,7 +278,7 @@ class ReportControllerIntegrationTest extends AbstractContainerBaseTest {
         ResultActions response = mockMvc.perform( get( "/api/v1/reports/multi-sheet-excel" ) );
 
         // then - verify the output
-        response.andDo( print() )
+        response
                 // verify the status code that is returned
                 .andExpect( status().isOk() );
 

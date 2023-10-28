@@ -4,6 +4,10 @@ server:
 spring:
   application:
     name: department-api
+  flyway:
+    enabled: true
+    validate-on-migrate: true
+    locations: classpath:db/migration/h2
   datasource:
     url: jdbc:h2:file:./data/my-db;AUTO_SERVER=true
     username: root
@@ -13,9 +17,8 @@ spring:
     #    show-sql: true
     properties:
       hibernate:
+        ddl-auto: validate
         #        format_sql: true
-        hbm2ddl:
-          auto: update
     database-platform: org.hibernate.dialect.H2Dialect
   output:
     ansi:
