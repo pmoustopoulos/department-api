@@ -22,7 +22,7 @@ public class EmployeeController {
     private final EmployeeMapper employeeMapper;
 
 
-    private final String SUCCESS = "Success";
+    private static final String SUCCESS = "Success";
 
 
     @Operation(summary = "Add a new employee to the specific department")

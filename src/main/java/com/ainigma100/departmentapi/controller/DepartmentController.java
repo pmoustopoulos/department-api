@@ -22,7 +22,7 @@ public class DepartmentController {
 
     private final DepartmentService departmentService;
     private final DepartmentMapper departmentMapper;
-    private final String SUCCESS = "Success";
+    private static final String SUCCESS = "Success";
 
 
 
