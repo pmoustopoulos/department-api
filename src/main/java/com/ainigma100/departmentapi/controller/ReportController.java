@@ -26,6 +26,10 @@ public class ReportController {
 
     private final ReportService reportService;
 
+    private static final String CONTENT_DISPOSITION = "Content-Disposition";
+    private static final String ATTACHMENT_FILENAME = "attachment; filename=";
+
+
 
     @Operation(summary = "Generate an Excel report containing all the departments")
     @GetMapping("/excel/departments")
@@ -37,7 +41,7 @@ public class ReportController {
         InputStream targetStream = new ByteArrayInputStream(file);
 
         HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.add("Content-Disposition", "attachment; filename=".concat(report.getFileName()));
+        httpHeaders.add(CONTENT_DISPOSITION, ATTACHMENT_FILENAME.concat(report.getFileName()));
 
         return ResponseEntity
                 .ok()
@@ -59,7 +63,7 @@ public class ReportController {
         InputStream targetStream = new ByteArrayInputStream(file);
 
         HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.add("Content-Disposition", "attachment; filename=".concat(report.getFileName()));
+        httpHeaders.add(CONTENT_DISPOSITION, ATTACHMENT_FILENAME.concat(report.getFileName()));
 
         return ResponseEntity
                 .ok()
@@ -81,7 +85,7 @@ public class ReportController {
         InputStream targetStream = new ByteArrayInputStream(file);
 
         HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.add("Content-Disposition", "attachment; filename=".concat(report.getFileName()));
+        httpHeaders.add(CONTENT_DISPOSITION, ATTACHMENT_FILENAME.concat(report.getFileName()));
 
         return ResponseEntity
                 .ok()
@@ -102,7 +106,7 @@ public class ReportController {
         InputStream targetStream = new ByteArrayInputStream(file);
 
         HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.add("Content-Disposition", "attachment; filename=".concat(report.getFileName()));
+        httpHeaders.add(CONTENT_DISPOSITION, ATTACHMENT_FILENAME.concat(report.getFileName()));
 
         return ResponseEntity
                 .ok()
@@ -124,7 +128,7 @@ public class ReportController {
         InputStream targetStream = new ByteArrayInputStream(file);
 
         HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.add("Content-Disposition", "attachment; filename=".concat(report.getFileName()));
+        httpHeaders.add(CONTENT_DISPOSITION, ATTACHMENT_FILENAME.concat(report.getFileName()));
 
         return ResponseEntity
                 .ok()

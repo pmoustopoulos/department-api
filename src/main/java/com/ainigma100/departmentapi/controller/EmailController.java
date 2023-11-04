@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class EmailController {
 
     private final EmailService emailService;
-    private final String SUCCESS = "Success";
+    private static final String SUCCESS = "Success";
 
     @GetMapping
     public ResponseEntity<APIResponse<Boolean>> sendEmailWithoutAttachment() {
