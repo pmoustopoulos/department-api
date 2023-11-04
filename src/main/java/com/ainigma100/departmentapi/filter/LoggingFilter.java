@@ -39,9 +39,7 @@ public class LoggingFilter implements Filter {
 
     private Boolean shouldLogRequest(HttpServletRequest request) {
 
-        return !request.getServletPath().matches("(?i).*actuator.*")
-                && !request.getServletPath().matches("(?i).*swagger.*")
-                && !request.getServletPath().matches("(?i).*api-docs.*");
+        return !request.getServletPath().matches("(?i).*(actuator|swagger|api-docs|favicon).*");
     }
 
 }

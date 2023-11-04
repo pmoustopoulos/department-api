@@ -193,8 +193,13 @@ public class SimpleReportExporter {
         try (ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(this.exportJasperPrintToByteArray(jasperPrint))) {
 
             byte[] bytes = new byte[byteArrayInputStream.available()];
-            byteArrayInputStream.read(bytes);
-            return bytes;
+            int bytesRead = byteArrayInputStream.read(bytes);
+
+            if (bytes.length == bytesRead) {
+                return bytes;
+            } else {
+                throw new JRException("Error: Not all bytes were read");
+            }
 
         } catch (IOException e) {
             throw new JRException("Error converting report to byte array", e);
