@@ -37,9 +37,11 @@ public class LoggingFilter implements Filter {
 
     }
 
-    private Boolean shouldLogRequest(HttpServletRequest request) {
+    private boolean shouldLogRequest(HttpServletRequest request) {
 
-        return !request.getServletPath().matches("(?i).*(actuator|swagger|api-docs|favicon).*");
+        // (?i) enables case-insensitive matching, \b matched as whole words
+        // reference: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Regular_expressions
+        return !request.getServletPath().matches("(?i).*\\b(actuator|swagger|api-docs|favicon)\\b.*");
     }
 
 }

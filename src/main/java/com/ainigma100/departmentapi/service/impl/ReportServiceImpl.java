@@ -40,6 +40,12 @@ public class ReportServiceImpl implements ReportService {
     private final SimpleReportExporter reportExporter;
     private final SimpleReportFiller simpleReportFiller;
 
+    private static final String FILE_EXTENSION_XLSX = ".xlsx";
+    private static final String EXCEL_DEPARTMENT_JRXML_PATH = "jrxml/excel/departmentsExcelReport";
+    private static final String EXCEL_EMPLOYEE_JRXML_PATH = "jrxml/excel/employeesExcelReport";
+    private static final String MULTI_SHEET_EXCEL_JRXML_PATH = "jrxml/excel/multiSheetExcelReport";
+
+
 
     @ExecutionTime
     @Override
@@ -49,10 +55,10 @@ public class ReportServiceImpl implements ReportService {
         List<DepartmentReportDTO> reportRecords = departmentMapper.departmentToDepartmentReportDto(departmentList);
 
         String dateAsString = Utils.getCurrentDateAsString();
-        String fileName = "Department_Report_" + dateAsString + ".xlsx";
+        String fileName = "Department_Report_" + dateAsString + FILE_EXTENSION_XLSX;
 
         byte[] reportAsByteArray = reportExporter.exportReportToByteArray(
-                reportRecords, fileName, "jrxml/excel/departmentsExcelReport");
+                reportRecords, fileName, EXCEL_DEPARTMENT_JRXML_PATH);
 
         String base64String = Base64.encodeBase64String(reportAsByteArray);
 
@@ -73,10 +79,10 @@ public class ReportServiceImpl implements ReportService {
         List<EmployeeReportDTO> reportRecords = employeeMapper.employeeToEmployeeReportDto(employeeList);
 
         String dateAsString = Utils.getCurrentDateAsString();
-        String fileName = "Employee_Report_" + dateAsString + ".xlsx";
+        String fileName = "Employee_Report_" + dateAsString + FILE_EXTENSION_XLSX;
 
         byte[] reportAsByteArray = reportExporter.exportReportToByteArray(
-                reportRecords, fileName, "jrxml/excel/employeesExcelReport");
+                reportRecords, fileName, EXCEL_EMPLOYEE_JRXML_PATH);
 
         String base64String = Base64.encodeBase64String(reportAsByteArray);
 
@@ -135,16 +141,16 @@ public class ReportServiceImpl implements ReportService {
 
         List<Employee> employeeList = employeeRepository.findAll();
         List<EmployeeReportDTO> employeeReportRecords = employeeMapper.employeeToEmployeeReportDto(employeeList);
-        String employeeFileName = "Employee_Report_" + dateAsString + ".xlsx";
+        String employeeFileName = "Employee_Report_" + dateAsString + FILE_EXTENSION_XLSX;
 
-        JasperPrint jasperPrintEmployees = reportExporter.extractResultsToJasperPrint(employeeReportRecords, employeeFileName, "jrxml/excel/employeesExcelReport");
+        JasperPrint jasperPrintEmployees = reportExporter.extractResultsToJasperPrint(employeeReportRecords, employeeFileName, EXCEL_EMPLOYEE_JRXML_PATH);
 
 
         List<Department> departmentList = departmentRepository.findAll();
         List<DepartmentReportDTO> departmentReportRecords = departmentMapper.departmentToDepartmentReportDto(departmentList);
-        String departmentFileName = "Department_Report_" + dateAsString + ".xlsx";
+        String departmentFileName = "Department_Report_" + dateAsString + FILE_EXTENSION_XLSX;
 
-        JasperPrint jasperPrintDepartments = reportExporter.extractResultsToJasperPrint(departmentReportRecords, departmentFileName, "jrxml/excel/departmentsExcelReport");
+        JasperPrint jasperPrintDepartments = reportExporter.extractResultsToJasperPrint(departmentReportRecords, departmentFileName, EXCEL_DEPARTMENT_JRXML_PATH);
 
 
         List<JasperPrint> listOfJasperPrints = new ArrayList<>();
@@ -170,7 +176,7 @@ public class ReportServiceImpl implements ReportService {
     public FileDTO generateMultiSheetExcelReport() throws JRException {
 
         String dateAsString = Utils.getCurrentDateAsString();
-        String excelFileName = "Multi_Sheet_Report_" + dateAsString + ".xlsx";
+        String excelFileName = "Multi_Sheet_Report_" + dateAsString + FILE_EXTENSION_XLSX;
 
         List<Department> departmentList = departmentRepository.findAll();
         List<DepartmentReportDTO> mappedDepartmentRecords = departmentMapper.departmentToDepartmentReportDto(departmentList);
@@ -179,12 +185,12 @@ public class ReportServiceImpl implements ReportService {
         List<EmployeeReportDTO> mappedEmployeeRecords = employeeMapper.employeeToEmployeeReportDto(employeeList);
 
         // prepare department sub report
-        JasperReport departmentSubReport = simpleReportFiller.compileReport("jrxml/excel/departmentsExcelReport");
+        JasperReport departmentSubReport = simpleReportFiller.compileReport(EXCEL_DEPARTMENT_JRXML_PATH);
         JRBeanCollectionDataSource departmentSubDataSource = reportExporter.getSubReportDataSource(mappedDepartmentRecords);
 
 
         // prepare employee sub report
-        JasperReport employeeSubReport = simpleReportFiller.compileReport("jrxml/excel/employeesExcelReport");
+        JasperReport employeeSubReport = simpleReportFiller.compileReport(EXCEL_EMPLOYEE_JRXML_PATH);
         JRBeanCollectionDataSource employeeSubDataSource = reportExporter.getSubReportDataSource(mappedEmployeeRecords);
 
 
@@ -201,7 +207,7 @@ public class ReportServiceImpl implements ReportService {
 
 
         byte[] reportAsByteArray = reportExporter.exportReportToByteArray(
-                null, jasperParameters, excelFileName, "jrxml/excel/multiSheetExcelReport");
+                null, jasperParameters, excelFileName, MULTI_SHEET_EXCEL_JRXML_PATH);
 
         String base64String = Base64.encodeBase64String(reportAsByteArray);
 

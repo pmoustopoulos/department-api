@@ -14,23 +14,20 @@ public class SimpleReportFiller {
     public JasperPrint prepareReport(String templateFileName, Map<String, Object> parameters, JRBeanCollectionDataSource dataSource) throws JRException {
 
         JasperReport report = compileReport(templateFileName);
-        JasperPrint print = fillReport(report, parameters, dataSource);
-        return print;
+        return fillReport(report, parameters, dataSource);
 
     }
 
     public JasperReport compileReport(String templateFileName) throws JRException {
 
         InputStream reportStream = getClass().getResourceAsStream("/".concat(templateFileName).concat(".jrxml"));
-        JasperReport report = JasperCompileManager.compileReport(reportStream);
-        return report;
+        return JasperCompileManager.compileReport(reportStream);
 
     }
 
     public JasperPrint fillReport(JasperReport report, Map<String, Object> parameters, JRBeanCollectionDataSource dataSource) throws JRException {
 
-        JasperPrint print = JasperFillManager.fillReport(report, parameters, dataSource);
-        return print;
+        return JasperFillManager.fillReport(report, parameters, dataSource);
 
     }
 

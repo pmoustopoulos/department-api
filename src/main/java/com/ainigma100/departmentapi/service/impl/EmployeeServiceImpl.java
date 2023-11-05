@@ -32,6 +32,10 @@ public class EmployeeServiceImpl implements EmployeeService {
     private final DepartmentRepository departmentRepository;
     private final EmployeeMapper employeeMapper;
 
+    private static final String DEPARTMENT = "Department";
+    private static final String EMPLOYEE = "Employee";
+    private static final String EMPLOYEE_NOT_BELONG_TO_DEPARTMENT = "Employee does not belong to Department";
+
 
 
     @Override
@@ -40,13 +44,13 @@ public class EmployeeServiceImpl implements EmployeeService {
         Employee employeeRecordFromDB = employeeRepository.findByEmail(employeeDTO.getEmail());
 
         if (employeeRecordFromDB != null) {
-            throw new ResourceAlreadyExistException("Employee", "email", employeeDTO.getEmail());
+            throw new ResourceAlreadyExistException(EMPLOYEE, "email", employeeDTO.getEmail());
         }
 
         Employee employee = employeeMapper.employeeDtoToEmployee(employeeDTO);
 
         Department departmentRecordFromDB = departmentRepository.findById(departmentId)
-                .orElseThrow(() -> new ResourceNotFoundException("Department", "id", departmentId));
+                .orElseThrow(() -> new ResourceNotFoundException(DEPARTMENT, "id", departmentId));
 
         employee.setDepartment(departmentRecordFromDB);
 
@@ -86,13 +90,13 @@ public class EmployeeServiceImpl implements EmployeeService {
     public EmployeeDTO getEmployeeById(Long departmentId, String employeeId) {
 
         Department departmentRecordFromDB = departmentRepository.findById(departmentId)
-                .orElseThrow(() -> new ResourceNotFoundException("Department", "id", departmentId));
+                .orElseThrow(() -> new ResourceNotFoundException(DEPARTMENT, "id", departmentId));
 
         Employee employeeRecordFromDB = employeeRepository.findById(employeeId)
-                .orElseThrow(() -> new ResourceNotFoundException("Employee", "id", employeeId));
+                .orElseThrow(() -> new ResourceNotFoundException(EMPLOYEE, "id", employeeId));
 
         if ( !employeeBelongsToDepartment(departmentRecordFromDB, employeeRecordFromDB)) {
-            throw new BusinessLogicException("Employee does not belong to Department");
+            throw new BusinessLogicException(EMPLOYEE_NOT_BELONG_TO_DEPARTMENT);
         }
 
         return employeeMapper.employeeToEmployeeDto(employeeRecordFromDB);
@@ -102,13 +106,13 @@ public class EmployeeServiceImpl implements EmployeeService {
     public EmployeeDTO updateEmployeeById(Long departmentId, String employeeId, EmployeeDTO employeeDTO) {
 
         Department departmentRecordFromDB = departmentRepository.findById(departmentId)
-                .orElseThrow(() -> new ResourceNotFoundException("Department", "id", departmentId));
+                .orElseThrow(() -> new ResourceNotFoundException(DEPARTMENT, "id", departmentId));
 
         Employee employeeRecordFromDB = employeeRepository.findById(employeeId)
-                .orElseThrow(() -> new ResourceNotFoundException("Employee", "id", employeeId));
+                .orElseThrow(() -> new ResourceNotFoundException(EMPLOYEE, "id", employeeId));
 
         if ( !employeeBelongsToDepartment(departmentRecordFromDB, employeeRecordFromDB)) {
-            throw new BusinessLogicException("Employee does not belong to Department");
+            throw new BusinessLogicException(EMPLOYEE_NOT_BELONG_TO_DEPARTMENT);
         }
 
 
@@ -129,13 +133,13 @@ public class EmployeeServiceImpl implements EmployeeService {
     public void deleteEmployee(Long departmentId, String employeeId) {
 
         Department departmentRecordFromDB = departmentRepository.findById(departmentId)
-                .orElseThrow(() -> new ResourceNotFoundException("Department", "id", departmentId));
+                .orElseThrow(() -> new ResourceNotFoundException(DEPARTMENT, "id", departmentId));
 
         Employee employeeRecordFromDB = employeeRepository.findById(employeeId)
-                .orElseThrow(() -> new ResourceNotFoundException("Employee", "id", employeeId));
+                .orElseThrow(() -> new ResourceNotFoundException(EMPLOYEE, "id", employeeId));
 
         if ( !employeeBelongsToDepartment(departmentRecordFromDB, employeeRecordFromDB)) {
-            throw new BusinessLogicException("Employee does not belong to Department");
+            throw new BusinessLogicException(EMPLOYEE_NOT_BELONG_TO_DEPARTMENT);
         }
 
         employeeRepository.delete(employeeRecordFromDB);
@@ -148,7 +152,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         Employee employeeRecordFromDB = employeeRepository.getEmployeeAndDepartmentByEmployeeEmail(email);
 
         if (employeeRecordFromDB == null) {
-            throw new ResourceNotFoundException("Employee", "email", email);
+            throw new ResourceNotFoundException(EMPLOYEE, "email", email);
         }
 
         return employeeMapper.employeeToEmployeeAndDepartmentDto(employeeRecordFromDB);
