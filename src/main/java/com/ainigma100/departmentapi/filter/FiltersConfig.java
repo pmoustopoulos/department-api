@@ -12,9 +12,9 @@ public class FiltersConfig {
     private final LoggingFilter loggingFilter;
 
     @Bean
-    public FilterRegistrationBean loggingFilterBean() {
+    public FilterRegistrationBean<LoggingFilter> loggingFilterBean() {
 
-        final FilterRegistrationBean filterBean = new FilterRegistrationBean();
+        final FilterRegistrationBean<LoggingFilter> filterBean = new FilterRegistrationBean<>();
         filterBean.setFilter(loggingFilter);
         filterBean.addUrlPatterns("/*");
         // Lower values have higher priority

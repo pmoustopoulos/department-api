@@ -26,6 +26,8 @@ public class DepartmentServiceImpl implements DepartmentService {
     private final DepartmentRepository departmentRepository;
     private final DepartmentMapper departmentMapper;
 
+    private static final String DEPARTMENT = "Department";
+
 
     @Override
     public DepartmentDTO createDepartment(DepartmentDTO departmentDTO) {
@@ -33,16 +35,14 @@ public class DepartmentServiceImpl implements DepartmentService {
         Department recordFromDB = departmentRepository.findByDepartmentCode(departmentDTO.getDepartmentCode());
 
         if (recordFromDB != null) {
-            throw new ResourceAlreadyExistException("Department", "departmentCode", departmentDTO.getDepartmentCode());
+            throw new ResourceAlreadyExistException(DEPARTMENT, "departmentCode", departmentDTO.getDepartmentCode());
         }
 
         Department recordToBeSaved = departmentMapper.departmentDtoToDepartment(departmentDTO);
 
         Department savedRecord = departmentRepository.save(recordToBeSaved);
 
-        DepartmentDTO result = departmentMapper.departmentToDepartmentDto(savedRecord);
-
-        return result;
+        return departmentMapper.departmentToDepartmentDto(savedRecord);
     }
 
     @Override
@@ -69,11 +69,9 @@ public class DepartmentServiceImpl implements DepartmentService {
 
 
         Department recordFromDB = departmentRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Department", "id", id));
+                .orElseThrow(() -> new ResourceNotFoundException(DEPARTMENT, "id", id));
 
-        DepartmentDTO result = departmentMapper.departmentToDepartmentDto(recordFromDB);
-
-        return result;
+        return departmentMapper.departmentToDepartmentDto(recordFromDB);
     }
 
     @Override
@@ -81,7 +79,7 @@ public class DepartmentServiceImpl implements DepartmentService {
 
 
         Department recordFromDB = departmentRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Department", "id", id));
+                .orElseThrow(() -> new ResourceNotFoundException(DEPARTMENT, "id", id));
 
         // just to be safe that the object does not have another id
         departmentDTO.setId(id);
@@ -93,16 +91,14 @@ public class DepartmentServiceImpl implements DepartmentService {
 
         Department savedRecord = departmentRepository.save(recordToBeSaved);
 
-        DepartmentDTO result = departmentMapper.departmentToDepartmentDto(savedRecord);
-
-        return result;
+        return departmentMapper.departmentToDepartmentDto(savedRecord);
     }
 
     @Override
     public void deleteDepartment(Long id) {
 
         Department recordFromDB = departmentRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Department", "id", id));
+                .orElseThrow(() -> new ResourceNotFoundException(DEPARTMENT, "id", id));
 
         departmentRepository.delete(recordFromDB);
 

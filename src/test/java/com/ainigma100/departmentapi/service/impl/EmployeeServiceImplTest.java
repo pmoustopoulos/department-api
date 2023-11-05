@@ -27,7 +27,7 @@ import java.math.BigDecimal;
 import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
@@ -187,9 +187,9 @@ class EmployeeServiceImplTest {
         given(employeeRepository.findByEmail(employeeDTO.getEmail())).willReturn(employee);
 
         // when/then - verify that the ResourceAlreadyExistException is thrown
-        assertThatThrownBy(() -> employeeService.createEmployee(department.getId(), employeeDTO))
-                .isInstanceOf(ResourceAlreadyExistException.class)
-                .hasMessageContaining("Resource Employee with email : '" + employeeDTO.getEmail() + "' already exist");
+        assertThatExceptionOfType(ResourceAlreadyExistException.class)
+                .isThrownBy(() -> employeeService.createEmployee(department.getId(), employeeDTO))
+                .withMessage("Resource Employee with email : '" + employeeDTO.getEmail() + "' already exist");
 
         verify(employeeRepository, times(1)).findByEmail(employeeDTO.getEmail());
         verify(employeeMapper, never()).employeeDtoToEmployee(any(EmployeeDTO.class));
@@ -321,9 +321,9 @@ class EmployeeServiceImplTest {
         given(departmentRepository.findById(departmentId)).willReturn(Optional.empty());
 
         // when / then - action or behavior that we are going to test
-        assertThatThrownBy(() -> employeeService.getEmployeeById(departmentId, employee.getId()))
-                .isInstanceOf(ResourceNotFoundException.class)
-                .hasMessage("Department with id : '" + departmentId + "' not found");
+        assertThatExceptionOfType(ResourceNotFoundException.class)
+                .isThrownBy(() -> employeeService.getEmployeeById(departmentId, employee.getId()))
+                .withMessage("Department with id : '" + departmentId + "' not found");
 
 
         // then - verify the output
@@ -342,9 +342,9 @@ class EmployeeServiceImplTest {
         given(employeeRepository.findById(employeeId)).willReturn(Optional.empty());
 
         // when - action or behaviour that we are going to test
-        assertThatThrownBy(() -> employeeService.getEmployeeById(department.getId(), employeeId))
-                .isInstanceOf(ResourceNotFoundException.class)
-                .hasMessage("Employee with id : '" + employeeId + "' not found");
+        assertThatExceptionOfType(ResourceNotFoundException.class)
+                .isThrownBy(() -> employeeService.getEmployeeById(department.getId(), employeeId))
+                .withMessage("Employee with id : '" + employeeId + "' not found");
 
         // then - verify the output
         verify(departmentRepository, times(1)).findById(department.getId());
@@ -361,9 +361,9 @@ class EmployeeServiceImplTest {
         given(employeeRepository.findById(employee.getId())).willReturn(Optional.of(employee));
 
         // when - action or behaviour that we are going to test
-        assertThatThrownBy(() -> employeeService.getEmployeeById(department2.getId(), employee.getId()))
-                .isInstanceOf(BusinessLogicException.class)
-                .hasMessage("Employee does not belong to Department");
+        assertThatExceptionOfType(BusinessLogicException.class)
+                .isThrownBy(() -> employeeService.getEmployeeById(department2.getId(), employee.getId()))
+                .withMessage("Employee does not belong to Department");
 
         verify(departmentRepository, times(1)).findById(department2.getId());
         verify(employeeRepository, times(1)).findById(employee.getId());
@@ -406,9 +406,9 @@ class EmployeeServiceImplTest {
 
 
         // when/then - verify that ResourceNotFoundException is thrown
-        assertThatThrownBy(() -> employeeService.updateEmployeeById(departmentId, employee.getId(), updatedEmployeeDTO))
-                .isInstanceOf(ResourceNotFoundException.class)
-                .hasMessageContaining("Department with id : '" + departmentId + "' not found");
+        assertThatExceptionOfType(ResourceNotFoundException.class)
+                .isThrownBy(() -> employeeService.updateEmployeeById(departmentId, employee.getId(), updatedEmployeeDTO))
+                .withMessage("Department with id : '" + departmentId + "' not found");
 
         verify(departmentRepository, times(1)).findById(departmentId);
         verify(employeeRepository, never()).findById(any(String.class));
@@ -428,9 +428,9 @@ class EmployeeServiceImplTest {
 
 
         // when/then - verify that ResourceNotFoundException is thrown
-        assertThatThrownBy(() -> employeeService.updateEmployeeById(department.getId(), employeeId, updatedEmployeeDTO))
-                .isInstanceOf(ResourceNotFoundException.class)
-                .hasMessageContaining("Employee with id : '" + employeeId + "' not found");
+        assertThatExceptionOfType(ResourceNotFoundException.class)
+                .isThrownBy(() -> employeeService.updateEmployeeById(department.getId(), employeeId, updatedEmployeeDTO))
+                .withMessage("Employee with id : '" + employeeId + "' not found");
 
         verify(departmentRepository, times(1)).findById(department.getId());
         verify(employeeRepository, times(1)).findById(employeeId);
@@ -449,9 +449,9 @@ class EmployeeServiceImplTest {
 
 
         // when/then - verify that ResourceNotFoundException is thrown
-        assertThatThrownBy(() -> employeeService.updateEmployeeById(department2.getId(), employee.getId(), updatedEmployeeDTO))
-                .isInstanceOf(BusinessLogicException.class)
-                .hasMessageContaining("Employee does not belong to Department");
+        assertThatExceptionOfType(BusinessLogicException.class)
+                .isThrownBy(() -> employeeService.updateEmployeeById(department2.getId(), employee.getId(), updatedEmployeeDTO))
+                .withMessage("Employee does not belong to Department");
 
         verify(departmentRepository, times(1)).findById(department2.getId());
         verify(employeeRepository, times(1)).findById(employee.getId());
@@ -486,9 +486,9 @@ class EmployeeServiceImplTest {
         given(departmentRepository.findById(departmentId)).willReturn(Optional.empty());
 
         // when/then - verify that ResourceNotFoundException is thrown
-        assertThatThrownBy(() -> employeeService.deleteEmployee(departmentId, employee.getId()))
-                .isInstanceOf(ResourceNotFoundException.class)
-                .hasMessageContaining("Department with id : '" + departmentId + "' not found");
+        assertThatExceptionOfType(ResourceNotFoundException.class)
+                .isThrownBy(() -> employeeService.deleteEmployee(departmentId, employee.getId()))
+                .withMessage("Department with id : '" + departmentId + "' not found");
 
         verify(employeeRepository, never()).findById(anyString());
         verify(employeeRepository, never()).delete(any(Employee.class));
@@ -505,9 +505,9 @@ class EmployeeServiceImplTest {
         given(employeeRepository.findById(employeeId)).willReturn(Optional.empty());
 
         // when/then - verify that ResourceNotFoundException is thrown
-        assertThatThrownBy(() -> employeeService.deleteEmployee(department.getId(), employeeId))
-                .isInstanceOf(ResourceNotFoundException.class)
-                .hasMessageContaining("Employee with id : '" + employeeId + "' not found");
+        assertThatExceptionOfType(ResourceNotFoundException.class)
+                .isThrownBy(() -> employeeService.deleteEmployee(department.getId(), employeeId))
+                .withMessage("Employee with id : '" + employeeId + "' not found");
 
         verify(employeeRepository, times(1)).findById(employeeId);
         verify(employeeRepository, never()).delete(any(Employee.class));
@@ -522,9 +522,9 @@ class EmployeeServiceImplTest {
         given(employeeRepository.findById(employee.getId())).willReturn(Optional.of(employee));
 
         // when/then
-        assertThatThrownBy(() -> employeeService.deleteEmployee(department2.getId(), employee.getId()))
-                .isInstanceOf(BusinessLogicException.class)
-                .hasMessageContaining("Employee does not belong to Department");
+        assertThatExceptionOfType(BusinessLogicException.class)
+                .isThrownBy(() -> employeeService.deleteEmployee(department2.getId(), employee.getId()))
+                .withMessage("Employee does not belong to Department");
 
 
         verify(employeeRepository, never()).delete(any(Employee.class));
@@ -542,9 +542,9 @@ class EmployeeServiceImplTest {
         given(employeeRepository.findById(employee.getId())).willReturn(Optional.of(employee));
 
         // when/then - verify that BusinessLogicException is thrown
-        assertThatThrownBy(() -> employeeService.deleteEmployee(department.getId(), employee.getId()))
-                .isInstanceOf(BusinessLogicException.class)
-                .hasMessageContaining("Employee does not belong to Department");
+        assertThatExceptionOfType(BusinessLogicException.class)
+                .isThrownBy(() -> employeeService.deleteEmployee(department.getId(), employee.getId()))
+                .withMessage("Employee does not belong to Department");
 
         verify(employeeRepository, never()).delete(any(Employee.class));
     }
@@ -579,9 +579,9 @@ class EmployeeServiceImplTest {
         given(employeeRepository.getEmployeeAndDepartmentByEmployeeEmail(employee.getEmail())).willReturn(null);
 
         // when - action or behaviour that we are going to test
-        assertThatThrownBy(() -> employeeService.getEmployeeAndDepartmentByEmployeeEmail(employee.getEmail()))
-                .isInstanceOf(ResourceNotFoundException.class)
-                .hasMessageContaining("Employee with email : '" + employee.getEmail() + "' not found");
+        assertThatExceptionOfType(ResourceNotFoundException.class)
+                .isThrownBy(() -> employeeService.getEmployeeAndDepartmentByEmployeeEmail(employee.getEmail()))
+                .withMessage("Employee with email : '" + employee.getEmail() + "' not found");
 
         // then - verify the output
         verify(employeeRepository, times(1)).getEmployeeAndDepartmentByEmployeeEmail(employee.getEmail());

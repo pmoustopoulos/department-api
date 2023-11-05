@@ -14,6 +14,10 @@ import java.util.Optional;
 
 public class Utils {
 
+    // Private constructor to prevent instantiation
+    private Utils() {
+        throw new IllegalStateException("Utility class");
+    }
 
     public static Pageable createPageableBasedOnPageAndSizeAndSorting(List<SortItem> sortList, Integer page, Integer size) {
 
