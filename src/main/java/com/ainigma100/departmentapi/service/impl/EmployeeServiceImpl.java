@@ -73,7 +73,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         List<EmployeeDTO> result = employeeMapper.employeeToEmployeeDto(recordsFromDb.getContent());
 
-        return new PageImpl<>(result, pageable, result.size());
+        return new PageImpl<>(result, pageable, recordsFromDb.getTotalElements());
     }
 
 
