@@ -61,7 +61,7 @@ public class DepartmentServiceImpl implements DepartmentService {
 
         List<DepartmentDTO> result = departmentMapper.departmentToDepartmentDto(recordsFromDb.getContent());
 
-        return new PageImpl<>(result, pageable, result.size());
+        return new PageImpl<>(result, pageable, recordsFromDb.getTotalElements());
     }
 
     @Override
