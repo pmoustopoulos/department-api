@@ -17,7 +17,7 @@ seamlessly with Flyway.
 - [Testing](#testing)
   - [Unit Testing](#unit-testing)
   - [Integration Testing with Testcontainers](#integration-testing-with-testcontainers)
-
+- [SonarQube](#sonarqube)
 
 
 ## Run with an In-Memory H2 Database
@@ -177,3 +177,72 @@ To run the integration tests, follow these steps:
 
 By running the unit tests and integration tests separately, you can ensure the correctness and reliability of your 
 application's components in isolation as well as their interactions in a controlled environment.
+
+
+## SonarQube
+[SonarQube](https://www.sonarqube.org/) is a powerful tool for continuous inspection of code quality. It performs automatic 
+reviews with static analysis of code to detect bugs, code smells, and security vulnerabilities.
+
+
+### Start SonarQube and PostgreSQL Containers
+
+Run the following command to start the SonarQube and PostgreSQL containers:
+
+```shell
+docker compose up -d
+```
+
+### Access SonarQube UI
+
+Once the containers are up and running, you can access the SonarQube UI by opening the following URL in your web browser:
+
+[http://localhost:9000](http://localhost:9000)
+
+
+
+
+### Generate a SonarQube Token
+
+To analyze your project using SonarQube, you need to generate an access token. Here's how:
+
+1. Log in to the SonarQube UI using the **default credentials**. Note: you will be asked to provide a new password.
+   1. login = admin
+   2. password = admin
+![SonarQube login page](images/1-sonarqube-login-ui.png) <br><br>
+
+2. As soon as you log in, you will see this page
+![SonarQube login page](images/2-sonarqube-homepage.png) <br><br>
+
+3. The next step is to `generate a token`
+   1. Navigate to `My Account` page
+      ![SonarQube login page](images/3-sonarqube-my-account.png) <br><br>
+   2. Select the `Security` tab
+   3. Provide a `name` for the token, select as a type `User Token`, set `No expiration` and press the `Generate` button
+      ![SonarQube login page](images/4-sonarqube-generate-token.png) <br><br>
+
+   4. Copy the generated token to a text editor
+   
+
+### Analyze the Project
+
+Now that SonarQube is set up, and you have a token, you can analyze your project with SonarQube. 
+Use the following command, replacing `YOUR_SONARQUBE_TOKEN` with the token generated earlier.
+
+```
+mvn clean install && mvn sonar:sonar -Dsonar.token=YOUR_SONARQUBE_TOKEN
+```
+
+This command will run a SonarQube analysis on the project and send the results to the SonarQube server.
+
+If you refresh the page in the browser, you will see the newly added project.
+![SonarQube login page](images/5-sonarqube-added-project.png) <br><br><br>
+
+
+#### NOTE: Inside the `pom.xml` file, I have excluded some packages from the analysis.
+```xml
+<sonar.exclusions>
+    **/dto/**,
+    **/entity/**,
+    **/exception/**
+</sonar.exclusions>
+```
