@@ -268,14 +268,14 @@ To analyze your project using SonarQube, you need to generate an access token. H
 
 1. Log in to the SonarQube UI using the **default credentials**. Note: you will be asked to provide a new password.
    1. login = admin
-   2. password = admin
+   2. password = admin <br>
 ![SonarQube login page](images/1-sonarqube-login-ui.png) <br><br>
 
 2. As soon as you log in, you will see this page
 ![SonarQube login page](images/2-sonarqube-homepage.png) <br><br>
 
 3. The next step is to `generate a token`
-   1. Navigate to `My Account` page
+   1. Navigate to `My Account` page <br>
       ![SonarQube login page](images/3-sonarqube-my-account.png) <br><br>
    2. Select the `Security` tab
    3. Provide a `name` for the token, select as a type `User Token`, set `No expiration` and press the `Generate` button
