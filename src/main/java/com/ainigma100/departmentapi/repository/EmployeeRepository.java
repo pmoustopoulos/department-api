@@ -17,9 +17,9 @@ public interface EmployeeRepository extends JpaRepository<Employee, String> {
 
     @Query(value = """
             select emp from Employee emp
-            where ( :#{#criteria.firstName} IS NULL OR emp.firstName LIKE :#{#criteria.firstName}% )
-            and ( :#{#criteria.lastName} IS NULL OR emp.lastName LIKE :#{#criteria.lastName}% )
-            and ( :#{#criteria.email} IS NULL OR emp.email LIKE %:#{#criteria.email}% )
+            where ( :#{#criteria.firstName} IS NULL OR LOWER(emp.firstName) LIKE LOWER( CONCAT(:#{#criteria.firstName}, '%') ) )
+            and ( :#{#criteria.lastName} IS NULL OR LOWER(emp.lastName) LIKE LOWER( CONCAT(:#{#criteria.lastName}, '%') ) )
+            and ( :#{#criteria.email} IS NULL OR LOWER(emp.email) LIKE LOWER( CONCAT('%', :#{#criteria.email}, '%') ) )
             """)
     Page<Employee> getAllEmployeesUsingPagination(
             @Param("criteria") EmployeeSearchCriteriaDTO employeeSearchCriteriaDTO,
