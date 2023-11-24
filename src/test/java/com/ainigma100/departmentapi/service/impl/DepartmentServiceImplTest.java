@@ -136,8 +136,6 @@ class DepartmentServiceImplTest {
     void givenDepartmentSearchCriteriaDTO_whenGetAllDepartmentsUsingPagination_thenReturnDepartmentDTOPage() {
 
         // given - precondition or setup
-        departmentRepository.save(department);
-
         List<Department> departments = Collections.singletonList(department);
         Page<Department> departmentPage = new PageImpl<>(departments);
 
@@ -177,7 +175,7 @@ class DepartmentServiceImplTest {
 
     @Test
     void givenInvalidDepartmentId_whenGetDepartmentById_thenThrowResourceNotFoundException() {
-        
+
         // given - precondition or setup
         Long departmentId = 123L;
         given(departmentRepository.findById(departmentId)).willReturn(Optional.empty());
