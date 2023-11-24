@@ -11,7 +11,7 @@ services:
     ports:
       - "5432:5432"
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -d mydb -U postgres"]
+      test: [ "CMD-SHELL", "pg_isready -d mydb -U postgres" ]
       interval: 5s
       timeout: 3s
       retries: 10
@@ -45,7 +45,7 @@ services:
       - "8025:8025"
       - "1025:1025"
     networks:
-    - springboot-postgres-net
+      - springboot-postgres-net
     restart: always
 
   postgres-sonarqube:
@@ -61,7 +61,7 @@ services:
     ports:
       - "5433:5432"
     volumes:
-      - ./postgres/data:/var/lib/postgresql/data
+      - ./postgres/data:/var/lib/postgresql/data 700
 
   sonarqube:
     image: sonarqube:latest
