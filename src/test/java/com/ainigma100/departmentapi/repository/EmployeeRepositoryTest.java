@@ -112,6 +112,30 @@ class EmployeeRepositoryTest {
     }
 
     @Test
+    void givenEmployeeSearchCriteriaDTOWithCaseInsensitiveValues_whenGetAllEmployeesUsingPagination_thenEmployeePage() {
+
+        // given - precondition or setup
+        departmentRepository.save(department);
+        employeeRepository.save(employee1);
+
+        EmployeeSearchCriteriaDTO searchCriteria = new EmployeeSearchCriteriaDTO();
+        searchCriteria.setFirstName("joHN");
+
+        PageRequest pageRequest = PageRequest.of(0, 10);
+
+        // when - action or behaviour that we are going to test
+        Page<Employee> employeePage = employeeRepository.getAllEmployeesUsingPagination(searchCriteria, pageRequest);
+
+        // then - verify the output
+        assertThat(employeePage).isNotNull();
+        assertThat(employeePage.getContent()).hasSize(1);
+        assertThat(employeePage.getContent().get(0).getFirstName()).isEqualTo("John");
+        assertThat(employeePage.getContent().get(0).getEmail()).isEqualTo("jwick@gmail.com");
+        assertThat(employeePage.getContent().get(0).getSalary()).isEqualByComparingTo(BigDecimal.valueOf(40_000_000));
+
+    }
+
+    @Test
     void givenEmail_whenFindByEmail_thenReturnEmployee() {
 
         // given - precondition or setup

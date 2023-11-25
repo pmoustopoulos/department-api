@@ -89,4 +89,30 @@ class DepartmentRepositoryTest {
         assertThat(departmentPage.getContent().get(0).getDepartmentName()).isEqualTo("Department 1");
         assertThat(departmentPage.getContent().get(0).getDepartmentDescription()).isEqualTo("Description 1");
     }
+
+    @Test
+    void givenDepartmentSearchCriteriaDTOWithCaseInsensitiveValues_whenGetAllDepartmentsUsingPagination_thenReturnDepartmentPage() {
+
+        // given - precondition or setup
+        departmentRepository.save(department1);
+        departmentRepository.save(department2);
+
+
+        DepartmentSearchCriteriaDTO searchCriteria = new DepartmentSearchCriteriaDTO();
+        searchCriteria.setDepartmentCode("AbC");
+        searchCriteria.setDepartmentName("DePArt");
+
+        PageRequest pageRequest = PageRequest.of(0, 10);
+
+        // when - action or behaviour that we are going to test
+        Page<Department> departmentPage = departmentRepository.getAllDepartmentsUsingPagination(searchCriteria, pageRequest);
+
+        // then - verify the output
+        assertThat(departmentPage).isNotNull();
+        assertThat(departmentPage.getContent()).hasSize(1);
+        assertThat(departmentPage.getContent().get(0).getDepartmentCode()).isEqualTo("ABC");
+        assertThat(departmentPage.getContent().get(0).getDepartmentName()).isEqualTo("Department 1");
+        assertThat(departmentPage.getContent().get(0).getDepartmentDescription()).isEqualTo("Description 1");
+    }
+
 }
