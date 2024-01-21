@@ -3,6 +3,7 @@ package com.ainigma100.departmentapi.integration;
 import com.ainigma100.departmentapi.dto.DepartmentRequestDTO;
 import com.ainigma100.departmentapi.dto.DepartmentSearchCriteriaDTO;
 import com.ainigma100.departmentapi.entity.Department;
+import com.ainigma100.departmentapi.enums.Status;
 import com.ainigma100.departmentapi.repository.DepartmentRepository;
 import com.ainigma100.departmentapi.repository.EmployeeRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -78,6 +79,7 @@ class DepartmentControllerIntegrationTest extends AbstractContainerBaseTest {
                 .andExpect(status().isCreated())
                 // verify the actual returned value and the expected value
                 // $ - root member of a JSON structure whether it is an object or array
+                .andExpect(jsonPath("$.status", is(Status.SUCCESS.getValue())))
                 .andExpect(jsonPath("$.results.departmentCode", is(departmentRequestDTO.getDepartmentCode())))
                 .andExpect(jsonPath("$.results.departmentName", is(departmentRequestDTO.getDepartmentName())))
                 .andExpect(jsonPath("$.results.departmentDescription", is(departmentRequestDTO.getDepartmentDescription())));
@@ -119,6 +121,7 @@ class DepartmentControllerIntegrationTest extends AbstractContainerBaseTest {
                 .andExpect(status().isOk())
                 // verify the actual returned value and the expected value
                 // $ - root member of a JSON structure whether it is an object or array
+                .andExpect(jsonPath("$.status", is(Status.SUCCESS.getValue())))
                 .andExpect(jsonPath("$.results.content.size()", is(1)));
 
     }
@@ -145,6 +148,7 @@ class DepartmentControllerIntegrationTest extends AbstractContainerBaseTest {
                 .andExpect(status().isOk())
                 // verify the actual returned value and the expected value
                 // $ - root member of a JSON structure whether it is an object or array
+                .andExpect(jsonPath("$.status", is(Status.SUCCESS.getValue())))
                 .andExpect(jsonPath("$.results.departmentCode", is(department.getDepartmentCode())))
                 .andExpect(jsonPath("$.results.departmentName", is(department.getDepartmentName())))
                 .andExpect(jsonPath("$.results.departmentDescription", is(department.getDepartmentDescription())));
@@ -178,6 +182,7 @@ class DepartmentControllerIntegrationTest extends AbstractContainerBaseTest {
                 .andExpect(status().isOk())
                 // verify the actual returned value and the expected value
                 // $ - root member of a JSON structure whether it is an object or array
+                .andExpect(jsonPath("$.status", is(Status.SUCCESS.getValue())))
                 .andExpect(jsonPath("$.results.departmentCode", is(departmentRequestDTO.getDepartmentCode())))
                 .andExpect(jsonPath("$.results.departmentName", is(departmentRequestDTO.getDepartmentName())))
                 .andExpect(jsonPath("$.results.departmentDescription", is(departmentRequestDTO.getDepartmentDescription())));
@@ -202,7 +207,10 @@ class DepartmentControllerIntegrationTest extends AbstractContainerBaseTest {
         // then - verify the output
         response.andDo(print())
                 // verify the status code that is returned
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                // verify the actual returned value and the expected value
+                // $ - root member of a JSON structure whether it is an object or array
+                .andExpect(jsonPath("$.status", is(Status.SUCCESS.getValue())));
 
     }
 
