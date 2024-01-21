@@ -1,6 +1,7 @@
 package com.ainigma100.departmentapi.controller;
 
 import com.ainigma100.departmentapi.dto.*;
+import com.ainigma100.departmentapi.enums.Status;
 import com.ainigma100.departmentapi.mapper.EmployeeMapper;
 import com.ainigma100.departmentapi.service.EmployeeService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -22,7 +23,6 @@ public class EmployeeController {
     private final EmployeeMapper employeeMapper;
 
 
-    private static final String SUCCESS = "Success";
 
 
     @Operation(summary = "Add a new employee to the specific department")
@@ -38,7 +38,7 @@ public class EmployeeController {
         // Builder Design pattern
         APIResponse<EmployeeDTO> responseDTO = APIResponse
                 .<EmployeeDTO>builder()
-                .status(SUCCESS)
+                .status(Status.SUCCESS.getValue())
                 .results(result)
                 .build();
 
@@ -58,7 +58,7 @@ public class EmployeeController {
         // Builder Design pattern
         APIResponse<Page<EmployeeDTO>> responseDTO = APIResponse
                 .<Page<EmployeeDTO>>builder()
-                .status(SUCCESS)
+                .status(Status.SUCCESS.getValue())
                 .results(result)
                 .build();
 
@@ -77,7 +77,7 @@ public class EmployeeController {
         // Builder Design pattern
         APIResponse<List<EmployeeDTO>> responseDTO = APIResponse
                 .<List<EmployeeDTO>>builder()
-                .status(SUCCESS)
+                .status(Status.SUCCESS.getValue())
                 .results(result)
                 .build();
 
@@ -98,7 +98,7 @@ public class EmployeeController {
         // Builder Design pattern
         APIResponse<EmployeeDTO> responseDTO = APIResponse
                 .<EmployeeDTO>builder()
-                .status(SUCCESS)
+                .status(Status.SUCCESS.getValue())
                 .results(result)
                 .build();
 
@@ -121,7 +121,7 @@ public class EmployeeController {
         // Builder Design pattern
         APIResponse<EmployeeDTO> responseDTO = APIResponse
                 .<EmployeeDTO>builder()
-                .status(SUCCESS)
+                .status(Status.SUCCESS.getValue())
                 .results(result)
                 .build();
 
@@ -143,7 +143,7 @@ public class EmployeeController {
         // Builder Design pattern
         APIResponse<String> responseDTO = APIResponse
                 .<String>builder()
-                .status(SUCCESS)
+                .status(Status.SUCCESS.getValue())
                 .results(result)
                 .build();
 
@@ -163,7 +163,7 @@ public class EmployeeController {
         // Builder Design pattern
         APIResponse<EmployeeAndDepartmentDTO> responseDTO = APIResponse
                 .<EmployeeAndDepartmentDTO>builder()
-                .status(SUCCESS)
+                .status(Status.SUCCESS.getValue())
                 .results(result)
                 .build();
 

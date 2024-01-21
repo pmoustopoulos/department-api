@@ -3,6 +3,7 @@ package com.ainigma100.departmentapi.controller;
 import com.ainigma100.departmentapi.dto.DepartmentDTO;
 import com.ainigma100.departmentapi.dto.DepartmentRequestDTO;
 import com.ainigma100.departmentapi.dto.DepartmentSearchCriteriaDTO;
+import com.ainigma100.departmentapi.enums.Status;
 import com.ainigma100.departmentapi.mapper.DepartmentMapper;
 import com.ainigma100.departmentapi.service.DepartmentService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -106,6 +107,7 @@ class DepartmentControllerTest {
                 .andExpect(status().isCreated())
                 // verify the actual returned value and the expected value
                 // $ - root member of a JSON structure whether it is an object or array
+                .andExpect(jsonPath("$.status", is(Status.SUCCESS.getValue())))
                 .andExpect(jsonPath("$.results.departmentCode", is(departmentRequestDTO.getDepartmentCode())))
                 .andExpect(jsonPath("$.results.departmentName", is(departmentRequestDTO.getDepartmentName())))
                 .andExpect(jsonPath("$.results.departmentDescription", is(departmentRequestDTO.getDepartmentDescription())));
@@ -133,6 +135,7 @@ class DepartmentControllerTest {
                 .andExpect(status().isOk())
                 // verify the actual returned value and the expected value
                 // $ - root member of a JSON structure whether it is an object or array
+                .andExpect(jsonPath("$.status", is(Status.SUCCESS.getValue())))
                 .andExpect(jsonPath("$.results.content.size()", is(departmentDTOList.size())))
                 .andExpect(jsonPath("$.results.content[0].departmentCode", is(departmentDTOList.get(0).getDepartmentCode())))
                 .andExpect(jsonPath("$.results.content[0].departmentName", is(departmentDTOList.get(0).getDepartmentName())))
@@ -157,6 +160,7 @@ class DepartmentControllerTest {
                 .andExpect(status().isOk())
                 // verify the actual returned value and the expected value
                 // $ - root member of a JSON structure whether it is an object or array
+                .andExpect(jsonPath("$.status", is(Status.SUCCESS.getValue())))
                 .andExpect(jsonPath("$.results.departmentCode", is(departmentDTO.getDepartmentCode())))
                 .andExpect(jsonPath("$.results.departmentName", is(departmentDTO.getDepartmentName())))
                 .andExpect(jsonPath("$.results.departmentDescription", is(departmentDTO.getDepartmentDescription())));
@@ -183,6 +187,7 @@ class DepartmentControllerTest {
                 .andExpect(status().isOk())
                 // verify the actual returned value and the expected value
                 // $ - root member of a JSON structure whether it is an object or array
+                .andExpect(jsonPath("$.status", is(Status.SUCCESS.getValue())))
                 .andExpect(jsonPath("$.results.departmentCode", is(updatedDepartmentDTO.getDepartmentCode())))
                 .andExpect(jsonPath("$.results.departmentName", is(updatedDepartmentDTO.getDepartmentName())))
                 .andExpect(jsonPath("$.results.departmentDescription", is(updatedDepartmentDTO.getDepartmentDescription())));
@@ -203,7 +208,10 @@ class DepartmentControllerTest {
         // then - verify the output
         response.andDo(print())
                 // verify the status code that is returned
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                // verify the actual returned value and the expected value
+                // $ - root member of a JSON structure whether it is an object or array
+                .andExpect(jsonPath("$.status", is(Status.SUCCESS.getValue())));
 
     }
 

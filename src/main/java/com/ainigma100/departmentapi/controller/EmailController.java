@@ -1,6 +1,7 @@
 package com.ainigma100.departmentapi.controller;
 
 import com.ainigma100.departmentapi.dto.APIResponse;
+import com.ainigma100.departmentapi.enums.Status;
 import com.ainigma100.departmentapi.service.EmailService;
 import lombok.AllArgsConstructor;
 import net.sf.jasperreports.engine.JRException;
@@ -16,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class EmailController {
 
     private final EmailService emailService;
-    private static final String SUCCESS = "Success";
+
 
     @GetMapping
     public ResponseEntity<APIResponse<Boolean>> sendEmailWithoutAttachment() {
@@ -26,7 +27,7 @@ public class EmailController {
         // Builder Design pattern
         APIResponse<Boolean> responseDTO = APIResponse
                 .<Boolean>builder()
-                .status(SUCCESS)
+                .status(Status.SUCCESS.getValue())
                 .results(answer)
                 .build();
 
@@ -41,7 +42,7 @@ public class EmailController {
         // Builder Design pattern
         APIResponse<Boolean> responseDTO = APIResponse
                 .<Boolean>builder()
-                .status(SUCCESS)
+                .status(Status.SUCCESS.getValue())
                 .results(answer)
                 .build();
 

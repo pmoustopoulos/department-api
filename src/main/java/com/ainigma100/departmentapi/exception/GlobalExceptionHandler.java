@@ -2,6 +2,7 @@ package com.ainigma100.departmentapi.exception;
 
 import com.ainigma100.departmentapi.dto.APIResponse;
 import com.ainigma100.departmentapi.dto.ErrorDTO;
+import com.ainigma100.departmentapi.enums.Status;
 import jakarta.mail.MessagingException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
@@ -23,7 +24,6 @@ import java.util.List;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    private static final String FAILED = "Failed";
 
     @ExceptionHandler({RuntimeException.class, NullPointerException.class})
     public ResponseEntity<Object> handleRuntimeExceptions(RuntimeException exception) {
@@ -31,7 +31,7 @@ public class GlobalExceptionHandler {
         log.error(exception.getMessage());
 
         APIResponse<ErrorDTO> response = new APIResponse<>();
-        response.setStatus(FAILED);
+        response.setStatus(Status.FAILED.getValue());
         response.setErrors(Collections.singletonList(new ErrorDTO("", "An internal server error occurred")));
 
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -43,7 +43,7 @@ public class GlobalExceptionHandler {
         log.error(exception.getMessage());
 
         APIResponse<ErrorDTO> response = new APIResponse<>();
-        response.setStatus(FAILED);
+        response.setStatus(Status.FAILED.getValue());
         response.setErrors(Collections.singletonList(new ErrorDTO("", "The requested resource was not found")));
 
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
@@ -55,7 +55,7 @@ public class GlobalExceptionHandler {
         log.error(exception.getMessage());
 
         APIResponse<ErrorDTO> response = new APIResponse<>();
-        response.setStatus(FAILED);
+        response.setStatus(Status.FAILED.getValue());
         response.setErrors(Collections.singletonList(new ErrorDTO("", "An error occurred while processing your request")));
 
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
@@ -67,7 +67,7 @@ public class GlobalExceptionHandler {
         log.error(exception.getMessage());
 
         APIResponse<ErrorDTO> response = new APIResponse<>();
-        response.setStatus(FAILED);
+        response.setStatus(Status.FAILED.getValue());
         response.setErrors(Collections.singletonList(new ErrorDTO("", "The requested URL does not support this method")));
 
         return new ResponseEntity<>(response, HttpStatus.METHOD_NOT_ALLOWED);
@@ -77,7 +77,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Object> handleValidationExceptions(Exception exception) {
 
         APIResponse<ErrorDTO> response = new APIResponse<>();
-        response.setStatus(FAILED);
+        response.setStatus(Status.FAILED.getValue());
 
         List<ErrorDTO> errors = new ArrayList<>();
         if (exception instanceof MethodArgumentNotValidException ex) {
@@ -109,7 +109,7 @@ public class GlobalExceptionHandler {
         log.error(exception.getMessage());
 
         APIResponse<ErrorDTO> response = new APIResponse<>();
-        response.setStatus(FAILED);
+        response.setStatus(Status.FAILED.getValue());
         response.setErrors(Collections.singletonList(new ErrorDTO("", "An internal server error occurred")));
 
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);

@@ -1,5 +1,6 @@
 package com.ainigma100.departmentapi.controller;
 
+import com.ainigma100.departmentapi.enums.Status;
 import com.ainigma100.departmentapi.service.EmailService;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -9,9 +10,11 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /*
@@ -41,7 +44,10 @@ class EmailControllerTest {
         // then - verify the output
         response.andDo(print())
                 // verify the status code that is returned
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                // verify the actual returned value and the expected value
+                // $ - root member of a JSON structure whether it is an object or array
+                .andExpect(jsonPath("$.status", is(Status.SUCCESS.getValue())));
 
     }
 
@@ -58,7 +64,10 @@ class EmailControllerTest {
         // then - verify the output
         response.andDo(print())
                 // verify the status code that is returned
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                // verify the actual returned value and the expected value
+                // $ - root member of a JSON structure whether it is an object or array
+                .andExpect(jsonPath("$.status", is(Status.SUCCESS.getValue())));
 
     }
 

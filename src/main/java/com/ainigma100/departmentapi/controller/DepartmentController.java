@@ -4,6 +4,7 @@ import com.ainigma100.departmentapi.dto.APIResponse;
 import com.ainigma100.departmentapi.dto.DepartmentDTO;
 import com.ainigma100.departmentapi.dto.DepartmentRequestDTO;
 import com.ainigma100.departmentapi.dto.DepartmentSearchCriteriaDTO;
+import com.ainigma100.departmentapi.enums.Status;
 import com.ainigma100.departmentapi.mapper.DepartmentMapper;
 import com.ainigma100.departmentapi.service.DepartmentService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -22,7 +23,6 @@ public class DepartmentController {
 
     private final DepartmentService departmentService;
     private final DepartmentMapper departmentMapper;
-    private static final String SUCCESS = "Success";
 
 
 
@@ -38,7 +38,7 @@ public class DepartmentController {
         // Builder Design pattern
         APIResponse<DepartmentDTO> responseDTO = APIResponse
                 .<DepartmentDTO>builder()
-                .status(SUCCESS)
+                .status(Status.SUCCESS.getValue())
                 .results(result)
                 .build();
 
@@ -58,7 +58,7 @@ public class DepartmentController {
         // Builder Design pattern
         APIResponse<Page<DepartmentDTO>> responseDTO = APIResponse
                 .<Page<DepartmentDTO>>builder()
-                .status(SUCCESS)
+                .status(Status.SUCCESS.getValue())
                 .results(result)
                 .build();
 
@@ -76,7 +76,7 @@ public class DepartmentController {
         // Builder Design pattern
         APIResponse<DepartmentDTO> responseDTO = APIResponse
                 .<DepartmentDTO>builder()
-                .status(SUCCESS)
+                .status(Status.SUCCESS.getValue())
                 .results(result)
                 .build();
 
@@ -99,7 +99,7 @@ public class DepartmentController {
         // Builder Design pattern
         APIResponse<DepartmentDTO> responseDTO = APIResponse
                 .<DepartmentDTO>builder()
-                .status(SUCCESS)
+                .status(Status.SUCCESS.getValue())
                 .results(result)
                 .build();
 
@@ -120,7 +120,7 @@ public class DepartmentController {
         // Builder Design pattern
         APIResponse<String> responseDTO = APIResponse
                 .<String>builder()
-                .status(SUCCESS)
+                .status(Status.SUCCESS.getValue())
                 .results(result)
                 .build();
 
