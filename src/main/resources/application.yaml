@@ -55,6 +55,5 @@ spring:
 
 springdoc:
   swagger-ui:
-    use-root-path: true
-    default-models-expand-depth: -1
+    path: /ui
   version: '@springdoc-openapi-starter-webmvc-ui.version@'
