@@ -131,7 +131,10 @@ This will stop and remove the containers, networks, and volumes created by Docke
 
 
 ## Swagger
-Swagger was set on the root path, and you can access it on this URL: http://localhost:8080/
+Swagger was set on the root path, and you can access it on this URL: http://localhost:8080/ui <br>
+Additionally, you can find in the logs the swagger UI URL and the active profile.
+
+![Swagger UI and Active profile](images/server-details-log.png)
 
 
 The API also allows for `generating various reports` using `JasperReport`, such as generating an Excel file, generating
