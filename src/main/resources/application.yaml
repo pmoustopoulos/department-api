@@ -19,7 +19,7 @@ spring:
       hibernate:
         ddl-auto: validate
         #        format_sql: true
-    database-platform: org.hibernate.dialect.H2Dialect
+        dialect: org.hibernate.dialect.H2Dialect
   output:
     ansi:
       enabled: always
