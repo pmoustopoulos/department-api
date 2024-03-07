@@ -11,8 +11,7 @@ services:
       - sonarqube_extensions:/opt/sonarqube/extensions
       - sonarqube_logs:/opt/sonarqube/logs
       - sonarqube_temp:/opt/sonarqube/temp
-    depends_on:
-      - postgres-sonarqube
+
 
   mailhog:
     image: mailhog/mailhog
