@@ -4,13 +4,16 @@ A RESTful API created using Spring Boot 3, H2 Database, and JasperReport. The AP
 departments and employees and includes functionality for generating Excel and PDF reports using JasperReport. 
 Additionally, the API can send asynchronous emails using Thymeleaf to create the email body, including the ability 
 to send attachments. MailHog is integrated as a local SMTP server for testing email functionality. Swagger is also 
-integrated for easy API documentation and testing. Database migrations across different environments are managed 
-seamlessly with Flyway.
+integrated for easy API documentation and testing. Security features are implemented using Spring Security, and Keycloak is utilized for identity and access management.
+Database migrations across different environments are managed seamlessly with Flyway.
 
 
 ## Table of Contents
 - [Run with an In-Memory H2 Database](#run-with-an-in-memory-h2-database)
 - [Prerequisites](#prerequisites)
+- [Keycloak Security](#keycloak-security)
+  - [Getting Started with Keycloak](#getting-started-with-keycloak)
+- [Run Docker Compose](#run-docker-compose)
 - [Start the Application](#start-the-application)
 - [Swagger](#swagger)
 - [MailHog](#mailhog)
@@ -44,12 +47,6 @@ Additionally, MailHog, a local SMTP server, is integrated into the application f
 the email functionality. To use MailHog and start the spring boot application without getting an error, it is **crucial** to start the MailHog Docker container by running the 
 following command in the terminal:
 
-```shell
-docker run --rm -p 1025:1025 -p 8025:8025 --name mailhog mailhog/mailhog
-```
-
-
-
 
 * **Jaspersoft Studio (Optional)** - [Download Jaspersoft Studio community edition](https://community.jaspersoft.com/project/jaspersoft-studio/releases)
   Jaspersoft studio was used to create template files (.jrxml). These template files along with the jasper dependency was
@@ -64,6 +61,103 @@ Before starting the application or running tests, ensure Flyway migrations are e
 - **H2 Migrations**: Used for the main application in the `h2-database` branch. Located under `db/migration/h2`.
 - **PostgreSQL Migrations**: For integration tests running against a PostgreSQL environment powered by Testcontainers. Located under `db/migration/postgresql`.
 
+
+
+## Keycloak Security
+[Keycloak](https://www.keycloak.org/) is an open-source identity and access management solution that provides features such as Single Sign-On (SSO),
+authentication, authorization, and social login. Integrating Keycloak with your Spring Boot application adds
+robust security features to protect your APIs and resources.
+
+### Getting Started with Keycloak
+I am going to show you how to configure Keycloak in order to set up users, clients, roles etc.
+<details>
+  <summary>Steps to configure Keycloak</summary>
+
+### 1. Access the admin page (username=admin password=admin)
+![Keycloak admin login page](images/keycloak-admin-login-page_1.png)<br><br>
+
+### 2. Create a Realm
+![Keycloak create realm](images/keycloak_2.png)<br><br>
+![Keycloak create realm ainigma100](images/keycloak_3.png)<br><br>
+
+### 3. Create a new Client
+![Keycloak create client](images/keycloak_4.png)<br><br>
+![Keycloak create client department-api](images/keycloak_5.png)<br><br>
+![Keycloak create client department-api](images/keycloak_6.png)<br><br>
+Specify the ```base path``` of my Backend application.
+![Keycloak create client department-api](images/keycloak_7.png)<br><br>
+
+### 4. Create Realm roles (admin and user)
+![Keycloak create realm roles](images/keycloak_8.png)<br><br>
+![Keycloak create realm roles](images/keycloak_9.png)<br><br>
+![Keycloak create realm roles](images/keycloak_10.png)<br><br>
+
+### 4. Create User
+![Keycloak create realm roles](images/keycloak_11.png)<br><br>
+![Keycloak create realm roles](images/keycloak_12.png)<br><br>
+![Keycloak create realm roles](images/keycloak_13.png)<br><br>
+![Keycloak create realm roles](images/keycloak_14.png)<br><br>
+
+### 4. Create Roles for a specific Client
+Create ```client_admin``` and ```client_user``` roles for the client application ```department-api```
+![Keycloak create roles for department api client](images/keycloak_15.png)<br><br>
+![Keycloak create roles for department api client](images/keycloak_16.png)<br><br>
+![Keycloak create roles for department api client](images/keycloak_17.png)<br><br>
+![Keycloak create roles for department api client](images/keycloak_18.png)<br><br>
+![Keycloak create roles for department api client](images/keycloak_19.png)<br><br>
+
+### 5. Associate Client Roles to Realm Roles
+![Keycloak associate client roles to realm roles](images/keycloak_20.png)<br><br>
+![Keycloak associate client roles to realm roles](images/keycloak_21.png)<br><br>
+![Keycloak associate client roles to realm roles](images/keycloak_22.png)<br><br>
+![Keycloak associate client roles to realm roles](images/keycloak_23.png)<br><br>
+![Keycloak associate client roles to realm roles](images/keycloak_24.png)<br><br>
+![Keycloak associate client roles to realm roles](images/keycloak_25.png)<br><br>
+
+### 6. Assign role to the new User
+Assign ```admin``` Realm Role to the new User
+![Keycloak assign realm role to the new user](images/keycloak_26.png)<br><br>
+![Keycloak assign realm role to the new user](images/keycloak_27.png)<br><br>
+![Keycloak assign realm role to the new user](images/keycloak_28.png)<br><br>
+
+
+Assign Client Role ```client_admin``` to the new User's ```admin``` role
+![Keycloak assign realm role to the new user](images/keycloak_29.png)<br><br>
+![Keycloak assign realm role to the new user](images/keycloak_30.png)<br><br>
+![Keycloak assign realm role to the new user](images/keycloak_31.png)<br><br>
+
+
+### 7 Access user's Keycloak login page
+In this step you will have to access the user's Keycloak page in order to change the password.
+![Keycloak assign realm role to the new user](images/keycloak_32.png)<br><br>
+![Keycloak assign realm role to the new user](images/keycloak_34.png)<br><br>
+![Keycloak assign realm role to the new user](images/keycloak_35.png)<br><br>
+
+
+### 8 Use Postman to generate the token
+![Keycloak assign realm role to the new user](images/keycloak_36.png)<br><br>
+
+
+</details>
+
+
+
+## Run Docker Compose
+
+To run the application using Docker Compose, execute the following command in your terminal: <br>
+**IMPORTANT: If your machine does not have enough resources it may not be able to run all applications at the same time.
+There is a possibility that SonarQube may fail to start or keep running. Therefore, comment the part related to SonarQube 
+inside the docker compose file.**
+
+```shell
+docker compose up
+```
+
+Once Docker Compose is up and running, you can access the services as follows:
+
+- SonarQube: [http://localhost:9000](http://localhost:9000)
+- Mailhog: [http://localhost:8025](http://localhost:8025)
+- Keycloak: [http://localhost:9090](http://localhost:9090) (username=admin password=admin)
 
 
 ## Start the application
@@ -91,11 +185,6 @@ sheets inside.
 MailHog is a local SMTP server that captures and displays email messages sent by your application during testing.
 To use MailHog, follow these steps:
 
-Start the MailHog Docker container (if it is not running) by running the following command in the terminal:
-```shell
-docker run --rm -p 1025:1025 -p 8025:8025 --name mailhog mailhog/mailhog
-```
-
 Access the MailHog web UI by opening the following URL in your browser: http://localhost:8025/
 
 ![MailHog UI](images/mailhog-ui.png)
@@ -122,12 +211,6 @@ You can see the names and sizes of the attachments:
 **NOTE**: The above images are for demonstration purposes only and show how the email will look when you test the 
 functionality locally. 
 
-### Stop the MailHog Docker Container
-To stop the MailHog Docker container, you can run the following command in the terminal:
-
-```shell
-docker stop mailhog
-```
 
 <br>
 
@@ -187,13 +270,6 @@ application's components in isolation as well as their interactions in a control
 reviews with static analysis of code to detect bugs, code smells, and security vulnerabilities.
 
 
-### Start SonarQube and PostgreSQL Containers
-
-Run the following command to start the SonarQube and PostgreSQL containers:
-
-```shell
-docker compose up -d
-```
 
 ### Access SonarQube UI
 

@@ -34,7 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 // Use random port for integration testing. the server will start on a random port
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@AutoConfigureMockMvc
+@AutoConfigureMockMvc(addFilters = false)
 @ActiveProfiles("testcontainers")
 @Tag("integration")
 class EmployeeControllerIntegrationTest extends AbstractContainerBaseTest {

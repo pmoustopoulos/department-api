@@ -29,6 +29,8 @@ services:
       - sonarqube_extensions:/opt/sonarqube/extensions
       - sonarqube_logs:/opt/sonarqube/logs
       - sonarqube_temp:/opt/sonarqube/temp
+    depends_on:
+      - postgres-sonarqube
 
   mailhog:
     image: mailhog/mailhog
@@ -36,6 +38,18 @@ services:
     ports:
       - "1025:1025"
       - "8025:8025"
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:24.0.1
+    environment:
+      - KEYCLOAK_ADMIN=admin
+      - KEYCLOAK_ADMIN_PASSWORD=admin
+    ports:
+      - "9090:8080"
+    volumes:
+      - ./keycloak_realm_backup/:/opt/keycloak/data/import:ro
+    entrypoint: '/opt/keycloak/bin/kc.sh start-dev --import-realm'
+
 
 networks:
   sonar:
