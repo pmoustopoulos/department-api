@@ -128,7 +128,7 @@ Assign Client Role ```client_admin``` to the new User's ```admin``` role
 
 
 ### 7 Access user's Keycloak login page
-In this step you will have to access the user's Keycloak page in order to change the password.
+In this step you will have to access the user's Keycloak page in order to change the password. 
 ![Keycloak assign realm role to the new user](images/keycloak_32.png)<br><br>
 ![Keycloak assign realm role to the new user](images/keycloak_34.png)<br><br>
 ![Keycloak assign realm role to the new user](images/keycloak_35.png)<br><br>

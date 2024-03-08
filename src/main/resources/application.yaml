@@ -65,3 +65,7 @@ springdoc:
   swagger-ui:
     path: /ui
   version: '@springdoc-openapi-starter-webmvc-ui.version@'
+
+keycloak:
+  client-id: department-api
+  principle-attribute: preferred_username

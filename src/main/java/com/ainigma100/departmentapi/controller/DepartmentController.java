@@ -13,7 +13,10 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import static org.springframework.security.authorization.AuthorityAuthorizationManager.hasRole;
 
 @AllArgsConstructor
 @RequestMapping("/api/v1/departments")
@@ -28,6 +31,7 @@ public class DepartmentController {
 
     @Operation(summary = "Add a new department")
     @PostMapping
+    @PreAuthorize("hasAnyRole('client_admin', 'client_user')")
     public ResponseEntity<APIResponse<DepartmentDTO>> createDepartment(
             @Valid @RequestBody DepartmentRequestDTO departmentRequestDTO) {
 
@@ -50,6 +54,7 @@ public class DepartmentController {
     @Operation(summary = "Search all departments using pagination",
             description = "Returns a list of departments")
     @PostMapping("/search")
+    @PreAuthorize("hasAnyRole('client_admin', 'client_user')")
     public ResponseEntity<APIResponse<Page<DepartmentDTO>>> getAllDepartmentsUsingPagination(
             @Valid @RequestBody DepartmentSearchCriteriaDTO departmentSearchCriteriaDTO) {
 
@@ -69,6 +74,7 @@ public class DepartmentController {
     @Operation(summary = "Find department by ID",
             description = "Returns a single department")
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('client_admin', 'client_user')")
     public ResponseEntity<APIResponse<DepartmentDTO>> getDepartmentById(@PathVariable("id") Long id) {
 
         DepartmentDTO result = departmentService.getDepartmentById(id);
@@ -88,6 +94,7 @@ public class DepartmentController {
 
     @Operation(summary = "Update an existing department")
     @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('client_admin', 'client_user')")
     public ResponseEntity<APIResponse<DepartmentDTO>> updateDepartment(
             @Valid @RequestBody DepartmentRequestDTO departmentRequestDTO,
             @PathVariable("id") Long id) {
@@ -109,8 +116,10 @@ public class DepartmentController {
     }
 
 
-    @Operation(summary = "Delete a department by ID")
+    @Operation(summary = "Delete a department by ID.",
+            description = " Note: You must be an admin to delete a record")
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('client_admin')")
     public ResponseEntity<APIResponse<String>> deleteDepartment(@PathVariable("id") Long id) {
 
         departmentService.deleteDepartment(id);

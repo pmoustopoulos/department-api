@@ -10,6 +10,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 
 public class Utils {
@@ -43,6 +44,23 @@ public class Utils {
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 
         return dateTimeFormatter.format(localDate);
+    }
+
+    /**
+     * This method is used to retrieve a nested object or if a null pointer exception occurs
+     * a default value would be set.
+     * @param supplier
+     * @param defaultValue
+     * @return
+     * @param <T>
+     */
+    public static <T> T retrieveValueOrSetDefault(Supplier<T> supplier, T defaultValue) {
+        try {
+            return supplier.get();
+        }
+        catch (NullPointerException ex) {
+            return defaultValue;
+        }
     }
 
 }

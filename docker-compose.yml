@@ -1,16 +1,16 @@
 version: '3.8'
 services:
   # By default, SonarQube is using h2 database which is not recommended for production
-  sonarqube:
-    image: sonarqube:latest
-    container_name: sonarqube
-    ports:
-      - "9000:9000"
-    volumes:
-      - sonarqube_data:/opt/sonarqube/data
-      - sonarqube_extensions:/opt/sonarqube/extensions
-      - sonarqube_logs:/opt/sonarqube/logs
-      - sonarqube_temp:/opt/sonarqube/temp
+#  sonarqube:
+#    image: sonarqube:latest
+#    container_name: sonarqube
+#    ports:
+#      - "9000:9000"
+#    volumes:
+#      - sonarqube_data:/opt/sonarqube/data
+#      - sonarqube_extensions:/opt/sonarqube/extensions
+#      - sonarqube_logs:/opt/sonarqube/logs
+#      - sonarqube_temp:/opt/sonarqube/temp
 
 
   mailhog:
@@ -28,16 +28,16 @@ services:
     ports:
       - "9090:8080"
     volumes:
-      - ./keycloak_realm_backup/:/opt/keycloak/data/import:ro
+      - ./keycloak_realm_backup/:/opt/keycloak/data/import
     entrypoint: '/opt/keycloak/bin/kc.sh start-dev --import-realm'
 
 
-networks:
-  sonar:
-    driver: bridge
+#networks:
+#  sonar:
+#    driver: bridge
 
-volumes:
-  sonarqube_data:
-  sonarqube_extensions:
-  sonarqube_logs:
-  sonarqube_temp:
+#volumes:
+#  sonarqube_data:
+#  sonarqube_extensions:
+#  sonarqube_logs:
+#  sonarqube_temp:
