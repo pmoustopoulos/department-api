@@ -26,7 +26,8 @@ public class SecurityConfig {
             "/api/auth/**", "/ui/**",
             "/swagger-ui-custom.html", "/swagger-ui.html",
             "/swagger-ui/**", "/v3/api-docs/**", "/webjars/**",
-            "/swagger-ui/index.html", "/api-docs/**"
+            "/swagger-ui/index.html", "/api-docs/**",
+            "/api/v1/generate-token"
     };
 
 
