@@ -68,5 +68,8 @@ springdoc:
   version: '@springdoc-openapi-starter-webmvc-ui.version@'
 
 keycloak:
+  # if set to 'true' security is activated and SecurityConfig is used.
+  # If the value is 'false' DisableSecurityConfig is used and we disable the security
+  enabled: true
   client-id: department-api
   principle-attribute: preferred_username
