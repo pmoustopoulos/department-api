@@ -3,9 +3,13 @@ package com.ainigma100.departmentapi.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
-import lombok.Data;
+import lombok.*;
 
-@Data
+@Getter
+@Setter
+@ToString
+@NoArgsConstructor
+@AllArgsConstructor
 public class KeycloakTokenRequestDTO {
 
     @NotEmpty(message = "username should not be null or empty")

@@ -21,3 +21,9 @@ spring:
           auth: false
           starttls:
             enable: false
+keycloak:
+  # if set to 'true' security is activated and SecurityConfig is used.
+  # If the value is 'false' DisableSecurityConfig is used and we disable the security
+  enabled: false
+  client-id: department-api
+  principle-attribute: preferred_username

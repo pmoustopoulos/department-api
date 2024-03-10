@@ -2,19 +2,25 @@ package com.ainigma100.departmentapi.integration;
 
 import com.ainigma100.departmentapi.dto.DepartmentRequestDTO;
 import com.ainigma100.departmentapi.dto.DepartmentSearchCriteriaDTO;
+import com.ainigma100.departmentapi.dto.KeycloakTokenRequestDTO;
+import com.ainigma100.departmentapi.dto.KeycloakTokenResponseDTO;
 import com.ainigma100.departmentapi.entity.Department;
 import com.ainigma100.departmentapi.enums.Status;
 import com.ainigma100.departmentapi.repository.DepartmentRepository;
 import com.ainigma100.departmentapi.repository.EmployeeRepository;
+import com.ainigma100.departmentapi.service.TokenService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -24,7 +30,9 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -51,6 +59,12 @@ class DepartmentControllerIntegrationTest extends AbstractContainerBaseTest {
     @Autowired
     private EmployeeRepository employeeRepository;
 
+    @Autowired
+    private TokenService tokenService;
+
+    private KeycloakTokenRequestDTO keycloakTokenRequestDTO;
+    private KeycloakTokenResponseDTO keycloakTokenResponseDTO;
+
 
     @BeforeEach
     void setUp() {
@@ -60,12 +74,31 @@ class DepartmentControllerIntegrationTest extends AbstractContainerBaseTest {
 
     }
 
-    @Test
-    void testKeycloakContainer() {
-        assertTrue(KEYCLOAK_CONTAINER.isRunning(), "Keycloak container should be running");
-    }
 
     @Test
+    void givenValidCredentials_whenGenerateToken_thenReturnValidToken() {
+
+        // given - precondition or setup
+        keycloakTokenRequestDTO = new KeycloakTokenRequestDTO("petros", "pass");
+
+        // when - action or behaviour that we are going to test
+        KeycloakTokenResponseDTO responseDTO = tokenService.generateToken(keycloakTokenRequestDTO);
+
+
+        // then - verify the output
+        assertNotNull(responseDTO.getAccessToken());
+        assertNotNull(responseDTO.getRefreshToken());
+        assertNotNull(responseDTO.getTokenType());
+        assertNotNull(responseDTO.getExpiresIn());
+        assertNotNull(responseDTO.getRefreshExpiresIn());
+        assertNotNull(responseDTO.getNotBeforePolicy());
+        assertNotNull(responseDTO.getSessionState());
+        assertNotNull(responseDTO.getScope());
+    }
+
+
+    @Test
+    @WithMockUser(username="petros", password = "pass", roles={"client_admin","client_user"})
     void givenDepartmentRequestDTO_whenCreateDepartment_thenReturnDepartmentDTO() throws Exception {
 
         // given - precondition or setup
