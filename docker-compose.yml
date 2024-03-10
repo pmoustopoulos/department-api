@@ -28,7 +28,7 @@ services:
     ports:
       - "9090:8080"
     volumes:
-      - ./keycloak_realm_backup/:/opt/keycloak/data/import
+      - ./src/main/resources/keycloak_realm_backup/:/opt/keycloak/data/import
     entrypoint: '/opt/keycloak/bin/kc.sh start-dev --import-realm'
 
 

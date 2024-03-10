@@ -7,6 +7,7 @@ import com.ainigma100.departmentapi.enums.Status;
 import com.ainigma100.departmentapi.repository.DepartmentRepository;
 import com.ainigma100.departmentapi.repository.EmployeeRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -23,6 +24,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -31,7 +33,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 // use random port for integration testing. the server will start on a random port
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@AutoConfigureMockMvc(addFilters = false)
+@AutoConfigureMockMvc
 @ActiveProfiles("testcontainers")
 @Tag("integration")
 class DepartmentControllerIntegrationTest extends AbstractContainerBaseTest {
@@ -58,6 +60,10 @@ class DepartmentControllerIntegrationTest extends AbstractContainerBaseTest {
 
     }
 
+    @Test
+    void testKeycloakContainer() {
+        assertTrue(KEYCLOAK_CONTAINER.isRunning(), "Keycloak container should be running");
+    }
 
     @Test
     void givenDepartmentRequestDTO_whenCreateDepartment_thenReturnDepartmentDTO() throws Exception {

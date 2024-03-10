@@ -1,10 +1,14 @@
 package com.ainigma100.departmentapi.integration;
 
+import dasniko.testcontainers.keycloak.KeycloakContainer;
+import org.junit.jupiter.api.Assertions;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.PostgreSQLContainer;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.function.Supplier;
 
 public abstract class AbstractContainerBaseTest {
@@ -16,6 +20,13 @@ public abstract class AbstractContainerBaseTest {
             new GenericContainer<>("mailhog/mailhog")
                     .withExposedPorts(1025, 8025);
 
+    static final KeycloakContainer KEYCLOAK_CONTAINER = new KeycloakContainer("quay.io/keycloak/keycloak:24.0")
+            .withAdminUsername("admin")
+            .withAdminPassword("admin")
+            .withRealmImportFile("/keycloak_realm_backup/ainigma100-realm.json");
+
+
+
     static {
         POSTGRE_SQL_CONTAINER = new PostgreSQLContainer("postgres:latest")
                 .withDatabaseName("spring-boot-integration-test")
@@ -24,6 +35,7 @@ public abstract class AbstractContainerBaseTest {
 
         POSTGRE_SQL_CONTAINER.start();
         MAILHOG_CONTAINER.start();
+        KEYCLOAK_CONTAINER.start();
     }
 
     // Dynamically fetch the values from the container and add it to the application context
@@ -41,4 +53,6 @@ public abstract class AbstractContainerBaseTest {
         registry.add("spring.mail.host", MAILHOG_CONTAINER::getHost);
         registry.add("spring.mail.port", mailHogSMTPPort::toString);
     }
+
+
 }
