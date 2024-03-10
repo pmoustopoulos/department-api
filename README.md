@@ -13,6 +13,7 @@ Database migrations across different environments are managed seamlessly with Fl
 - [Prerequisites](#prerequisites)
 - [Keycloak Security](#keycloak-security)
   - [Getting Started with Keycloak](#getting-started-with-keycloak)
+  - [Export Keycloak configuration from Docker container](#export-keycloak-configuration-from-docker-container)
 - [Run Docker Compose](#run-docker-compose)
 - [Start the Application](#start-the-application)
 - [Swagger](#swagger)
@@ -73,32 +74,32 @@ I am going to show you how to configure Keycloak in order to set up users, clien
 <details>
   <summary>Steps to configure Keycloak</summary>
 
-### 1. Access the admin page (username=admin password=admin)
+#### 1. Access the admin page (username=admin password=admin)
 ![Keycloak admin login page](images/keycloak-admin-login-page_1.png)<br><br>
 
-### 2. Create a Realm
+#### 2. Create a Realm
 ![Keycloak create realm](images/keycloak_2.png)<br><br>
 ![Keycloak create realm ainigma100](images/keycloak_3.png)<br><br>
 
-### 3. Create a new Client
+#### 3. Create a new Client
 ![Keycloak create client](images/keycloak_4.png)<br><br>
 ![Keycloak create client department-api](images/keycloak_5.png)<br><br>
 ![Keycloak create client department-api](images/keycloak_6.png)<br><br>
 Specify the ```base path``` of my Backend application.
 ![Keycloak create client department-api](images/keycloak_7.png)<br><br>
 
-### 4. Create Realm roles (admin and user)
+#### 4. Create Realm roles (admin and user)
 ![Keycloak create realm roles](images/keycloak_8.png)<br><br>
 ![Keycloak create realm roles](images/keycloak_9.png)<br><br>
 ![Keycloak create realm roles](images/keycloak_10.png)<br><br>
 
-### 4. Create User
+#### 5. Create User
 ![Keycloak create realm roles](images/keycloak_11.png)<br><br>
 ![Keycloak create realm roles](images/keycloak_12.png)<br><br>
 ![Keycloak create realm roles](images/keycloak_13.png)<br><br>
 ![Keycloak create realm roles](images/keycloak_14.png)<br><br>
 
-### 4. Create Roles for a specific Client
+#### 6. Create Roles for a specific Client
 Create ```client_admin``` and ```client_user``` roles for the client application ```department-api```
 ![Keycloak create roles for department api client](images/keycloak_15.png)<br><br>
 ![Keycloak create roles for department api client](images/keycloak_16.png)<br><br>
@@ -106,7 +107,7 @@ Create ```client_admin``` and ```client_user``` roles for the client application
 ![Keycloak create roles for department api client](images/keycloak_18.png)<br><br>
 ![Keycloak create roles for department api client](images/keycloak_19.png)<br><br>
 
-### 5. Associate Client Roles to Realm Roles
+#### 7. Associate Client Roles to Realm Roles
 ![Keycloak associate client roles to realm roles](images/keycloak_20.png)<br><br>
 ![Keycloak associate client roles to realm roles](images/keycloak_21.png)<br><br>
 ![Keycloak associate client roles to realm roles](images/keycloak_22.png)<br><br>
@@ -114,7 +115,7 @@ Create ```client_admin``` and ```client_user``` roles for the client application
 ![Keycloak associate client roles to realm roles](images/keycloak_24.png)<br><br>
 ![Keycloak associate client roles to realm roles](images/keycloak_25.png)<br><br>
 
-### 6. Assign role to the new User
+#### 8. Assign role to the new User
 Assign ```admin``` Realm Role to the new User
 ![Keycloak assign realm role to the new user](images/keycloak_26.png)<br><br>
 ![Keycloak assign realm role to the new user](images/keycloak_27.png)<br><br>
@@ -127,19 +128,44 @@ Assign Client Role ```client_admin``` to the new User's ```admin``` role
 ![Keycloak assign realm role to the new user](images/keycloak_31.png)<br><br>
 
 
-### 7 Access user's Keycloak login page
+#### 9 Access user's Keycloak login page
 In this step you will have to access the user's Keycloak page in order to change the password. 
 ![Keycloak assign realm role to the new user](images/keycloak_32.png)<br><br>
 ![Keycloak assign realm role to the new user](images/keycloak_34.png)<br><br>
 ![Keycloak assign realm role to the new user](images/keycloak_35.png)<br><br>
 
 
-### 8 Use Postman to generate the token
+#### 10 Use Postman to generate the token
 ![Keycloak assign realm role to the new user](images/keycloak_36.png)<br><br>
 
 
 </details>
 
+### Export Keycloak configuration from Docker container
+To export the Keycloak configuration of your realm from a Docker container, follow these steps:
+<details>
+  <summary>Steps to export Keycloak configuration</summary>
+
+#### 1. Access the Keycloak container
+Replace ```<container-id>``` with the actual ID of your Keycloak container.
+```bash
+docker exec -it <container-id> /bin/bash
+```
+
+#### 2. Export the Keycloak realm configuration
+Replace ```<realm-name>``` with the name of your realm.
+```bash
+/opt/keycloak/bin/kc.sh export --dir /opt/keycloak/data/import --realm <realm-name> --users realm_file
+```
+
+#### 3. Copy the exported realm configuration from the container to your local machine
+Replace ```<container-id>``` with the actual ID of your Keycloak container and ```<realm-name>``` 
+with the name of your realm.
+```bash
+docker cp <container-id>:/opt/keycloak/data/import/<realm-name>-realm.json ~/Downloads/<realm-name>-realm.json
+```
+
+</details>
 
 
 ## Run Docker Compose
