@@ -1,0 +1,1019 @@
+{
+  "openapi" : "3.0.1",
+  "info" : {
+    "title" : "Department API",
+    "description" : "Documentation department-api v1.0",
+    "version" : "2.5.0"
+  },
+  "servers" : [ {
+    "url" : "http://localhost:8080",
+    "description" : "Generated server url"
+  } ],
+  "paths" : {
+    "/api/v1/departments/{id}" : {
+      "get" : {
+        "tags" : [ "department-controller" ],
+        "summary" : "Find department by ID",
+        "description" : "Returns a single department",
+        "operationId" : "getDepartmentById",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/APIResponseDepartmentDTO"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put" : {
+        "tags" : [ "department-controller" ],
+        "summary" : "Update an existing department",
+        "operationId" : "updateDepartment",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/DepartmentRequestDTO"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/APIResponseDepartmentDTO"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "department-controller" ],
+        "summary" : "Delete a department by ID",
+        "operationId" : "deleteDepartment",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/APIResponseString"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/departments/{departmentId}/employees/{employeeId}" : {
+      "get" : {
+        "tags" : [ "employee-controller" ],
+        "summary" : "Find employee by ID belonging to the specific department",
+        "description" : "Returns a single employee belonging to the specific department",
+        "operationId" : "getEmployeeById",
+        "parameters" : [ {
+          "name" : "departmentId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }, {
+          "name" : "employeeId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/APIResponseEmployeeDTO"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put" : {
+        "tags" : [ "employee-controller" ],
+        "summary" : "Update an existing employee belonging to the specific department",
+        "operationId" : "updateEmployeeById",
+        "parameters" : [ {
+          "name" : "departmentId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }, {
+          "name" : "employeeId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/EmployeeRequestDTO"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/APIResponseEmployeeDTO"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "employee-controller" ],
+        "summary" : "Delete an employee belonging to the specific department",
+        "operationId" : "deleteEmployee",
+        "parameters" : [ {
+          "name" : "departmentId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }, {
+          "name" : "employeeId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/APIResponseString"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/employees/search" : {
+      "post" : {
+        "tags" : [ "employee-controller" ],
+        "summary" : "Search all employees from all departments using pagination",
+        "description" : "Returns a list of employees belonging to any department",
+        "operationId" : "getAllEmployeesUsingPagination",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/EmployeeSearchCriteriaDTO"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/APIResponsePageEmployeeDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/departments" : {
+      "post" : {
+        "tags" : [ "department-controller" ],
+        "summary" : "Add a new department",
+        "operationId" : "createDepartment",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/DepartmentRequestDTO"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/APIResponseDepartmentDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/departments/{departmentId}/employees" : {
+      "get" : {
+        "tags" : [ "employee-controller" ],
+        "summary" : "Find all employees belonging to the specific department",
+        "description" : "Returns a list of employees belonging to the specific department",
+        "operationId" : "getEmployeesByDepartmentId",
+        "parameters" : [ {
+          "name" : "departmentId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/APIResponseListEmployeeDTO"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "employee-controller" ],
+        "summary" : "Add a new employee to the specific department",
+        "operationId" : "createEmployee",
+        "parameters" : [ {
+          "name" : "departmentId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/EmployeeRequestDTO"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/APIResponseEmployeeDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/departments/search" : {
+      "post" : {
+        "tags" : [ "department-controller" ],
+        "summary" : "Search all departments using pagination",
+        "description" : "Returns a list of departments",
+        "operationId" : "getAllDepartmentsUsingPagination",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/DepartmentSearchCriteriaDTO"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/APIResponsePageDepartmentDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/reports/zip" : {
+      "get" : {
+        "tags" : [ "report-controller" ],
+        "summary" : "Generate a zip file which contains two excel reports",
+        "operationId" : "generateAndZipReports",
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "string",
+                  "format" : "binary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/reports/pdf/full-report" : {
+      "get" : {
+        "tags" : [ "report-controller" ],
+        "summary" : "Generate a PDF report containing all the departments along with all the employees",
+        "operationId" : "generatePdfFullReport",
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "string",
+                  "format" : "binary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/reports/multi-sheet-excel" : {
+      "get" : {
+        "tags" : [ "report-controller" ],
+        "summary" : "Generate a multi-sheet Excel report containing departments and employees",
+        "operationId" : "generateMultiSheetExcelReport",
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "string",
+                  "format" : "binary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/reports/excel/employees" : {
+      "get" : {
+        "tags" : [ "report-controller" ],
+        "summary" : "Generate an Excel report containing all the employees",
+        "operationId" : "generateEmployeesExcelReport",
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "string",
+                  "format" : "binary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/reports/excel/departments" : {
+      "get" : {
+        "tags" : [ "report-controller" ],
+        "summary" : "Generate an Excel report containing all the departments",
+        "operationId" : "generateDepartmentsExcelReport",
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "string",
+                  "format" : "binary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/employees" : {
+      "get" : {
+        "tags" : [ "employee-controller" ],
+        "summary" : "Get an employee along with the department using the employee email. Note: This endpoint was created just to demonstrate how to get a child and a parent object using the child's property",
+        "operationId" : "getEmployeeAndDepartmentByEmployeeEmail",
+        "parameters" : [ {
+          "name" : "email",
+          "in" : "query",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/APIResponseEmployeeAndDepartmentDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/emails" : {
+      "get" : {
+        "tags" : [ "email-controller" ],
+        "operationId" : "sendEmailWithoutAttachment",
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/APIResponseBoolean"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/emails/with-attachment" : {
+      "get" : {
+        "tags" : [ "email-controller" ],
+        "operationId" : "sendEmailWithAttachment",
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/APIResponseBoolean"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "DepartmentRequestDTO" : {
+        "required" : [ "departmentCode", "departmentDescription", "departmentName" ],
+        "type" : "object",
+        "properties" : {
+          "departmentCode" : {
+            "maxLength" : 2147483647,
+            "minLength" : 2,
+            "type" : "string"
+          },
+          "departmentName" : {
+            "maxLength" : 2147483647,
+            "minLength" : 2,
+            "type" : "string"
+          },
+          "departmentDescription" : {
+            "maxLength" : 2147483647,
+            "minLength" : 10,
+            "type" : "string"
+          }
+        }
+      },
+      "APIResponseDepartmentDTO" : {
+        "type" : "object",
+        "properties" : {
+          "status" : {
+            "type" : "string"
+          },
+          "errors" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/ErrorDTO"
+            }
+          },
+          "results" : {
+            "$ref" : "#/components/schemas/DepartmentDTO"
+          }
+        }
+      },
+      "DepartmentDTO" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "departmentCode" : {
+            "type" : "string"
+          },
+          "departmentName" : {
+            "type" : "string"
+          },
+          "departmentDescription" : {
+            "type" : "string"
+          },
+          "employees" : {
+            "uniqueItems" : true,
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/EmployeeDTO"
+            }
+          }
+        }
+      },
+      "EmployeeDTO" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string"
+          },
+          "firstName" : {
+            "type" : "string"
+          },
+          "lastName" : {
+            "type" : "string"
+          },
+          "email" : {
+            "type" : "string"
+          },
+          "salary" : {
+            "type" : "number"
+          }
+        }
+      },
+      "ErrorDTO" : {
+        "type" : "object",
+        "properties" : {
+          "field" : {
+            "type" : "string"
+          },
+          "errorMessage" : {
+            "type" : "string"
+          }
+        }
+      },
+      "EmployeeRequestDTO" : {
+        "required" : [ "email", "firstName", "lastName" ],
+        "type" : "object",
+        "properties" : {
+          "firstName" : {
+            "maxLength" : 2147483647,
+            "minLength" : 2,
+            "type" : "string"
+          },
+          "lastName" : {
+            "maxLength" : 2147483647,
+            "minLength" : 2,
+            "type" : "string"
+          },
+          "email" : {
+            "type" : "string"
+          },
+          "salary" : {
+            "type" : "number"
+          }
+        }
+      },
+      "APIResponseEmployeeDTO" : {
+        "type" : "object",
+        "properties" : {
+          "status" : {
+            "type" : "string"
+          },
+          "errors" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/ErrorDTO"
+            }
+          },
+          "results" : {
+            "$ref" : "#/components/schemas/EmployeeDTO"
+          }
+        }
+      },
+      "EmployeeSearchCriteriaDTO" : {
+        "required" : [ "page", "size" ],
+        "type" : "object",
+        "properties" : {
+          "firstName" : {
+            "type" : "string"
+          },
+          "lastName" : {
+            "type" : "string"
+          },
+          "email" : {
+            "type" : "string"
+          },
+          "page" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "size" : {
+            "type" : "integer",
+            "format" : "int32",
+            "example" : 10
+          },
+          "sortList" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/SortItem"
+            }
+          }
+        }
+      },
+      "SortItem" : {
+        "type" : "object",
+        "properties" : {
+          "field" : {
+            "type" : "string",
+            "example" : "id"
+          },
+          "direction" : {
+            "type" : "string",
+            "enum" : [ "ASC", "DESC" ]
+          }
+        }
+      },
+      "APIResponsePageEmployeeDTO" : {
+        "type" : "object",
+        "properties" : {
+          "status" : {
+            "type" : "string"
+          },
+          "errors" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/ErrorDTO"
+            }
+          },
+          "results" : {
+            "$ref" : "#/components/schemas/PageEmployeeDTO"
+          }
+        }
+      },
+      "PageEmployeeDTO" : {
+        "type" : "object",
+        "properties" : {
+          "totalPages" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "totalElements" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "first" : {
+            "type" : "boolean"
+          },
+          "last" : {
+            "type" : "boolean"
+          },
+          "size" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "content" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/EmployeeDTO"
+            }
+          },
+          "number" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "sort" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/SortObject"
+            }
+          },
+          "pageable" : {
+            "$ref" : "#/components/schemas/PageableObject"
+          },
+          "numberOfElements" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "empty" : {
+            "type" : "boolean"
+          }
+        }
+      },
+      "PageableObject" : {
+        "type" : "object",
+        "properties" : {
+          "offset" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "sort" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/SortObject"
+            }
+          },
+          "paged" : {
+            "type" : "boolean"
+          },
+          "unpaged" : {
+            "type" : "boolean"
+          },
+          "pageNumber" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "pageSize" : {
+            "type" : "integer",
+            "format" : "int32"
+          }
+        }
+      },
+      "SortObject" : {
+        "type" : "object",
+        "properties" : {
+          "direction" : {
+            "type" : "string"
+          },
+          "nullHandling" : {
+            "type" : "string"
+          },
+          "ascending" : {
+            "type" : "boolean"
+          },
+          "property" : {
+            "type" : "string"
+          },
+          "ignoreCase" : {
+            "type" : "boolean"
+          }
+        }
+      },
+      "DepartmentSearchCriteriaDTO" : {
+        "required" : [ "page", "size" ],
+        "type" : "object",
+        "properties" : {
+          "departmentCode" : {
+            "type" : "string"
+          },
+          "departmentName" : {
+            "type" : "string"
+          },
+          "departmentDescription" : {
+            "type" : "string"
+          },
+          "page" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "size" : {
+            "type" : "integer",
+            "format" : "int32",
+            "example" : 10
+          },
+          "sortList" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/SortItem"
+            }
+          }
+        }
+      },
+      "APIResponsePageDepartmentDTO" : {
+        "type" : "object",
+        "properties" : {
+          "status" : {
+            "type" : "string"
+          },
+          "errors" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/ErrorDTO"
+            }
+          },
+          "results" : {
+            "$ref" : "#/components/schemas/PageDepartmentDTO"
+          }
+        }
+      },
+      "PageDepartmentDTO" : {
+        "type" : "object",
+        "properties" : {
+          "totalPages" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "totalElements" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "first" : {
+            "type" : "boolean"
+          },
+          "last" : {
+            "type" : "boolean"
+          },
+          "size" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "content" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/DepartmentDTO"
+            }
+          },
+          "number" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "sort" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/SortObject"
+            }
+          },
+          "pageable" : {
+            "$ref" : "#/components/schemas/PageableObject"
+          },
+          "numberOfElements" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "empty" : {
+            "type" : "boolean"
+          }
+        }
+      },
+      "APIResponseEmployeeAndDepartmentDTO" : {
+        "type" : "object",
+        "properties" : {
+          "status" : {
+            "type" : "string"
+          },
+          "errors" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/ErrorDTO"
+            }
+          },
+          "results" : {
+            "$ref" : "#/components/schemas/EmployeeAndDepartmentDTO"
+          }
+        }
+      },
+      "EmployeeAndDepartmentDTO" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string"
+          },
+          "firstName" : {
+            "type" : "string"
+          },
+          "lastName" : {
+            "type" : "string"
+          },
+          "email" : {
+            "type" : "string"
+          },
+          "salary" : {
+            "type" : "number"
+          },
+          "department" : {
+            "$ref" : "#/components/schemas/DepartmentDTO"
+          }
+        }
+      },
+      "APIResponseBoolean" : {
+        "type" : "object",
+        "properties" : {
+          "status" : {
+            "type" : "string"
+          },
+          "errors" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/ErrorDTO"
+            }
+          },
+          "results" : {
+            "type" : "boolean"
+          }
+        }
+      },
+      "APIResponseListEmployeeDTO" : {
+        "type" : "object",
+        "properties" : {
+          "status" : {
+            "type" : "string"
+          },
+          "errors" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/ErrorDTO"
+            }
+          },
+          "results" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/EmployeeDTO"
+            }
+          }
+        }
+      },
+      "APIResponseString" : {
+        "type" : "object",
+        "properties" : {
+          "status" : {
+            "type" : "string"
+          },
+          "errors" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/ErrorDTO"
+            }
+          },
+          "results" : {
+            "type" : "string"
+          }
+        }
+      }
+    }
+  }
+}
