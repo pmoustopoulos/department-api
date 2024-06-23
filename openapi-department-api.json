@@ -1,12 +1,12 @@
 {
   "openapi" : "3.0.1",
   "info" : {
-    "title" : "Department API",
+    "title" : "${springdoc.title}",
     "description" : "Documentation department-api v1.0",
     "version" : "2.5.0"
   },
   "servers" : [ {
-    "url" : "http://localhost:8080",
+    "url" : "http://192.168.1.6:8080",
     "description" : "Generated server url"
   } ],
   "paths" : {
@@ -788,12 +788,6 @@
               "$ref" : "#/components/schemas/SortObject"
             }
           },
-          "paged" : {
-            "type" : "boolean"
-          },
-          "unpaged" : {
-            "type" : "boolean"
-          },
           "pageNumber" : {
             "type" : "integer",
             "format" : "int32"
@@ -801,6 +795,12 @@
           "pageSize" : {
             "type" : "integer",
             "format" : "int32"
+          },
+          "unpaged" : {
+            "type" : "boolean"
+          },
+          "paged" : {
+            "type" : "boolean"
           }
         }
       },

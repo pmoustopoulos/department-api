@@ -23,7 +23,7 @@ public class LoggingFilter implements Filter {
 
         if ( this.shouldLogRequest(httpServletRequest) ) {
 
-            log.info("Request " + httpServletRequest.getRequestURL().toString() + ", method: " + httpServletRequest.getMethod());
+            log.info("Request {}, method: {}", httpServletRequest.getRequestURL().toString(), httpServletRequest.getMethod());
 
         }
 
@@ -32,7 +32,7 @@ public class LoggingFilter implements Filter {
 
         // post method calls stamps
         if ( this.shouldLogRequest(httpServletRequest) ) {
-            log.info("Response status: " + httpServletResponse.getStatus());
+            log.info("Response status {} ", httpServletResponse.getStatus());
         }
 
     }
@@ -41,7 +41,7 @@ public class LoggingFilter implements Filter {
 
         // (?i) enables case-insensitive matching, \b matched as whole words
         // reference: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Regular_expressions
-        return !request.getServletPath().matches("(?i).*\\b(actuator|swagger|api-docs|favicon)\\b.*");
+        return !request.getServletPath().matches("(?i).*\\b(actuator|swagger|api-docs|favicon|ui)\\b.*");
     }
 
 }
