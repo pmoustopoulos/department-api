@@ -11,6 +11,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -95,6 +96,27 @@ public class ReportController {
                 .body(new InputStreamResource(targetStream));
 
     }
+
+    @Operation(summary = "Generate a combined PDF report from two separate reports")
+    @GetMapping("/pdf/combined-report")
+    public ResponseEntity<InputStreamResource> generateCombinedPdfReport() throws JRException {
+
+        FileDTO report = reportService.generateCombinedPdfReport();
+
+        byte[] file = Base64.decodeBase64(report.getFileContent());
+        InputStream targetStream = new ByteArrayInputStream(file);
+
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add(CONTENT_DISPOSITION, ATTACHMENT_FILENAME.concat(report.getFileName()));
+
+        return ResponseEntity
+                .ok()
+                .headers(httpHeaders)
+                .contentType(MediaType.parseMediaType(MediaType.APPLICATION_OCTET_STREAM_VALUE))
+                .contentLength(file.length)
+                .body(new InputStreamResource(targetStream));
+    }
+
 
     @Operation(summary = "Generate a zip file which contains two excel reports")
     @GetMapping("/zip")

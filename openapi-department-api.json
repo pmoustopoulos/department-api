@@ -6,7 +6,7 @@
     "version" : "2.5.0"
   },
   "servers" : [ {
-    "url" : "http://192.168.1.6:8080",
+    "url" : "http://192.168.1.3:8080",
     "description" : "Generated server url"
   } ],
   "paths" : {
@@ -407,6 +407,26 @@
         }
       }
     },
+    "/api/v1/reports/pdf/combined-report" : {
+      "get" : {
+        "tags" : [ "report-controller" ],
+        "summary" : "Generate a combined PDF report from two separate reports",
+        "operationId" : "generateCombinedPdfReport",
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "string",
+                  "format" : "binary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/reports/multi-sheet-excel" : {
       "get" : {
         "tags" : [ "report-controller" ],
@@ -729,13 +749,13 @@
       "PageEmployeeDTO" : {
         "type" : "object",
         "properties" : {
-          "totalPages" : {
-            "type" : "integer",
-            "format" : "int32"
-          },
           "totalElements" : {
             "type" : "integer",
             "format" : "int64"
+          },
+          "totalPages" : {
+            "type" : "integer",
+            "format" : "int32"
           },
           "first" : {
             "type" : "boolean"
@@ -796,10 +816,10 @@
             "type" : "integer",
             "format" : "int32"
           },
-          "unpaged" : {
+          "paged" : {
             "type" : "boolean"
           },
-          "paged" : {
+          "unpaged" : {
             "type" : "boolean"
           }
         }
@@ -874,13 +894,13 @@
       "PageDepartmentDTO" : {
         "type" : "object",
         "properties" : {
-          "totalPages" : {
-            "type" : "integer",
-            "format" : "int32"
-          },
           "totalElements" : {
             "type" : "integer",
             "format" : "int64"
+          },
+          "totalPages" : {
+            "type" : "integer",
+            "format" : "int32"
           },
           "first" : {
             "type" : "boolean"
