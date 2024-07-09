@@ -8,9 +8,11 @@ import net.sf.jasperreports.engine.JRParameter;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import net.sf.jasperreports.engine.export.JRPdfExporter;
 import net.sf.jasperreports.engine.export.ooxml.JRXlsxExporter;
 import net.sf.jasperreports.export.SimpleExporterInput;
 import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
+import net.sf.jasperreports.export.SimplePdfExporterConfiguration;
 import org.springframework.stereotype.Component;
 
 import java.io.ByteArrayInputStream;
@@ -139,6 +141,29 @@ public class SimpleReportExporter {
             throw new ReportGenerationException("Currently '" + extension + "' format cannot be exported to byte[].");
         }
 
+    }
+
+    /**
+     * This method is used to combine multiple JasperPrint objects into a single PDF document.
+     * It accepts a list of JasperPrint objects, exports them into a single PDF, and returns the resulting
+     * binary content as a byte array.
+     *
+     * @param jasperPrintList List of JasperPrint objects to be combined into a single PDF
+     * @return byte array representing the combined PDF content
+     * @throws JRException if there is an error during the PDF export process
+     */
+    public byte[] exportCombinedPdf(List<JasperPrint> jasperPrintList) throws JRException {
+
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        JRPdfExporter exporter = new JRPdfExporter();
+        exporter.setExporterInput(SimpleExporterInput.getInstance(jasperPrintList));
+        exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(outputStream));
+        SimplePdfExporterConfiguration configuration = new SimplePdfExporterConfiguration();
+        configuration.setCreatingBatchModeBookmarks(true);
+        exporter.setConfiguration(configuration);
+        exporter.exportReport();
+
+        return outputStream.toByteArray();
     }
 
 
