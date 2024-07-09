@@ -23,10 +23,7 @@ import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 @AllArgsConstructor
@@ -44,6 +41,8 @@ public class ReportServiceImpl implements ReportService {
     private static final String EXCEL_DEPARTMENT_JRXML_PATH = "jrxml/excel/departmentsExcelReport";
     private static final String EXCEL_EMPLOYEE_JRXML_PATH = "jrxml/excel/employeesExcelReport";
     private static final String MULTI_SHEET_EXCEL_JRXML_PATH = "jrxml/excel/multiSheetExcelReport";
+    public static final String JRXML_PDF_MAIN_REPORT = "jrxml/pdf/mainReport";
+    private static final String JRXML_PDF_SUB_REPORT = "jrxml/pdf/subReport";
 
 
 
@@ -109,7 +108,7 @@ public class ReportServiceImpl implements ReportService {
         String fileName = "Full_Report_" + dateAsString + ".pdf";
 
         // prepare the sub report
-        JasperReport subReport = simpleReportFiller.compileReport("jrxml/pdf/subReport");
+        JasperReport subReport = simpleReportFiller.compileReport(JRXML_PDF_SUB_REPORT);
         JRBeanCollectionDataSource subDataSource = reportExporter.getSubReportDataSource(subReportRecords);
 
         // add the sub report as parameter to the main report
@@ -121,7 +120,7 @@ public class ReportServiceImpl implements ReportService {
                 mainReportRecords,
                 jasperParameters,
                 fileName,
-                "jrxml/pdf/mainReport");
+                JRXML_PDF_MAIN_REPORT);
 
         String base64String = Base64.encodeBase64String(reportAsByteArray);
 
@@ -219,7 +218,35 @@ public class ReportServiceImpl implements ReportService {
         return fileDTO;
     }
 
+    @Override
+    public FileDTO generateCombinedPdfReport() throws JRException {
 
+        // Generate the first report part
+        List<Department> departmentList = departmentRepository.findAll();
+        List<DepartmentReportDTO> mappedDepartmentRecords = departmentMapper.departmentToDepartmentReportDto(departmentList);
+        JasperPrint jasperPrintPage1 = reportExporter.extractResultsToJasperPrint(mappedDepartmentRecords, "page1.pdf", JRXML_PDF_MAIN_REPORT);
+
+        // Generate the second report part
+        List<Employee> employeeList = employeeRepository.findAll();
+        List<EmployeeReportDTO> mappedEmployeeRecords = employeeMapper.employeeToEmployeeReportDto(employeeList);
+        JasperPrint jasperPrintPage2 = reportExporter.extractResultsToJasperPrint(mappedEmployeeRecords, "page2.pdf", JRXML_PDF_SUB_REPORT);
+
+
+        // Combine the JasperPrint objects
+        List<JasperPrint> jasperPrintList = Arrays.asList(jasperPrintPage1, jasperPrintPage2);
+        byte[] combinedPdf = reportExporter.exportCombinedPdf(jasperPrintList);
+
+        String dateAsString = Utils.getCurrentDateAsString();
+        String fileName = "Full_Combined_Report_" + dateAsString + ".pdf";
+
+        String base64String = Base64.encodeBase64String(combinedPdf);
+
+        FileDTO fileDTO = new FileDTO();
+        fileDTO.setFileContent(base64String);
+        fileDTO.setFileName(fileName);
+
+        return fileDTO;
+    }
 
 
 }

@@ -16,4 +16,6 @@ public interface ReportService {
     FileDTO generateAndZipReports() throws JRException, IOException;
 
     FileDTO generateMultiSheetExcelReport() throws JRException;
+
+    FileDTO generateCombinedPdfReport() throws JRException;
 }
