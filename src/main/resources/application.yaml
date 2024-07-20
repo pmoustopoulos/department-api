@@ -52,6 +52,7 @@ spring:
 springdoc:
   swagger-ui:
     path: /ui
+  title: Department API
   version: '@springdoc-openapi-starter-webmvc-ui.version@'
 openapi:
   output:
