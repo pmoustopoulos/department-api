@@ -1,6 +1,7 @@
 package com.ainigma100.departmentapi.controller;
 
 import com.ainigma100.departmentapi.dto.FileDTO;
+import com.ainigma100.departmentapi.enums.ReportLanguage;
 import com.ainigma100.departmentapi.service.ReportService;
 import com.ainigma100.departmentapi.utils.TestHelper;
 import org.junit.jupiter.api.BeforeEach;
@@ -10,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
@@ -94,14 +96,37 @@ class ReportControllerTest {
     }
 
     @Test
-    @DisplayName("Generate a PDF report containing all the departments along with all the employees")
-    void givenNoInput_whenGeneratePdfFullReport_thenReturnInputStreamResource() throws Exception {
+    @DisplayName("Generate a PDF report containing all the departments along with all the employees in the specified language")
+    void givenReportLanguage_whenGeneratePdfFullReport_thenReturnInputStreamResource() throws Exception {
 
         // given - precondition or setup
-        given(reportService.generatePdfFullReport()).willReturn(report);
+        ReportLanguage reportLanguage = ReportLanguage.EN;
+        given(reportService.generatePdfFullReport(reportLanguage)).willReturn(report);
 
         // when - action or behaviour that we are going to test
-        ResultActions response = mockMvc.perform(get("/api/v1/reports/pdf/full-report"));
+        ResultActions response = mockMvc.perform(get("/api/v1/reports/pdf/full-report")
+                .contentType(MediaType.APPLICATION_JSON)
+                .param("language", String.valueOf(reportLanguage)));
+
+        // then - verify the output
+        response.andDo(print())
+                // verify the status code that is returned
+                .andExpect(status().isOk());
+
+    }
+
+    @Test
+    @DisplayName("Generate a combined PDF report from two separate reports in the specified language")
+    void givenReportLanguage_whenGenerateCombinedPdfReport_thenReturnInputStreamResource() throws Exception {
+
+        // given - precondition or setup
+        ReportLanguage reportLanguage = ReportLanguage.EN;
+        given(reportService.generateCombinedPdfReport(reportLanguage)).willReturn(report);
+
+        // when - action or behaviour that we are going to test
+        ResultActions response = mockMvc.perform(get("/api/v1/reports/pdf/combined-report")
+                .contentType(MediaType.APPLICATION_JSON)
+                .param("language", String.valueOf(reportLanguage)));
 
         // then - verify the output
         response.andDo(print())

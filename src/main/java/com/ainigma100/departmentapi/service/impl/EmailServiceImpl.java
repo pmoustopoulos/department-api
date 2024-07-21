@@ -1,6 +1,7 @@
 package com.ainigma100.departmentapi.service.impl;
 
 import com.ainigma100.departmentapi.dto.FileDTO;
+import com.ainigma100.departmentapi.enums.ReportLanguage;
 import com.ainigma100.departmentapi.service.EmailService;
 import com.ainigma100.departmentapi.service.ReportService;
 import com.ainigma100.departmentapi.utils.email.EmailRequest;
@@ -72,7 +73,7 @@ public class EmailServiceImpl implements EmailService {
         DataSource excelDataSource = new ByteArrayDataSource(Base64.decodeBase64(excelAttachment.getFileContent()), "application/octet-stream");
 
         // generate the second attachment
-        FileDTO pdfAttachment = reportService.generatePdfFullReport();
+        FileDTO pdfAttachment = reportService.generatePdfFullReport(ReportLanguage.EN);
         DataSource pdfDataSource = new ByteArrayDataSource(Base64.decodeBase64(pdfAttachment.getFileContent()), "application/octet-stream");
 
 

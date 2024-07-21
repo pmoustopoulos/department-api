@@ -2,6 +2,7 @@ package com.ainigma100.departmentapi.integration;
 
 import com.ainigma100.departmentapi.entity.Department;
 import com.ainigma100.departmentapi.entity.Employee;
+import com.ainigma100.departmentapi.enums.ReportLanguage;
 import com.ainigma100.departmentapi.repository.DepartmentRepository;
 import com.ainigma100.departmentapi.repository.EmployeeRepository;
 
@@ -17,6 +18,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -38,6 +41,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
 @Testcontainers(disabledWithoutDocker = true)
+@ActiveProfiles("testcontainers")
 @Tag("integration")
 class ReportControllerIntegrationTest extends AbstractContainerBaseTest {
 
@@ -135,24 +139,24 @@ class ReportControllerIntegrationTest extends AbstractContainerBaseTest {
 				Cell cell = cellIterator.next();
 				//Check the cell type and format accordingly
 				switch ( count ) {
-				case 0:
-					assertThat( cell.getStringCellValue() ).isEqualTo( departmentList.get( i ).getDepartmentCode() );
-					break;
-				case 1:
-					assertThat( cell.getStringCellValue() ).isEqualTo( departmentList.get( i ).getDepartmentName() );
-					break;
-				case 2:
-					assertThat( cell.getStringCellValue() ).isEqualTo( departmentList.get( i ).getDepartmentDescription() );
-					break;
-				case 3:
-					Long employeeDepartmentCounter = employeeList.stream()
-							.filter( e -> e.getDepartment()
-									.getDepartmentName()
-									.equals( departmentName ) )
-							.count();
-					assertThat( (long) cell.getNumericCellValue() ).isEqualTo(
-							employeeDepartmentCounter );
-					break;
+					case 0:
+						assertThat( cell.getStringCellValue() ).isEqualTo( departmentList.get( i ).getDepartmentCode() );
+						break;
+					case 1:
+						assertThat( cell.getStringCellValue() ).isEqualTo( departmentList.get( i ).getDepartmentName() );
+						break;
+					case 2:
+						assertThat( cell.getStringCellValue() ).isEqualTo( departmentList.get( i ).getDepartmentDescription() );
+						break;
+					case 3:
+						Long employeeDepartmentCounter = employeeList.stream()
+								.filter( e -> e.getDepartment()
+										.getDepartmentName()
+										.equals( departmentName ) )
+								.count();
+						assertThat( (long) cell.getNumericCellValue() ).isEqualTo(
+								employeeDepartmentCounter );
+						break;
 				}
 				count++;
 			}
@@ -209,18 +213,18 @@ class ReportControllerIntegrationTest extends AbstractContainerBaseTest {
 				Cell cell = cellIterator.next();
 				//Check the cell type and format accordingly
 				switch ( count ) {
-				case 0:
-					assertThat( cell.getStringCellValue() ).isEqualTo( employeeList.get( i ).getFirstName() );
-					break;
-				case 1:
-					assertThat( cell.getStringCellValue() ).isEqualTo( employeeList.get( i ).getLastName() );
-					break;
-				case 2:
-					assertThat( cell.getStringCellValue() ).isEqualTo( employeeList.get( i ).getEmail() );
-					break;
-				case 3:
-					assertThat( BigDecimal.valueOf(
-							Long.parseLong( formatter.format(cell.getNumericCellValue()  ) ) )).isEqualTo( employeeList.get( i ).getSalary() );
+					case 0:
+						assertThat( cell.getStringCellValue() ).isEqualTo( employeeList.get( i ).getFirstName() );
+						break;
+					case 1:
+						assertThat( cell.getStringCellValue() ).isEqualTo( employeeList.get( i ).getLastName() );
+						break;
+					case 2:
+						assertThat( cell.getStringCellValue() ).isEqualTo( employeeList.get( i ).getEmail() );
+						break;
+					case 3:
+						assertThat( BigDecimal.valueOf(
+								Long.parseLong( formatter.format(cell.getNumericCellValue()  ) ) )).isEqualTo( employeeList.get( i ).getSalary() );
 				}
 				count++;
 			}
@@ -230,20 +234,42 @@ class ReportControllerIntegrationTest extends AbstractContainerBaseTest {
 	}
 
 	@Test
-	@DisplayName("Generate a PDF report containing all the departments along with all the employees")
-	void givenNoInput_whenGeneratePdfFullReport_thenReturnInputStreamResource() throws Exception {
+	@DisplayName("Generate a PDF report containing all the departments along with all the employees in the specified language")
+	void givenReportLanguage_whenGeneratePdfFullReport_thenReturnInputStreamResource() throws Exception {
 
 		// given - precondition or setup
+		ReportLanguage reportLanguage = ReportLanguage.EN;
 		departmentRepository.saveAll( departmentList );
 		employeeRepository.saveAll( employeeList );
 
 		// when - action or behaviour that we are going to test
-		ResultActions response = mockMvc.perform( get( "/api/v1/reports/pdf/full-report" ) );
+		ResultActions response = mockMvc.perform(get( "/api/v1/reports/pdf/full-report" )
+				.param("language", String.valueOf(reportLanguage)));
 
-        // then - verify the output
-        response
-                // verify the status code that is returned
-                .andExpect( status().isOk() );
+		// then - verify the output
+		response
+				// verify the status code that is returned
+				.andExpect( status().isOk() );
+
+	}
+
+	@Test
+	@DisplayName("Generate a combined PDF report from two separate reports in the specified language")
+	void givenReportLanguage_whenGenerateCombinedPdfReport_thenReturnInputStreamResource() throws Exception {
+
+		// given - precondition or setup
+		ReportLanguage reportLanguage = ReportLanguage.EN;
+		departmentRepository.saveAll( departmentList );
+		employeeRepository.saveAll( employeeList );
+
+		// when - action or behaviour that we are going to test
+		ResultActions response = mockMvc.perform(get( "/api/v1/reports/pdf/combined-report" )
+				.param("language", String.valueOf(reportLanguage)));
+
+		// then - verify the output
+		response
+				// verify the status code that is returned
+				.andExpect( status().isOk() );
 
 	}
 
@@ -258,10 +284,10 @@ class ReportControllerIntegrationTest extends AbstractContainerBaseTest {
 		// when - action or behaviour that we are going to test
 		ResultActions response = mockMvc.perform( get( "/api/v1/reports/zip" ) );
 
-        // then - verify the output
-        response
-                // verify the status code that is returned
-                .andExpect( status().isOk() );
+		// then - verify the output
+		response
+				// verify the status code that is returned
+				.andExpect( status().isOk() );
 
 	}
 
@@ -277,14 +303,14 @@ class ReportControllerIntegrationTest extends AbstractContainerBaseTest {
 		// when - action or behaviour that we are going to test
 		ResultActions response = mockMvc.perform( get( "/api/v1/reports/multi-sheet-excel" ) );
 
-        // then - verify the output
-        response
-                // verify the status code that is returned
-                .andExpect( status().isOk() );
+		// then - verify the output
+		response
+				// verify the status code that is returned
+				.andExpect( status().isOk() );
 
 	}
 
-	private void skipRows( Iterator iterator, int num ) {
+	private void skipRows(Iterator<?> iterator, int num ) {
 		for ( int i = 0; i < num; i++ ) {
 			iterator.next();
 		}
