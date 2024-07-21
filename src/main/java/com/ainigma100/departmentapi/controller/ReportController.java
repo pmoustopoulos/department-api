@@ -1,6 +1,7 @@
 package com.ainigma100.departmentapi.controller;
 
 import com.ainigma100.departmentapi.dto.FileDTO;
+import com.ainigma100.departmentapi.enums.ReportLanguage;
 import com.ainigma100.departmentapi.service.ReportService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.AllArgsConstructor;
@@ -10,10 +11,7 @@ import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -76,11 +74,12 @@ public class ReportController {
     }
 
 
-    @Operation(summary = "Generate a PDF report containing all the departments along with all the employees")
+    @Operation(summary = "Generate a PDF report containing all the departments along with all the employees in the specified language")
     @GetMapping("/pdf/full-report")
-    public ResponseEntity<InputStreamResource> generatePdfFullReport() throws JRException {
+    public ResponseEntity<InputStreamResource> generatePdfFullReport(
+            @RequestParam ReportLanguage language) throws JRException {
 
-        FileDTO report = reportService.generatePdfFullReport();
+        FileDTO report = reportService.generatePdfFullReport(language);
 
         byte[] file = Base64.decodeBase64(report.getFileContent());
         InputStream targetStream = new ByteArrayInputStream(file);
@@ -97,11 +96,12 @@ public class ReportController {
 
     }
 
-    @Operation(summary = "Generate a combined PDF report from two separate reports")
+    @Operation(summary = "Generate a combined PDF report from two separate reports in the specified language")
     @GetMapping("/pdf/combined-report")
-    public ResponseEntity<InputStreamResource> generateCombinedPdfReport() throws JRException {
+    public ResponseEntity<InputStreamResource> generateCombinedPdfReport(
+            @RequestParam ReportLanguage language) throws JRException {
 
-        FileDTO report = reportService.generateCombinedPdfReport();
+        FileDTO report = reportService.generateCombinedPdfReport(language);
 
         byte[] file = Base64.decodeBase64(report.getFileContent());
         InputStream targetStream = new ByteArrayInputStream(file);

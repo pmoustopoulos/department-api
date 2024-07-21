@@ -5,6 +5,7 @@ import com.ainigma100.departmentapi.dto.EmployeeReportDTO;
 import com.ainigma100.departmentapi.dto.FileDTO;
 import com.ainigma100.departmentapi.entity.Department;
 import com.ainigma100.departmentapi.entity.Employee;
+import com.ainigma100.departmentapi.enums.ReportLanguage;
 import com.ainigma100.departmentapi.mapper.DepartmentMapper;
 import com.ainigma100.departmentapi.mapper.EmployeeMapper;
 import com.ainigma100.departmentapi.repository.DepartmentRepository;
@@ -20,6 +21,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -50,10 +52,20 @@ class ReportServiceImplTest {
     private EmployeeMapper employeeMapper;
 
     @Mock
-    private SimpleReportExporter reportExporter;
+    private SimpleReportExporter simpleReportExporter;
 
     @Mock
     private SimpleReportFiller simpleReportFiller;
+
+    // Adding this mock to ensure that any dependency on ReloadableResourceBundleMessageSource
+    // in the ReportServiceImpl class is properly handled. This mock will prevent any potential
+    // null pointer exceptions or missing dependency issues during the tests.
+    // To cover the messageSource instanceof ReloadableResourceBundleMessageSource bundleMessageSource
+    @Mock
+    private ReloadableResourceBundleMessageSource reloadableResourceBundleMessageSource;
+
+//    @Mock
+//    private MessageSource messageSource;
 
 
 
@@ -139,7 +151,7 @@ class ReportServiceImplTest {
         // given - precondition or setup
         given(departmentRepository.findAll()).willReturn(departmentList);
         given(departmentMapper.departmentToDepartmentReportDto(departmentList)).willReturn(departmentReportDTOList);
-        given(reportExporter.exportReportToByteArray(anyList(), anyString(), anyString())).willReturn(new byte[0]);
+        given(simpleReportExporter.exportReportToByteArray(anyList(), anyString(), anyString())).willReturn(new byte[0]);
 
 
         // when - action or behaviour that we are going to test
@@ -152,7 +164,7 @@ class ReportServiceImplTest {
 
         verify(departmentRepository, times(1)).findAll();
         verify(departmentMapper, times(1)).departmentToDepartmentReportDto(departmentList);
-        verify(reportExporter, times(1)).exportReportToByteArray(departmentReportDTOList, fileDTO.getFileName(), "jrxml/excel/departmentsExcelReport");
+        verify(simpleReportExporter, times(1)).exportReportToByteArray(departmentReportDTOList, fileDTO.getFileName(), "jrxml/excel/departmentsExcelReport");
     }
 
     @Test
@@ -172,7 +184,7 @@ class ReportServiceImplTest {
 
         verify(departmentRepository, times(1)).findAll();
         verify(departmentMapper, times(1)).departmentToDepartmentReportDto(Collections.emptyList());
-        verify(reportExporter, times(1)).exportReportToByteArray(Collections.emptyList(), fileDTO.getFileName(), "jrxml/excel/departmentsExcelReport");
+        verify(simpleReportExporter, times(1)).exportReportToByteArray(Collections.emptyList(), fileDTO.getFileName(), "jrxml/excel/departmentsExcelReport");
     }
 
     @Test
@@ -182,7 +194,7 @@ class ReportServiceImplTest {
         // given - precondition or setup
         given(employeeRepository.findAll()).willReturn(employeeList);
         given(employeeMapper.employeeToEmployeeReportDto(employeeList)).willReturn(employeeReportDTOList);
-        given(reportExporter.exportReportToByteArray(anyList(), anyString(), anyString())).willReturn(new byte[0]);
+        given(simpleReportExporter.exportReportToByteArray(anyList(), anyString(), anyString())).willReturn(new byte[0]);
 
 
         // when - action or behaviour that we are going to test
@@ -195,7 +207,7 @@ class ReportServiceImplTest {
 
         verify(employeeRepository, times(1)).findAll();
         verify(employeeMapper, times(1)).employeeToEmployeeReportDto(employeeList);
-        verify(reportExporter, times(1)).exportReportToByteArray(employeeReportDTOList, fileDTO.getFileName(), "jrxml/excel/employeesExcelReport");
+        verify(simpleReportExporter, times(1)).exportReportToByteArray(employeeReportDTOList, fileDTO.getFileName(), "jrxml/excel/employeesExcelReport");
     }
 
     @Test
@@ -215,14 +227,15 @@ class ReportServiceImplTest {
 
         verify(employeeRepository, times(1)).findAll();
         verify(employeeMapper, times(1)).employeeToEmployeeReportDto(Collections.emptyList());
-        verify(reportExporter, times(1)).exportReportToByteArray(Collections.emptyList(), fileDTO.getFileName(), "jrxml/excel/employeesExcelReport");
+        verify(simpleReportExporter, times(1)).exportReportToByteArray(Collections.emptyList(), fileDTO.getFileName(), "jrxml/excel/employeesExcelReport");
     }
-    
+
     @Test
     @DisplayName("Generate PDF full report (containing employees and departments) with data")
-    void givenNoInput_whenGeneratePdfFullReport_thenReturnFileDTO() throws JRException {
-        
+    void givenReportLanguage_whenGeneratePdfFullReport_thenReturnFileDTO() throws JRException {
+
         // given - precondition or setup
+        ReportLanguage reportLanguage = ReportLanguage.EN;
         given(departmentRepository.findAll()).willReturn(departmentList);
         given(departmentMapper.departmentToDepartmentReportDto(departmentList)).willReturn(departmentReportDTOList);
         given(employeeRepository.findAll()).willReturn(employeeList);
@@ -231,51 +244,60 @@ class ReportServiceImplTest {
         byte[] reportAsByteArray = "Mocked Report Data".getBytes();
 
         given(simpleReportFiller.compileReport("jrxml/pdf/subReport")).willReturn(mock(JasperReport.class));
-        given(reportExporter.getSubReportDataSource(employeeReportDTOList)).willReturn(mock(JRBeanCollectionDataSource.class));
-        given(reportExporter.exportReportToByteArray(eq(departmentReportDTOList), anyMap(), anyString(), eq("jrxml/pdf/mainReport")))
+        given(simpleReportExporter.getSubReportDataSource(employeeReportDTOList)).willReturn(mock(JRBeanCollectionDataSource.class));
+        given(simpleReportExporter.exportReportToByteArray(eq(departmentReportDTOList), anyMap(), anyString(), eq("jrxml/pdf/mainReport")))
                 .willReturn(reportAsByteArray);
-        
-        
+
+
         // when - action or behaviour that we are going to test
-        FileDTO fileDTO = reportService.generatePdfFullReport();
-        
+        FileDTO fileDTO = reportService.generatePdfFullReport(reportLanguage);
+
         // then - verify the output
         assertThat(fileDTO).isNotNull();
         assertThat(fileDTO.getFileName()).isNotNull();
         assertThat(fileDTO.getFileContent()).isNotNull();
 
+        verify(departmentRepository, times(1)).findAll();
+        verify(departmentMapper, times(1)).departmentToDepartmentReportDto(anyList());
         verify(employeeRepository, times(1)).findAll();
-        verify(employeeMapper, times(1)).employeeToEmployeeReportDto(employeeList);
-        verify(reportExporter, times(1)).exportReportToByteArray(eq(departmentReportDTOList), anyMap(), anyString(), eq("jrxml/pdf/mainReport"));
+        verify(employeeMapper, times(1)).employeeToEmployeeReportDto(anyList());
+        verify(simpleReportFiller, times(1)).compileReport(any(String.class));
+        verify(simpleReportExporter, times(1)).getSubReportDataSource(anyList());
+        verify(simpleReportExporter, times(1)).exportReportToByteArray(anyList(), anyMap(), anyString(), eq("jrxml/pdf/mainReport"));
     }
 
     @Test
     @DisplayName("Generate PDF full report with empty data")
-    void givenNoInput_whenGeneratePdfFullReport_thenReturnFileDTOWithEmptyContent() throws JRException {
+    void givenReportLanguage_whenGeneratePdfFullReport_thenReturnFileDTOWithEmptyContent() throws JRException {
 
         // given - precondition or setup
+        ReportLanguage reportLanguage = ReportLanguage.EN;
         given(departmentRepository.findAll()).willReturn(Collections.emptyList());
         given(departmentMapper.departmentToDepartmentReportDto(Collections.emptyList())).willReturn(Collections.emptyList());
         given(employeeRepository.findAll()).willReturn(Collections.emptyList());
         given(employeeMapper.employeeToEmployeeReportDto(Collections.emptyList())).willReturn(Collections.emptyList());
 
         given(simpleReportFiller.compileReport("jrxml/pdf/subReport")).willReturn(mock(JasperReport.class));
-        given(reportExporter.getSubReportDataSource(anyList())).willReturn(mock(JRBeanCollectionDataSource.class));
-        given(reportExporter.exportReportToByteArray(anyList(), anyMap(), anyString(), eq("jrxml/pdf/mainReport")))
+        given(simpleReportExporter.getSubReportDataSource(anyList())).willReturn(mock(JRBeanCollectionDataSource.class));
+        given(simpleReportExporter.exportReportToByteArray(anyList(), anyMap(), anyString(), eq("jrxml/pdf/mainReport")))
                 .willReturn(null);
 
 
         // when - action or behaviour that we are going to test
-        FileDTO fileDTO = reportService.generatePdfFullReport();
+        FileDTO fileDTO = reportService.generatePdfFullReport(reportLanguage);
 
         // then - verify the output
         assertThat(fileDTO).isNotNull();
         assertThat(fileDTO.getFileName()).isNotNull();
         assertThat(fileDTO.getFileContent()).isNull();
 
+        verify(departmentRepository, times(1)).findAll();
+        verify(departmentMapper, times(1)).departmentToDepartmentReportDto(anyList());
         verify(employeeRepository, times(1)).findAll();
         verify(employeeMapper, times(1)).employeeToEmployeeReportDto(anyList());
-        verify(reportExporter, times(1)).exportReportToByteArray(anyList(), anyMap(), anyString(), eq("jrxml/pdf/mainReport"));
+        verify(simpleReportFiller, times(1)).compileReport(any(String.class));
+        verify(simpleReportExporter, times(1)).getSubReportDataSource(anyList());
+        verify(simpleReportExporter, times(1)).exportReportToByteArray(anyList(), anyMap(), anyString(), eq("jrxml/pdf/mainReport"));
     }
 
     @Test
@@ -286,19 +308,19 @@ class ReportServiceImplTest {
         given(employeeRepository.findAll()).willReturn(employeeList);
         given(employeeMapper.employeeToEmployeeReportDto(employeeList)).willReturn(employeeReportDTOList);
         JasperPrint mockEmployeeJasperPrint = mock(JasperPrint.class);
-        given(reportExporter.extractResultsToJasperPrint(eq(employeeReportDTOList), anyString(), anyString()))
+        given(simpleReportExporter.extractResultsToJasperPrint(eq(employeeReportDTOList), anyString(), anyString()))
                 .willReturn(mockEmployeeJasperPrint);
 
         given(departmentRepository.findAll()).willReturn(departmentList);
         given(departmentMapper.departmentToDepartmentReportDto(departmentList)).willReturn(departmentReportDTOList);
         JasperPrint mockDepartmentJasperPrint = mock(JasperPrint.class);
-        given(reportExporter.extractResultsToJasperPrint(eq(departmentReportDTOList), anyString(), anyString()))
+        given(simpleReportExporter.extractResultsToJasperPrint(eq(departmentReportDTOList), anyString(), anyString()))
                 .willReturn(mockDepartmentJasperPrint);
 
         List<JasperPrint> jasperPrintList = Arrays.asList(mockEmployeeJasperPrint, mockDepartmentJasperPrint);
         byte[] reportAsByteArray = "Mocked Zip Data".getBytes();
 
-        given(reportExporter.zipJasperPrintList(jasperPrintList)).willReturn(reportAsByteArray);
+        given(simpleReportExporter.zipJasperPrintList(jasperPrintList)).willReturn(reportAsByteArray);
 
 
         // when - action or behaviour that we are going to test
@@ -314,7 +336,7 @@ class ReportServiceImplTest {
         verify(employeeMapper, times(1)).employeeToEmployeeReportDto(employeeList);
         verify(departmentRepository, times(1)).findAll();
         verify(departmentMapper, times(1)).departmentToDepartmentReportDto(departmentList);
-        verify(reportExporter, times(1)).zipJasperPrintList(jasperPrintList);
+        verify(simpleReportExporter, times(1)).zipJasperPrintList(jasperPrintList);
     }
 
 
@@ -328,19 +350,19 @@ class ReportServiceImplTest {
         given(employeeRepository.findAll()).willReturn(Collections.emptyList());
         given(employeeMapper.employeeToEmployeeReportDto(Collections.emptyList())).willReturn(Collections.emptyList());
         JasperPrint mockEmployeeJasperPrint = mock(JasperPrint.class);
-        given(reportExporter.extractResultsToJasperPrint(eq(Collections.emptyList()), eq("Employee_Report_26-05-2023.xlsx"), eq("employee")))
+        given(simpleReportExporter.extractResultsToJasperPrint(eq(Collections.emptyList()), eq("Employee_Report_26-05-2023.xlsx"), eq("employee")))
                 .willReturn(mockEmployeeJasperPrint);
 
         given(departmentRepository.findAll()).willReturn(Collections.emptyList());
         given(departmentMapper.departmentToDepartmentReportDto(Collections.emptyList())).willReturn(Collections.emptyList());
         JasperPrint mockDepartmentJasperPrint = mock(JasperPrint.class);
-        given(reportExporter.extractResultsToJasperPrint(eq(Collections.emptyList()), eq("Department_Report_26-05-2023.xlsx"), eq("department")))
+        given(simpleReportExporter.extractResultsToJasperPrint(eq(Collections.emptyList()), eq("Department_Report_26-05-2023.xlsx"), eq("department")))
                 .willReturn(mockDepartmentJasperPrint);
 
         List<JasperPrint> jasperPrintList = Arrays.asList(mockEmployeeJasperPrint, mockDepartmentJasperPrint);
         byte[] reportAsByteArray = "Mocked Zip Data".getBytes();
 
-        given(reportExporter.zipJasperPrintList(eq(jasperPrintList))).willReturn(reportAsByteArray);
+        given(simpleReportExporter.zipJasperPrintList(eq(jasperPrintList))).willReturn(reportAsByteArray);
 
         // when - action or behavior that we are going to test
         FileDTO fileDTO = reportService.generateAndZipReports();
@@ -353,13 +375,13 @@ class ReportServiceImplTest {
         // then - verify the interactions
         verify(employeeRepository, times(1)).findAll();
         verify(employeeMapper, times(1)).employeeToEmployeeReportDto(Collections.emptyList());
-        verify(reportExporter, times(1)).extractResultsToJasperPrint(eq(Collections.emptyList()), eq("Employee_Report_26-05-2023.xlsx"), eq("jrxml/excel/employeesExcelReport"));
+        verify(simpleReportExporter, times(1)).extractResultsToJasperPrint(eq(Collections.emptyList()), eq("Employee_Report_26-05-2023.xlsx"), eq("jrxml/excel/employeesExcelReport"));
 
         verify(departmentRepository, times(1)).findAll();
         verify(departmentMapper, times(1)).departmentToDepartmentReportDto(Collections.emptyList());
-        verify(reportExporter, times(1)).extractResultsToJasperPrint(eq(Collections.emptyList()), eq("Department_Report_26-05-2023.xlsx"), eq("jrxml/excel/departmentsExcelReport"));
+        verify(simpleReportExporter, times(1)).extractResultsToJasperPrint(eq(Collections.emptyList()), eq("Department_Report_26-05-2023.xlsx"), eq("jrxml/excel/departmentsExcelReport"));
 
-        verify(reportExporter, times(1)).zipJasperPrintList(jasperPrintList);
+        verify(simpleReportExporter, times(1)).zipJasperPrintList(jasperPrintList);
     }
 
     @Test
@@ -380,8 +402,8 @@ class ReportServiceImplTest {
 
         given(simpleReportFiller.compileReport("jrxml/excel/departmentsExcelReport")).willReturn(departmentSubReport);
         given(simpleReportFiller.compileReport("jrxml/excel/employeesExcelReport")).willReturn(employeeSubReport);
-        given(reportExporter.getSubReportDataSource(departmentReportDTOList)).willReturn(departmentSubDataSource);
-        given(reportExporter.getSubReportDataSource(employeeReportDTOList)).willReturn(employeeSubDataSource);
+        given(simpleReportExporter.getSubReportDataSource(departmentReportDTOList)).willReturn(departmentSubDataSource);
+        given(simpleReportExporter.getSubReportDataSource(employeeReportDTOList)).willReturn(employeeSubDataSource);
 
         Map<String, Object> jasperParameters = new HashMap<>();
         jasperParameters.put("departmentSubReport", departmentSubReport);
@@ -391,7 +413,7 @@ class ReportServiceImplTest {
         jasperParameters.put("firstSheetName", "DEPARTMENTS_REPORT");
         jasperParameters.put("secondSheetName", "EMPLOYEES_REPORT");
 
-        given(reportExporter.exportReportToByteArray(
+        given(simpleReportExporter.exportReportToByteArray(
                 any(), eq(jasperParameters), anyString(), eq("jrxml/excel/multiSheetExcelReport")))
                 .willReturn(new byte[]{}); // Provide empty byte array for simplicity
 
@@ -410,9 +432,9 @@ class ReportServiceImplTest {
         verify(employeeMapper, times(1)).employeeToEmployeeReportDto(employeeList);
         verify(simpleReportFiller, times(1)).compileReport("jrxml/excel/departmentsExcelReport");
         verify(simpleReportFiller, times(1)).compileReport("jrxml/excel/employeesExcelReport");
-        verify(reportExporter, times(1)).getSubReportDataSource(departmentReportDTOList);
-        verify(reportExporter, times(1)).getSubReportDataSource(employeeReportDTOList);
-        verify(reportExporter, times(1)).exportReportToByteArray(any(), eq(jasperParameters), anyString(), eq("jrxml/excel/multiSheetExcelReport"));
+        verify(simpleReportExporter, times(1)).getSubReportDataSource(departmentReportDTOList);
+        verify(simpleReportExporter, times(1)).getSubReportDataSource(employeeReportDTOList);
+        verify(simpleReportExporter, times(1)).exportReportToByteArray(any(), eq(jasperParameters), anyString(), eq("jrxml/excel/multiSheetExcelReport"));
     }
 
 
@@ -435,8 +457,8 @@ class ReportServiceImplTest {
 
         given(simpleReportFiller.compileReport("jrxml/excel/departmentsExcelReport")).willReturn(departmentSubReport);
         given(simpleReportFiller.compileReport("jrxml/excel/employeesExcelReport")).willReturn(employeeSubReport);
-        given(reportExporter.getSubReportDataSource(Collections.emptyList())).willReturn(departmentSubDataSource);
-        given(reportExporter.getSubReportDataSource(Collections.emptyList())).willReturn(employeeSubDataSource);
+        given(simpleReportExporter.getSubReportDataSource(Collections.emptyList())).willReturn(departmentSubDataSource);
+        given(simpleReportExporter.getSubReportDataSource(Collections.emptyList())).willReturn(employeeSubDataSource);
 
         Map<String, Object> jasperParameters = new HashMap<>();
         jasperParameters.put("departmentSubReport", departmentSubReport);
@@ -446,7 +468,7 @@ class ReportServiceImplTest {
         jasperParameters.put("firstSheetName", "DEPARTMENTS_REPORT");
         jasperParameters.put("secondSheetName", "EMPLOYEES_REPORT");
 
-        given(reportExporter.exportReportToByteArray(
+        given(simpleReportExporter.exportReportToByteArray(
                 any(), eq(jasperParameters), eq("Multi_Sheet_Report_26-05-2023.xlsx"), eq("jrxml/excel/multiSheetExcelReport")))
                 .willReturn(new byte[]{}); // Provide empty byte array for simplicity
 
@@ -464,11 +486,50 @@ class ReportServiceImplTest {
         verify(employeeMapper, times(1)).employeeToEmployeeReportDto(employeeList);
         verify(simpleReportFiller, times(1)).compileReport("jrxml/excel/departmentsExcelReport");
         verify(simpleReportFiller, times(1)).compileReport("jrxml/excel/employeesExcelReport");
-        verify(reportExporter, times(1)).getSubReportDataSource(departmentReportDTOList);
-        verify(reportExporter, times(1)).getSubReportDataSource(employeeReportDTOList);
-        verify(reportExporter, times(1)).exportReportToByteArray(any(), eq(jasperParameters), anyString(), eq("jrxml/excel/multiSheetExcelReport"));
+        verify(simpleReportExporter, times(1)).getSubReportDataSource(departmentReportDTOList);
+        verify(simpleReportExporter, times(1)).getSubReportDataSource(employeeReportDTOList);
+        verify(simpleReportExporter, times(1)).exportReportToByteArray(any(), eq(jasperParameters), anyString(), eq("jrxml/excel/multiSheetExcelReport"));
     }
 
+    @Test
+    @DisplayName("Generate combined PDF report with data")
+    void givenReportLanguage_whenGenerateCombinedPdfReport_thenReturnFileDTO() throws JRException {
+
+        // given - precondition or setup
+        ReportLanguage reportLanguage = ReportLanguage.EN;
+        JasperPrint mockJasperPrint = mock(JasperPrint.class);
+        given(departmentRepository.findAll()).willReturn(departmentList);
+        given(departmentMapper.departmentToDepartmentReportDto(departmentList)).willReturn(departmentReportDTOList);
+        given(simpleReportExporter.extractResultsToJasperPrint(any(), any(), any(), any()))
+                .willReturn(mockJasperPrint);
+
+
+
+        given(employeeRepository.findAll()).willReturn(employeeList);
+        given(employeeMapper.employeeToEmployeeReportDto(employeeList)).willReturn(employeeReportDTOList);
+        given(simpleReportExporter.extractResultsToJasperPrint(any(), any(), any(), any()))
+                .willReturn(mockJasperPrint);
+
+        byte[] reportAsByteArray = "Mocked Report Data".getBytes();
+        given(simpleReportExporter.exportCombinedPdf(anyList())).willReturn(reportAsByteArray);
+
+
+        // when - action or behavior that we are going to test
+        FileDTO fileDTO = reportService.generateCombinedPdfReport(reportLanguage);
+
+        // then - verify the output
+        assertThat(fileDTO).isNotNull();
+        assertThat(fileDTO.getFileName()).isNotNull();
+        assertThat(fileDTO.getFileContent()).isNotNull();
+        assertThat(fileDTO.getFileName()).startsWith("EN_");;
+
+        verify(departmentRepository, times(1)).findAll();
+        verify(departmentMapper, times(1)).departmentToDepartmentReportDto(anyList());
+        verify(simpleReportExporter, times(2)).extractResultsToJasperPrint(any(), any(), any(), any());
+        verify(employeeRepository, times(1)).findAll();
+        verify(employeeMapper, times(1)).employeeToEmployeeReportDto(anyList());
+        verify(simpleReportExporter, times(1)).exportCombinedPdf(anyList());
+    }
 
 
 }

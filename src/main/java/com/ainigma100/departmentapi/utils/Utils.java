@@ -1,5 +1,6 @@
 package com.ainigma100.departmentapi.utils;
 
+import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -9,6 +10,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 
@@ -43,6 +45,22 @@ public class Utils {
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 
         return dateTimeFormatter.format(localDate);
+    }
+
+
+    public static void setEncodingForLocale(ReloadableResourceBundleMessageSource messageSource, Locale locale) {
+        String encoding = determineEncoding(locale);
+        messageSource.setDefaultEncoding(encoding);
+    }
+
+    private static String determineEncoding(Locale locale) {
+
+        String language = locale.getLanguage().toLowerCase();
+
+        return switch (language) {
+            case "es", "de" -> "ISO-8859-1";
+            default -> "UTF-8";
+        };
     }
 
 }

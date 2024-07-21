@@ -1,6 +1,7 @@
 package com.ainigma100.departmentapi.service.impl;
 
 import com.ainigma100.departmentapi.dto.FileDTO;
+import com.ainigma100.departmentapi.enums.ReportLanguage;
 import com.ainigma100.departmentapi.service.ReportService;
 import com.ainigma100.departmentapi.utils.TestHelper;
 import com.ainigma100.departmentapi.utils.email.EmailRequest;
@@ -98,7 +99,7 @@ class EmailServiceImplTest {
 
         // given - precondition or setup
         given(reportService.generateDepartmentsExcelReport()).willReturn(fileDTO);
-        given(reportService.generatePdfFullReport()).willReturn(fileDTO);
+        given(reportService.generatePdfFullReport(any(ReportLanguage.class))).willReturn(fileDTO);
         willDoNothing().given(emailSender).sendEmail(any(EmailRequest.class));
 
         // when - action or behaviour that we are going to test
