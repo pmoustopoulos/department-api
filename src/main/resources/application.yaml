@@ -1,9 +1,14 @@
 server:
   port: 8080
+  servlet:
+    context-path: '/@project.artifactId@'
+  shutdown: graceful
 
 spring:
+  lifecycle:
+    timeout-per-shutdown-phase: 25s
   application:
-    name: department-api
+    name: '@project.artifactId@'
   flyway:
     enabled: true
     validate-on-migrate: true
@@ -14,11 +19,11 @@ spring:
     password: pass
     driver-class-name: org.h2.Driver
   jpa:
-    #    show-sql: true
+#    show-sql: true
     properties:
       hibernate:
         ddl-auto: validate
-        #        format_sql: true
+        format_sql: true
         dialect: org.hibernate.dialect.H2Dialect
   output:
     ansi:
