@@ -8,10 +8,13 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.asyncDispatch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -35,7 +38,12 @@ class EmailControllerIntegrationTest extends AbstractContainerBaseTest {
         // given - precondition or setup
 
         // when - action or behaviour that we are going to test
-        ResultActions response = mockMvc.perform(get("/api/v1/emails"));
+        final MvcResult mvcResult = mockMvc.perform(get("/api/v1/emails"))
+                .andExpect(MockMvcResultMatchers.request().asyncStarted()) // Expect the request to be started asynchronously
+                .andReturn();
+
+        // Dispatch the async request and get the result
+        ResultActions response = mockMvc.perform(asyncDispatch(mvcResult));
 
         // then - verify the output
         response.andDo(print())
@@ -53,7 +61,12 @@ class EmailControllerIntegrationTest extends AbstractContainerBaseTest {
         // given - precondition or setup
 
         // when - action or behaviour that we are going to test
-        ResultActions response = mockMvc.perform(get("/api/v1/emails/with-attachment"));
+        final MvcResult mvcResult = mockMvc.perform(get("/api/v1/emails/with-attachment"))
+                .andExpect(MockMvcResultMatchers.request().asyncStarted()) // Expect the request to be started asynchronously
+                .andReturn();
+
+        // Dispatch the async request and get the result
+        ResultActions response = mockMvc.perform(asyncDispatch(mvcResult));
 
         // then - verify the output
         response.andDo(print())

@@ -8,14 +8,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+
+import java.util.concurrent.CompletableFuture;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.mockito.BDDMockito.given;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.asyncDispatch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /*
  * @WebMvcTest annotation will load all the components required
@@ -36,10 +40,15 @@ class EmailControllerTest {
     void givenNoInput_whenSendEmailWithoutAttachment_thenReturnTrueIfMailWasSent() throws Exception {
 
         // given - precondition or setup
-        given(emailService.sendEmailWithoutAttachment()).willReturn(true);
+        given(emailService.sendEmailWithoutAttachment()).willReturn(CompletableFuture.completedFuture(true));
+
+        final MvcResult mvcResult = mockMvc.perform(get("/api/v1/emails"))
+                .andExpect(request().asyncStarted()) // Expect the request to be started asynchronously
+                .andReturn();
 
         // when - action or behaviour that we are going to test
-        ResultActions response = mockMvc.perform(get("/api/v1/emails"));
+        // Dispatch the async request and get the result
+        ResultActions response = mockMvc.perform(asyncDispatch(mvcResult));
 
         // then - verify the output
         response.andDo(print())
@@ -56,10 +65,15 @@ class EmailControllerTest {
     void givenNoInput_whenSendEmailWithAttachment_thenReturnTrueIfMailWasSent() throws Exception {
 
         // given - precondition or setup
-        given(emailService.sendEmailWithAttachment()).willReturn(true);
+        given(emailService.sendEmailWithAttachment()).willReturn(CompletableFuture.completedFuture(true));
+
+        final MvcResult mvcResult = mockMvc.perform(get("/api/v1/emails/with-attachment"))
+                .andExpect(request().asyncStarted()) // Expect the request to be started asynchronously
+                .andReturn();
 
         // when - action or behaviour that we are going to test
-        ResultActions response = mockMvc.perform(get("/api/v1/emails/with-attachment"));
+        // Dispatch the async request and get the result
+        ResultActions response = mockMvc.perform(asyncDispatch(mvcResult));
 
         // then - verify the output
         response.andDo(print())

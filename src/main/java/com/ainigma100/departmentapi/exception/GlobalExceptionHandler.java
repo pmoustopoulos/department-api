@@ -5,9 +5,11 @@ import com.ainigma100.departmentapi.dto.ErrorDTO;
 import com.ainigma100.departmentapi.enums.Status;
 import jakarta.mail.MessagingException;
 import lombok.extern.slf4j.Slf4j;
+import org.eclipse.angus.mail.util.MailConnectException;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.MailSendException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -113,6 +115,30 @@ public class GlobalExceptionHandler {
         response.setErrors(Collections.singletonList(new ErrorDTO("", "An internal server error occurred")));
 
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(MailSendException.class)
+    public ResponseEntity<Object> handleMailSendException(MailSendException exception) {
+
+        log.error("Mail server connection failed", exception);
+
+        APIResponse<ErrorDTO> response = new APIResponse<>();
+        response.setStatus(Status.FAILED.getValue());
+        response.setErrors(Collections.singletonList(new ErrorDTO("", "Mail server connection failed. Email-related functionality will not work.")));
+
+        return new ResponseEntity<>(response, HttpStatus.SERVICE_UNAVAILABLE);
+    }
+
+    @ExceptionHandler(MailConnectException.class)
+    public ResponseEntity<Object> handleMailConnectException(MailConnectException exception) {
+
+        log.error("Mail server connection failed", exception);
+
+        APIResponse<ErrorDTO> response = new APIResponse<>();
+        response.setStatus(Status.FAILED.getValue());
+        response.setErrors(Collections.singletonList(new ErrorDTO("", "Mail server connection failed. Email-related functionality will not work.")));
+
+        return new ResponseEntity<>(response, HttpStatus.SERVICE_UNAVAILABLE);
     }
 
 }

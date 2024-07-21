@@ -18,6 +18,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.IOException;
+import java.util.concurrent.CompletableFuture;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -70,28 +71,31 @@ class EmailServiceImplTest {
     void givenNoInput_whenSendEmailWithoutAttachment_thenReturnTrue() {
 
         // given - precondition or setup
-        willDoNothing().given(emailSender).sendEmail(any(EmailRequest.class));
+        CompletableFuture<Void> a = CompletableFuture.completedFuture(null);
+        given(emailSender.sendEmail(any(EmailRequest.class))).willReturn(a);
 
         // when - action or behaviour that we are going to test
-        Boolean result = emailService.sendEmailWithoutAttachment();
+        CompletableFuture<Boolean> completableFuture = emailService.sendEmailWithoutAttachment();
 
         // then - verify the output and interactions
-        verify(emailSender, times(1)).sendEmail(emailRequestCaptor.capture());
+        completableFuture.thenAccept(result -> {
+            verify(emailSender, times(1)).sendEmail(emailRequestCaptor.capture());
 
 
-        EmailRequest capturedEmailRequest = emailRequestCaptor.getValue();
-        assertThat(capturedEmailRequest.getFrom()).isEqualTo("lyffy@pirateking.com");
-        assertThat(capturedEmailRequest.getSubject()).isEqualTo("Test Email");
-        assertThat(capturedEmailRequest.getEmailBody()).isEqualTo("email-template.html");
-        assertThat(capturedEmailRequest.getToRecipients()).hasSize(1).contains("jwick@gmail.com");
-        assertThat(capturedEmailRequest.getCcRecipients()).hasSize(1).contains("mpolo@gmail.com");
-        assertThat(capturedEmailRequest.getDynamicVariables()).hasSize(2)
-                .containsEntry("recipientName", "John Wick")
-                .containsEntry("githubRepoUrl", "https://github.com/pmoustopoulos/department-api");
-        assertThat(capturedEmailRequest.getImagePaths()).hasSize(1).containsEntry("logo", "reportLogo/luffy.png");
-        assertThat(capturedEmailRequest.getAttachments()).isNull();
+            EmailRequest capturedEmailRequest = emailRequestCaptor.getValue();
+            assertThat(capturedEmailRequest.getFrom()).isEqualTo("lyffy@pirateking.com");
+            assertThat(capturedEmailRequest.getSubject()).isEqualTo("Test Email");
+            assertThat(capturedEmailRequest.getEmailBody()).isEqualTo("email-template.html");
+            assertThat(capturedEmailRequest.getToRecipients()).hasSize(1).contains("jwick@gmail.com");
+            assertThat(capturedEmailRequest.getCcRecipients()).hasSize(1).contains("mpolo@gmail.com");
+            assertThat(capturedEmailRequest.getDynamicVariables()).hasSize(2)
+                    .containsEntry("recipientName", "John Wick")
+                    .containsEntry("githubRepoUrl", "https://github.com/pmoustopoulos/department-api");
+            assertThat(capturedEmailRequest.getImagePaths()).hasSize(1).containsEntry("logo", "reportLogo/luffy.png");
+            assertThat(capturedEmailRequest.getAttachments()).isNull();
 
-        assertThat(result).isTrue();
+            assertThat(result).isTrue();
+        }).join();
     }
 
     @Test
@@ -100,27 +104,31 @@ class EmailServiceImplTest {
         // given - precondition or setup
         given(reportService.generateDepartmentsExcelReport()).willReturn(fileDTO);
         given(reportService.generatePdfFullReport(any(ReportLanguage.class))).willReturn(fileDTO);
-        willDoNothing().given(emailSender).sendEmail(any(EmailRequest.class));
+
+        CompletableFuture<Void> a = CompletableFuture.completedFuture(null);
+        given(emailSender.sendEmail(any(EmailRequest.class))).willReturn(a);
 
         // when - action or behaviour that we are going to test
-        Boolean result = emailService.sendEmailWithAttachment();
+        CompletableFuture<Boolean> completableFuture = emailService.sendEmailWithAttachment();
 
         // then - verify the output and interactions
-        verify(emailSender, times(1)).sendEmail(emailRequestCaptor.capture());
+        completableFuture.thenAccept(result -> {
+            verify(emailSender, times(1)).sendEmail(emailRequestCaptor.capture());
 
-        EmailRequest capturedEmailRequest = emailRequestCaptor.getValue();
-        assertThat(capturedEmailRequest.getFrom()).isEqualTo("lyffy@pirateking.com");
-        assertThat(capturedEmailRequest.getSubject()).isEqualTo("Test Email");
-        assertThat(capturedEmailRequest.getEmailBody()).isEqualTo("email-template.html");
-        assertThat(capturedEmailRequest.getToRecipients()).hasSize(2).contains("jwick@gmail.com", "maria@gmail.com");
-        assertThat(capturedEmailRequest.getCcRecipients()).hasSize(2).contains("mpolo@gmail.com", "nick@gmail.com");
-        assertThat(capturedEmailRequest.getDynamicVariables()).hasSize(2)
-                .containsEntry("recipientName", "John Wick")
-                .containsEntry("githubRepoUrl", "https://github.com/pmoustopoulos/department-api");
-        assertThat(capturedEmailRequest.getImagePaths()).hasSize(1).containsEntry("logo", "reportLogo/luffy.png");
-        assertThat(capturedEmailRequest.getAttachments()).isNotNull();
+            EmailRequest capturedEmailRequest = emailRequestCaptor.getValue();
+            assertThat(capturedEmailRequest.getFrom()).isEqualTo("lyffy@pirateking.com");
+            assertThat(capturedEmailRequest.getSubject()).isEqualTo("Test Email");
+            assertThat(capturedEmailRequest.getEmailBody()).isEqualTo("email-template.html");
+            assertThat(capturedEmailRequest.getToRecipients()).hasSize(2).contains("jwick@gmail.com", "maria@gmail.com");
+            assertThat(capturedEmailRequest.getCcRecipients()).hasSize(2).contains("mpolo@gmail.com", "nick@gmail.com");
+            assertThat(capturedEmailRequest.getDynamicVariables()).hasSize(2)
+                    .containsEntry("recipientName", "John Wick")
+                    .containsEntry("githubRepoUrl", "https://github.com/pmoustopoulos/department-api");
+            assertThat(capturedEmailRequest.getImagePaths()).hasSize(1).containsEntry("logo", "reportLogo/luffy.png");
+            assertThat(capturedEmailRequest.getAttachments()).isNotNull();
 
-        assertThat(result).isTrue();
+            assertThat(result).isTrue();
+        }).join();
     }
 
 

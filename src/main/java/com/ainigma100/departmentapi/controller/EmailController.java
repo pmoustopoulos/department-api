@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.concurrent.CompletableFuture;
+
 @AllArgsConstructor
 @RequestMapping("/api/v1/emails")
 @RestController
@@ -20,33 +22,35 @@ public class EmailController {
 
 
     @GetMapping
-    public ResponseEntity<APIResponse<Boolean>> sendEmailWithoutAttachment() {
+    public CompletableFuture<ResponseEntity<APIResponse<Boolean>>> sendEmailWithoutAttachment() {
 
-        Boolean answer = emailService.sendEmailWithoutAttachment();
+        return emailService.sendEmailWithoutAttachment().thenApply(answer -> {
 
-        // Builder Design pattern
-        APIResponse<Boolean> responseDTO = APIResponse
-                .<Boolean>builder()
-                .status(Status.SUCCESS.getValue())
-                .results(answer)
-                .build();
+            // Builder Design pattern
+            APIResponse<Boolean> responseDTO = APIResponse.<Boolean>builder()
+                    .status(Status.SUCCESS.getValue())
+                    .results(answer)
+                    .build();
 
-        return new ResponseEntity<>(responseDTO, HttpStatus.OK);
+            return new ResponseEntity<>(responseDTO, HttpStatus.OK);
+
+        });
     }
 
     @GetMapping("/with-attachment")
-    public ResponseEntity<APIResponse<Boolean>> sendEmailWithAttachment() throws JRException {
+    public CompletableFuture<ResponseEntity<APIResponse<Boolean>>> sendEmailWithAttachment() throws JRException {
 
-        Boolean answer = emailService.sendEmailWithAttachment();
+        return emailService.sendEmailWithAttachment().thenApply(answer -> {
 
-        // Builder Design pattern
-        APIResponse<Boolean> responseDTO = APIResponse
-                .<Boolean>builder()
-                .status(Status.SUCCESS.getValue())
-                .results(answer)
-                .build();
+            // Builder Design pattern
+            APIResponse<Boolean> responseDTO = APIResponse.<Boolean>builder()
+                    .status(Status.SUCCESS.getValue())
+                    .results(answer)
+                    .build();
 
-        return new ResponseEntity<>(responseDTO, HttpStatus.OK);
+            return new ResponseEntity<>(responseDTO, HttpStatus.OK);
+
+        });
     }
 
 }
