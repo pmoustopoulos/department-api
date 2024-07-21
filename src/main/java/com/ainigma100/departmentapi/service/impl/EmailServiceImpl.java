@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 @AllArgsConstructor
 @Service
@@ -26,7 +27,7 @@ public class EmailServiceImpl implements EmailService {
 
 
     @Override
-    public Boolean sendEmailWithoutAttachment() {
+    public CompletableFuture<Boolean> sendEmailWithoutAttachment() {
 
         List<String> toRecipients = List.of("jwick@gmail.com");
         List<String> ccRecipients = List.of("mpolo@gmail.com");
@@ -49,14 +50,12 @@ public class EmailServiceImpl implements EmailService {
         emailRequest.setImagePaths(imagePaths);
 
 
-        emailSender.sendEmail(emailRequest);
-
-        return true;
+        return emailSender.sendEmail(emailRequest).thenApply(v -> true);
     }
 
 
     @Override
-    public Boolean sendEmailWithAttachment() throws JRException {
+    public CompletableFuture<Boolean> sendEmailWithAttachment() throws JRException {
 
         List<String> toRecipients = List.of("jwick@gmail.com", "maria@gmail.com");
         List<String> ccRecipients = List.of("mpolo@gmail.com", "nick@gmail.com");
@@ -94,9 +93,7 @@ public class EmailServiceImpl implements EmailService {
         emailRequest.setImagePaths(imagePaths);
 
 
-        emailSender.sendEmail(emailRequest);
-
-        return true;
+        return emailSender.sendEmail(emailRequest).thenApply(v -> true);
     }
 
 
