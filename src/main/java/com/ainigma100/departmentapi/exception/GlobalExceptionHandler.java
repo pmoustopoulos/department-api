@@ -4,11 +4,14 @@ import com.ainigma100.departmentapi.dto.APIResponse;
 import com.ainigma100.departmentapi.dto.ErrorDTO;
 import com.ainigma100.departmentapi.enums.Status;
 import jakarta.mail.MessagingException;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.angus.mail.util.MailConnectException;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.mail.MailSendException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -103,6 +106,34 @@ public class GlobalExceptionHandler {
 
         response.setErrors(errors);
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<APIResponse<ErrorDTO>> handleHttpMessageNotReadableException(HttpMessageNotReadableException ex) {
+
+        log.error("Malformed JSON request: {}", ex.getMessage());
+
+        APIResponse<ErrorDTO> response = new APIResponse<>();
+        response.setStatus(Status.FAILED.getValue());
+        response.setErrors(Collections.singletonList(new ErrorDTO("", "Malformed JSON request")));
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<APIResponse<ErrorDTO>> handleConstraintViolationException(ConstraintViolationException ex) {
+
+        List<ErrorDTO> errors = new ArrayList<>();
+
+        for (ConstraintViolation<?> violation : ex.getConstraintViolations()) {
+            errors.add(new ErrorDTO(violation.getPropertyPath().toString(), violation.getMessage()));
+        }
+
+        APIResponse<ErrorDTO> response = new APIResponse<>();
+        response.setStatus(Status.FAILED.getValue());
+        response.setErrors(errors);
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 
     @ExceptionHandler(MessagingException.class)
