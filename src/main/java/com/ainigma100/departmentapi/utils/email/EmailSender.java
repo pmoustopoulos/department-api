@@ -14,7 +14,6 @@ import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
 
 
 @Slf4j
@@ -27,44 +26,42 @@ public class EmailSender {
 
 
     @Async
-    public CompletableFuture<Void> sendEmail(EmailRequest emailRequest) {
+    public void sendEmail(EmailRequest emailRequest) {
 
-        return CompletableFuture.runAsync(() -> {
-            try {
-                MimeMessage mimeMessage = javaMailSender.createMimeMessage();
-                MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
+        try {
+            MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
 
-                // Set email properties
-                helper.setFrom(emailRequest.getFrom());
-                helper.setSubject(emailRequest.getSubject());
-                helper.setTo(emailRequest.getToRecipients().toArray(new String[0]));
+            // Set email properties
+            helper.setFrom(emailRequest.getFrom());
+            helper.setSubject(emailRequest.getSubject());
+            helper.setTo(emailRequest.getToRecipients().toArray(new String[0]));
 
-                final Context context = new Context();
-                // set variables contained inside the email body (thymeleaf html file)
-                context.setVariables(emailRequest.getDynamicVariables());
+            final Context context = new Context();
+            // set variables contained inside the email body (thymeleaf html file)
+            context.setVariables(emailRequest.getDynamicVariables());
 
-                // Set email body
-                String processedEmailBody = templateEngine.process(emailRequest.getEmailBody(), context);
-                helper.setText(processedEmailBody, true);
+            // Set email body
+            String processedEmailBody = templateEngine.process(emailRequest.getEmailBody(), context);
+            helper.setText(processedEmailBody, true);
 
-                // Attach dynamic images inline
-                this.attachImagesInline(emailRequest, helper);
-                // Attach dynamic attachments
-                this.addAttachments(helper, emailRequest.getAttachments());
+            // Attach dynamic images inline
+            this.attachImagesInline(emailRequest, helper);
+            // Attach dynamic attachments
+            this.addAttachments(helper, emailRequest.getAttachments());
 
-                if (emailRequest.getCcRecipients() != null && !emailRequest.getCcRecipients().isEmpty()) {
-                    helper.setCc(emailRequest.getCcRecipients().toArray(new String[0]));
-                }
-
-                // Send email
-                javaMailSender.send(mimeMessage);
-
-                log.info("Email sent successfully");
-
-            } catch (MessagingException e) {
-                log.error("Error sending email", e);
+            if (emailRequest.getCcRecipients() != null && !emailRequest.getCcRecipients().isEmpty()) {
+                helper.setCc(emailRequest.getCcRecipients().toArray(new String[0]));
             }
-        });
+
+            // Send email
+            javaMailSender.send(mimeMessage);
+
+            log.info("Email sent successfully");
+
+        } catch (MessagingException e) {
+            log.error("Error sending email", e);
+        }
     }
 
 
