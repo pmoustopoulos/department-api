@@ -510,8 +510,8 @@ class ReportServiceImplTest {
 		given(simpleReportExporter.extractResultsToJasperPrint(any(), any(), any(), any()))
 				.willReturn(mockJasperPrint);
 
-		byte[] reportAsByteArray = "Mocked Report Data".getBytes();
-		given(simpleReportExporter.exportCombinedPdf(anyList())).willReturn(reportAsByteArray);
+        byte[] reportAsByteArray = "Mocked Report Data".getBytes();
+        given(simpleReportExporter.combineAndExportPdf(anyList())).willReturn(reportAsByteArray);
 
 
 		// when - action or behavior that we are going to test
@@ -523,13 +523,13 @@ class ReportServiceImplTest {
 		assertThat(fileDTO.getFileContent()).isNotNull();
 		assertThat(fileDTO.getFileName()).startsWith("EN_");;
 
-		verify(departmentRepository, times(1)).findAll();
-		verify(departmentMapper, times(1)).departmentToDepartmentReportDto(anyList());
-		verify(simpleReportExporter, times(2)).extractResultsToJasperPrint(any(), any(), any(), any());
-		verify(employeeRepository, times(1)).findAll();
-		verify(employeeMapper, times(1)).employeeToEmployeeReportDto(anyList());
-		verify(simpleReportExporter, times(1)).exportCombinedPdf(anyList());
-	}
+        verify(departmentRepository, times(1)).findAll();
+        verify(departmentMapper, times(1)).departmentToDepartmentReportDto(anyList());
+        verify(simpleReportExporter, times(2)).extractResultsToJasperPrint(any(), any(), any(), any());
+        verify(employeeRepository, times(1)).findAll();
+        verify(employeeMapper, times(1)).employeeToEmployeeReportDto(anyList());
+        verify(simpleReportExporter, times(1)).combineAndExportPdf(anyList());
+    }
 
 
 }
