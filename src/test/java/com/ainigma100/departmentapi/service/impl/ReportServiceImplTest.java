@@ -511,7 +511,7 @@ class ReportServiceImplTest {
                 .willReturn(mockJasperPrint);
 
         byte[] reportAsByteArray = "Mocked Report Data".getBytes();
-        given(simpleReportExporter.exportCombinedPdf(anyList())).willReturn(reportAsByteArray);
+        given(simpleReportExporter.combineAndExportPdf(anyList())).willReturn(reportAsByteArray);
 
 
         // when - action or behavior that we are going to test
@@ -528,7 +528,7 @@ class ReportServiceImplTest {
         verify(simpleReportExporter, times(2)).extractResultsToJasperPrint(any(), any(), any(), any());
         verify(employeeRepository, times(1)).findAll();
         verify(employeeMapper, times(1)).employeeToEmployeeReportDto(anyList());
-        verify(simpleReportExporter, times(1)).exportCombinedPdf(anyList());
+        verify(simpleReportExporter, times(1)).combineAndExportPdf(anyList());
     }
 
 

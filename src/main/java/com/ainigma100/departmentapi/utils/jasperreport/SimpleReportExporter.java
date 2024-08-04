@@ -144,15 +144,14 @@ public class SimpleReportExporter {
     }
 
     /**
-     * This method is used to combine multiple JasperPrint objects into a single PDF document.
-     * It accepts a list of JasperPrint objects, exports them into a single PDF, and returns the resulting
-     * binary content as a byte array.
+     * Combines multiple JasperPrint objects into a single PDF document.
+     * Exports the combined content into a PDF and returns the resulting binary content as a byte array.
      *
      * @param jasperPrintList List of JasperPrint objects to be combined into a single PDF
      * @return byte array representing the combined PDF content
      * @throws JRException if there is an error during the PDF export process
      */
-    public byte[] exportCombinedPdf(List<JasperPrint> jasperPrintList) throws JRException {
+    public byte[] combineAndExportPdf(List<JasperPrint> jasperPrintList) throws JRException {
 
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         JRPdfExporter exporter = new JRPdfExporter();

@@ -264,7 +264,7 @@ public class ReportServiceImpl implements ReportService {
 
         // Combine the JasperPrint objects
         List<JasperPrint> jasperPrintList = Arrays.asList(jasperPrintPage1, jasperPrintPage2);
-        byte[] combinedPdf = simpleReportExporter.exportCombinedPdf(jasperPrintList);
+        byte[] combinedPdf = simpleReportExporter.combineAndExportPdf(jasperPrintList);
 
         String dateAsString = Utils.getCurrentDateAsString();
         String fileName = language + "_Full_Combined_Report_" + dateAsString + ".pdf";
