@@ -1,5 +1,6 @@
 package com.ainigma100.departmentapi.utils;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -12,8 +13,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.function.Supplier;
 
-
+@Slf4j
 public class Utils {
 
     // Private constructor to prevent instantiation
@@ -61,6 +63,37 @@ public class Utils {
             case "es", "de" -> "ISO-8859-1";
             default -> "UTF-8";
         };
+    }
+
+
+    /**
+     * Retrieves a value from a Supplier or sets a default value if a NullPointerException occurs.
+     * Usage example:
+     *
+     * <pre>{@code
+     * // Example 1: Retrieve a list or provide an empty list if null
+     * List<Employee> employeeList = Utils.retrieveValueOrSetDefault(() -> someSupplierMethod(), new ArrayList<>());
+     *
+     * // Example 2: Retrieve an Employee object or provide a default object if null
+     * Employee emp = Utils.retrieveValueOrSetDefault(() -> anotherSupplierMethod(), new Employee());
+     * }</pre>
+     *
+     * @param supplier     the Supplier providing the value to retrieve
+     * @param defaultValue the default value to return if a NullPointerException occurs
+     * @return the retrieved value or the default value if a NullPointerException occurs
+     * @param <T>          the type of the value
+     */
+    public static <T> T retrieveValueOrSetDefault(Supplier<T> supplier, T defaultValue) {
+
+        try {
+            return supplier.get();
+
+        } catch (NullPointerException ex) {
+
+            log.error("Error while retrieveValueOrSetDefault {}", ex.getMessage());
+
+            return defaultValue;
+        }
     }
 
 }

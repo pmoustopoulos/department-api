@@ -238,18 +238,13 @@ public class ReportServiceImpl implements ReportService {
     @Override
     public FileDTO generateCombinedPdfReport(ReportLanguage language) throws JRException {
 
-        Locale locale = language != null ? language.getLocale() : Locale.ENGLISH;
+        MessageSourceResourceBundle resourceBundle = setupLocaleAndMessages(language);
 
-        // Set the encoding based on the request language
-        if (messageSource instanceof ReloadableResourceBundleMessageSource bundleMessageSource) {
-            Utils.setEncodingForLocale(bundleMessageSource, locale);
-        }
-        MessageSourceResourceBundle resourceBundle = new MessageSourceResourceBundle(messageSource, locale);
 
         // add the sub report as parameter to the main report
         Map<String, Object> jasperParameters = new HashMap<>();
         jasperParameters.put(JRParameter.REPORT_RESOURCE_BUNDLE, resourceBundle);
-        jasperParameters.put(JRParameter.REPORT_LOCALE, locale);
+        jasperParameters.put(JRParameter.REPORT_LOCALE, resourceBundle.getLocale());
 
         // Generate the first report part
         List<Department> departmentList = departmentRepository.findAll();
@@ -278,5 +273,16 @@ public class ReportServiceImpl implements ReportService {
         return fileDTO;
     }
 
+
+    private MessageSourceResourceBundle setupLocaleAndMessages(ReportLanguage language) {
+
+        // Set the encoding based on the request language
+        Locale locale = Utils.retrieveValueOrSetDefault(() -> language.getLocale(), Locale.ENGLISH);
+
+        // Set the encoding based on the request language
+        Utils.setEncodingForLocale((ReloadableResourceBundleMessageSource) messageSource, locale);
+
+        return new MessageSourceResourceBundle(messageSource, locale);
+    }
 
 }
