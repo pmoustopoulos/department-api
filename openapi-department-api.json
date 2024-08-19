@@ -3,10 +3,10 @@
   "info" : {
     "title" : "Department API",
     "description" : "Documentation department-api v1.0",
-    "version" : "2.5.0"
+    "version" : "2.6.0"
   },
   "servers" : [ {
-    "url" : "http://192.168.1.4:8080/department-api",
+    "url" : "http://192.168.1.17:8080/department-api",
     "description" : "Generated server url"
   } ],
   "paths" : {
@@ -801,12 +801,12 @@
               "$ref" : "#/components/schemas/SortObject"
             }
           },
-          "pageable" : {
-            "$ref" : "#/components/schemas/PageableObject"
-          },
           "numberOfElements" : {
             "type" : "integer",
             "format" : "int32"
+          },
+          "pageable" : {
+            "$ref" : "#/components/schemas/PageableObject"
           },
           "empty" : {
             "type" : "boolean"
@@ -826,12 +826,6 @@
               "$ref" : "#/components/schemas/SortObject"
             }
           },
-          "paged" : {
-            "type" : "boolean"
-          },
-          "unpaged" : {
-            "type" : "boolean"
-          },
           "pageNumber" : {
             "type" : "integer",
             "format" : "int32"
@@ -839,6 +833,12 @@
           "pageSize" : {
             "type" : "integer",
             "format" : "int32"
+          },
+          "paged" : {
+            "type" : "boolean"
+          },
+          "unpaged" : {
+            "type" : "boolean"
           }
         }
       },
@@ -946,12 +946,12 @@
               "$ref" : "#/components/schemas/SortObject"
             }
           },
-          "pageable" : {
-            "$ref" : "#/components/schemas/PageableObject"
-          },
           "numberOfElements" : {
             "type" : "integer",
             "format" : "int32"
+          },
+          "pageable" : {
+            "$ref" : "#/components/schemas/PageableObject"
           },
           "empty" : {
             "type" : "boolean"

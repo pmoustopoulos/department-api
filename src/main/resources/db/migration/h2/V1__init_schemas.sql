@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS departments
 
 CREATE TABLE IF NOT EXISTS employees
 (
-    id            CHAR(36) PRIMARY KEY,
+    id            VARCHAR(255) PRIMARY KEY,
     first_name    VARCHAR(255),
     last_name     VARCHAR(255),
     email         VARCHAR(255) NOT NULL UNIQUE,
