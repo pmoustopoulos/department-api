@@ -3,10 +3,10 @@
   "info" : {
     "title" : "Department API",
     "description" : "Documentation department-api v1.0",
-    "version" : "2.5.0"
+    "version" : "2.6.0"
   },
   "servers" : [ {
-    "url" : "http://192.168.1.4:8080/department-api",
+    "url" : "http://192.168.1.17:8080/department-api",
     "description" : "Generated server url"
   } ],
   "paths" : {
@@ -767,13 +767,13 @@
       "PageEmployeeDTO" : {
         "type" : "object",
         "properties" : {
-          "totalPages" : {
-            "type" : "integer",
-            "format" : "int32"
-          },
           "totalElements" : {
             "type" : "integer",
             "format" : "int64"
+          },
+          "totalPages" : {
+            "type" : "integer",
+            "format" : "int32"
           },
           "first" : {
             "type" : "boolean"
@@ -912,13 +912,13 @@
       "PageDepartmentDTO" : {
         "type" : "object",
         "properties" : {
-          "totalPages" : {
-            "type" : "integer",
-            "format" : "int32"
-          },
           "totalElements" : {
             "type" : "integer",
             "format" : "int64"
+          },
+          "totalPages" : {
+            "type" : "integer",
+            "format" : "int32"
           },
           "first" : {
             "type" : "boolean"

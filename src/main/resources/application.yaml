@@ -8,7 +8,7 @@ spring:
   lifecycle:
     timeout-per-shutdown-phase: 25s
   application:
-    name: '@project.artifactId@'
+    name: '@project.name@'
   flyway:
     enabled: true
     validate-on-migrate: true
@@ -19,10 +19,10 @@ spring:
     password: pass
     driver-class-name: org.h2.Driver
   jpa:
-#    show-sql: true
+    show-sql: false
+    hibernate:
+      ddl-auto: validate
     properties:
-      hibernate:
-        ddl-auto: validate
         format_sql: true
         dialect: org.hibernate.dialect.H2Dialect
   output:
@@ -65,4 +65,4 @@ springdoc:
   version: '@springdoc-openapi-starter-webmvc-ui.version@'
 openapi:
   output:
-    file: 'openapi-department-api.json'
+    file: 'openapi-@project.artifactId@.json'
