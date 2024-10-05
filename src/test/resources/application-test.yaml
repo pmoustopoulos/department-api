@@ -9,7 +9,6 @@ spring:
     username: sa
     password:
   jpa:
-    properties:
-      hibernate:
-        ddl-auto: validate
     database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: validate
