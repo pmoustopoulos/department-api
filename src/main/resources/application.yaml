@@ -1,7 +1,7 @@
 server:
   port: 8080
   servlet:
-    context-path: '/@project.artifactId@'
+    context-path: '/@project.name@'
   shutdown: graceful
 
 spring:
@@ -65,4 +65,4 @@ springdoc:
   version: '@springdoc-openapi-starter-webmvc-ui.version@'
 openapi:
   output:
-    file: 'openapi-@project.artifactId@.json'
+    file: 'openapi-@project.name@.json'
