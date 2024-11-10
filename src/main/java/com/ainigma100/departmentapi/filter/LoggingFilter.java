@@ -1,17 +1,11 @@
 package com.ainigma100.departmentapi.filter;
 
+import com.ainigma100.departmentapi.utils.Utils;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
-
-import java.io.IOException;
-
-import jakarta.servlet.*;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -26,6 +20,7 @@ import java.io.IOException;
  */
 @Component
 @Slf4j
+@Order(2)
 public class LoggingFilter implements Filter {
 
 
@@ -36,7 +31,7 @@ public class LoggingFilter implements Filter {
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
         HttpServletResponse httpServletResponse = (HttpServletResponse) response;
 
-        String clientIP = this.getClientIP(httpServletRequest);
+        String clientIP = Utils.getClientIP(httpServletRequest);
 
         if ( this.shouldLogRequest(httpServletRequest) ) {
             log.info("Client IP: {}, Request URL: {}, Method: {}", clientIP, httpServletRequest.getRequestURL(), httpServletRequest.getMethod());
@@ -56,26 +51,7 @@ public class LoggingFilter implements Filter {
 
         // (?i) enables case-insensitive matching, \b matched as whole words
         // reference: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Regular_expressions
-        return !request.getServletPath().matches("(?i).*\\b(actuator|swagger|api-docs|favicon|ui)\\b.*");
-    }
-
-    private String getClientIP(HttpServletRequest request) {
-
-        String clientIP = request.getHeader("Client-IP");
-
-        if (clientIP == null || clientIP.isEmpty() || "unknown".equalsIgnoreCase(clientIP)) {
-            clientIP = request.getHeader("X-Forwarded-For");
-        }
-
-        if (clientIP == null || clientIP.isEmpty() || "unknown".equalsIgnoreCase(clientIP)) {
-            clientIP = request.getHeader("X-Real-IP");
-        }
-
-        if (clientIP == null || clientIP.isEmpty() || "unknown".equalsIgnoreCase(clientIP)) {
-            clientIP = request.getRemoteAddr();
-        }
-
-        return clientIP != null ? clientIP : "Unknown";
+        return !request.getServletPath().matches("(?i).*\\b(actuator|swagger|api-docs|favicon|ui|h2-console)\\b.*");
     }
 
 }

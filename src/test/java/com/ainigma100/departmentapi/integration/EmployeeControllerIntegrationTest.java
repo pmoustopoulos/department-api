@@ -5,13 +5,11 @@ import com.ainigma100.departmentapi.dto.EmployeeSearchCriteriaDTO;
 import com.ainigma100.departmentapi.entity.Department;
 import com.ainigma100.departmentapi.entity.Employee;
 import com.ainigma100.departmentapi.enums.Status;
+import com.ainigma100.departmentapi.filter.RateLimitingFilter;
 import com.ainigma100.departmentapi.repository.DepartmentRepository;
 import com.ainigma100.departmentapi.repository.EmployeeRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -51,6 +49,9 @@ class EmployeeControllerIntegrationTest extends AbstractContainerBaseTest {
 
     @Autowired
     private DepartmentRepository departmentRepository;
+
+    @Autowired
+    private RateLimitingFilter rateLimitingFilter;
 
 
     @BeforeEach
@@ -98,6 +99,11 @@ class EmployeeControllerIntegrationTest extends AbstractContainerBaseTest {
                 .andExpect(jsonPath("$.results.lastName", is(employeeRequestDTO.getLastName())))
                 .andExpect(jsonPath("$.results.email", is(employeeRequestDTO.getEmail())))
                 .andExpect(jsonPath("$.results.salary", is(40_000_000)));
+    }
+
+    @AfterEach
+    void resetRateLimitBuckets() {
+        rateLimitingFilter.clearBuckets();
     }
 
 

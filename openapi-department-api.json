@@ -6,7 +6,7 @@
     "version" : "2.6.0"
   },
   "servers" : [ {
-    "url" : "http://192.168.1.17:8080/department-api",
+    "url" : "http://192.168.1.6:8080/department-api",
     "description" : "Generated server url"
   } ],
   "paths" : {
@@ -760,11 +760,11 @@
             }
           },
           "results" : {
-            "$ref" : "#/components/schemas/PageEmployeeDTO"
+            "$ref" : "#/components/schemas/PageObject"
           }
         }
       },
-      "PageEmployeeDTO" : {
+      "PageObject" : {
         "type" : "object",
         "properties" : {
           "totalElements" : {
@@ -905,56 +905,7 @@
             }
           },
           "results" : {
-            "$ref" : "#/components/schemas/PageDepartmentDTO"
-          }
-        }
-      },
-      "PageDepartmentDTO" : {
-        "type" : "object",
-        "properties" : {
-          "totalElements" : {
-            "type" : "integer",
-            "format" : "int64"
-          },
-          "totalPages" : {
-            "type" : "integer",
-            "format" : "int32"
-          },
-          "first" : {
-            "type" : "boolean"
-          },
-          "last" : {
-            "type" : "boolean"
-          },
-          "size" : {
-            "type" : "integer",
-            "format" : "int32"
-          },
-          "content" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/DepartmentDTO"
-            }
-          },
-          "number" : {
-            "type" : "integer",
-            "format" : "int32"
-          },
-          "sort" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/SortObject"
-            }
-          },
-          "pageable" : {
-            "$ref" : "#/components/schemas/PageableObject"
-          },
-          "numberOfElements" : {
-            "type" : "integer",
-            "format" : "int32"
-          },
-          "empty" : {
-            "type" : "boolean"
+            "$ref" : "#/components/schemas/PageObject"
           }
         }
       },

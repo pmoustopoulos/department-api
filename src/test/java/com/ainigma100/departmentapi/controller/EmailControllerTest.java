@@ -1,7 +1,9 @@
 package com.ainigma100.departmentapi.controller;
 
 import com.ainigma100.departmentapi.enums.Status;
+import com.ainigma100.departmentapi.filter.RateLimitingFilter;
 import com.ainigma100.departmentapi.service.EmailService;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +33,14 @@ class EmailControllerTest {
     @MockBean
     private EmailService emailService;
 
+    @Autowired
+    private RateLimitingFilter rateLimitingFilter;
+
+
+    @AfterEach
+    void resetRateLimitBuckets() {
+        rateLimitingFilter.clearBuckets();
+    }
 
     @Test
     void givenNoInput_whenSendEmailWithoutAttachment_thenReturnTrueIfMailWasSent() throws Exception {

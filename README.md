@@ -7,6 +7,8 @@ to send attachments. MailHog is integrated as a local SMTP server for testing em
 integrated for easy API documentation and testing. Database migrations across different environments are managed 
 seamlessly with Flyway.
 
+**Note**: The API also includes IP-based rate limiting using `Bucket4j` to manage excessive requests from individual clients.
+
 
 ## Table of Contents
 - [Run with an In-Memory H2 Database](#run-with-an-in-memory-h2-database)
@@ -14,6 +16,7 @@ seamlessly with Flyway.
 - [Start the Application](#start-the-application)
 - [Swagger](#swagger)
 - [MailHog](#mailhog)
+- [Rate Limiting with Bucket4j](#rate-limiting-with-bucket4j)
 - [Testing](#testing)
   - [Unit Testing](#unit-testing)
   - [Integration Testing with Testcontainers](#integration-testing-with-testcontainers)
@@ -152,6 +155,14 @@ Additionally, to demonstrate successful image loading in an email, here is an im
 
 As you can see in the MailTrap UI, the image inside the email signature is loading correctly.
 
+## Rate Limiting with Bucket4j
+
+This API includes rate limiting using the `Bucket4j` library to manage excessive requests from individual clients. The
+rate limit is currently set to allow up to 10 requests per minute. Requests that exceed this limit will receive a
+`429 Too Many Requests` response.
+
+To add this feature to other projects, include `Bucket4j` as a dependency and create a filter to apply rate-limiting
+logic.
 
 
 ## Testing

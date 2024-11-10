@@ -9,18 +9,34 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class FiltersConfig {
 
+    private final RateLimitingFilter rateLimitingFilter;
     private final LoggingFilter loggingFilter;
+
+
 
     @Bean
     public FilterRegistrationBean<LoggingFilter> loggingFilterBean() {
 
         final FilterRegistrationBean<LoggingFilter> filterBean = new FilterRegistrationBean<>();
         filterBean.setFilter(loggingFilter);
-        filterBean.addUrlPatterns("/*");
+        filterBean.addUrlPatterns("/api/v1/*");
         // Lower values have higher priority
-        filterBean.setOrder(Integer.MAX_VALUE-2);
+        filterBean.setOrder(2);
 
         return filterBean;
     }
+
+    @Bean
+    public FilterRegistrationBean<RateLimitingFilter> rateLimitingFilterFilterRegistrationBean() {
+
+        final FilterRegistrationBean<RateLimitingFilter> filterBean = new FilterRegistrationBean<>();
+        filterBean.setFilter(rateLimitingFilter);
+        filterBean.addUrlPatterns("/api/v1/*");
+        // Lower values have higher priority
+        filterBean.setOrder(1);
+
+        return filterBean;
+    }
+
 
 }
