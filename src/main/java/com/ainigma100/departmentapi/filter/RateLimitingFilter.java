@@ -58,7 +58,7 @@ public class RateLimitingFilter implements Filter {
         bucketMap.clear();
     }
 
-    // reference here: https://bucket4j.com/8.10.1/toc.html
+    // reference here: https://bucket4j.com/
     private Bucket createNewBucket() {
 
         long duration = Long.parseLong(refillDuration);

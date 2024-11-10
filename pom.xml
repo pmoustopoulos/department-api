@@ -28,7 +28,7 @@
             **/entity/**,
             **/exception/**
         </sonar.exclusions>
-        <bucket4j-core.version>8.10.1</bucket4j-core.version>
+        <bucket4j_jdk17-core.version>8.14.0</bucket4j_jdk17-core.version>
     </properties>
 
     <dependencies>
@@ -152,8 +152,8 @@
 
         <dependency>
             <groupId>com.bucket4j</groupId>
-            <artifactId>bucket4j-core</artifactId>
-            <version>${bucket4j-core.version}</version>
+            <artifactId>bucket4j_jdk17-core</artifactId>
+            <version>${bucket4j_jdk17-core.version}</version>
         </dependency>
 
     </dependencies>
