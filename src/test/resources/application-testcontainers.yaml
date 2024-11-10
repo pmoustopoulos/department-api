@@ -23,3 +23,8 @@ spring:
           auth: false
           starttls:
             enable: false
+
+# Bucket4j to handle rate limit
+rate-limiting:
+  max-requests: 10
+  refill-duration: 1

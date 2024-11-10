@@ -8,11 +8,9 @@ import com.ainigma100.departmentapi.filter.RateLimitingFilter;
 import com.ainigma100.departmentapi.mapper.DepartmentMapper;
 import com.ainigma100.departmentapi.service.DepartmentService;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
@@ -56,6 +54,9 @@ class DepartmentControllerTest {
 
     @Autowired
     private RateLimitingFilter rateLimitingFilter;
+
+    @Value("${rate-limiting.max-requests}")
+    private int maxRequests;
 
 
 
@@ -223,6 +224,29 @@ class DepartmentControllerTest {
                 // $ - root member of a JSON structure whether it is an object or array
                 .andExpect(jsonPath("$.status", is(Status.SUCCESS.getValue())));
 
+    }
+
+    @Test
+    @DisplayName("Test rate limiting - should return 429 when limit exceeded")
+    void givenDepartmentId_whenGetDepartmentByIdAndExceedingRateLimit_thenReturnTooManyRequests() throws Exception {
+
+        // given - precondition or setup
+        // Send requests up to the rate limit
+        for (int i = 0; i < maxRequests; i++) {
+            mockMvc.perform(get("/api/v1/departments/{id}", 1L)
+                    .contentType(MediaType.APPLICATION_JSON));
+        }
+
+        // when - action or behaviour that we are going to test
+        // The next request should exceed the rate limit
+        ResultActions response = mockMvc.perform(get("/api/v1/departments/{id}", 1L)
+                .contentType(MediaType.APPLICATION_JSON));
+
+        // then - verify the output
+        response.andDo(print())
+        // verify the status code that is returned
+                .andExpect(status().isTooManyRequests())
+                .andExpect(jsonPath("$", is("Rate limit exceeded. Please try again later.")));
     }
 
 }

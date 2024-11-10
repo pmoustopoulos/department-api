@@ -8,11 +8,9 @@ import com.ainigma100.departmentapi.filter.RateLimitingFilter;
 import com.ainigma100.departmentapi.repository.DepartmentRepository;
 import com.ainigma100.departmentapi.repository.EmployeeRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
@@ -54,6 +52,9 @@ class DepartmentControllerIntegrationTest extends AbstractContainerBaseTest {
 
     @Autowired
     private RateLimitingFilter rateLimitingFilter;
+
+    @Value("${rate-limiting.max-requests}")
+    private int maxRequests;
 
 
     @BeforeEach
@@ -224,5 +225,36 @@ class DepartmentControllerIntegrationTest extends AbstractContainerBaseTest {
                 .andExpect(jsonPath("$.status", is(Status.SUCCESS.getValue())));
 
     }
+
+
+    @Test
+    @DisplayName("Test rate limiting - should return 429 when limit exceeded")
+    void givenDepartmentId_whenGetDepartmentByIdAndExceedingRateLimit_thenReturnTooManyRequests() throws Exception {
+
+        // given - precondition or setup
+        Department department = new Department();
+        department.setDepartmentCode("ABC");
+        department.setDepartmentName("Department 1");
+        department.setDepartmentDescription("Description 1");
+
+        departmentRepository.save(department);
+
+        // Send requests up to the rate limit
+        for (int i = 0; i < maxRequests; i++) {
+            mockMvc.perform(get("/api/v1/departments/{id}", department.getId())
+                            .contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isOk());
+        }
+
+        // The next request should exceed the rate limit
+        ResultActions response = mockMvc.perform(get("/api/v1/departments/{id}", department.getId())
+                .contentType(MediaType.APPLICATION_JSON));
+
+        // then - verify the output for rate limit exceeded
+        response.andDo(print())
+                .andExpect(status().isTooManyRequests())
+                .andExpect(jsonPath("$", is("Rate limit exceeded. Please try again later.")));
+    }
+
 
 }
