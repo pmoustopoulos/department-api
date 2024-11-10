@@ -14,3 +14,8 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.H2Dialect
+
+# Bucket4j to handle rate limit
+rate-limiting:
+  max-requests: 10
+  refill-duration: 1

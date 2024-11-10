@@ -64,3 +64,8 @@ springdoc:
 openapi:
   output:
     file: 'openapi-@project.name@.json'
+
+# Bucket4j to handle rate limit
+rate-limiting:
+  max-requests: 10
+  refill-duration: 1

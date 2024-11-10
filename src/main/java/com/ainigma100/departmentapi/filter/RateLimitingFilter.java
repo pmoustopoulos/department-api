@@ -7,6 +7,7 @@ import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
@@ -20,6 +21,12 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 @Order(1)
 public class RateLimitingFilter implements Filter {
+
+    @Value("${rate-limiting.max-requests}")
+    private int maxNumberOfRequests;
+
+    @Value("${rate-limiting.refill-duration}")
+    private String refillDuration;
 
 
     private final Map<String, Bucket> bucketMap = new ConcurrentHashMap<>();
@@ -54,11 +61,11 @@ public class RateLimitingFilter implements Filter {
     // reference here: https://bucket4j.com/8.10.1/toc.html
     private Bucket createNewBucket() {
 
-        int maxNumberOfRequests = 2;
+        long duration = Long.parseLong(refillDuration);
 
         Bandwidth limit = Bandwidth.builder()
                 .capacity(maxNumberOfRequests)
-                .refillGreedy(maxNumberOfRequests, Duration.ofMinutes(1))
+                .refillGreedy(maxNumberOfRequests, Duration.ofMinutes(duration))
                 .build();
 
         return Bucket.builder()
