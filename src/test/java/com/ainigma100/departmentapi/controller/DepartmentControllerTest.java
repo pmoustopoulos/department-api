@@ -4,9 +4,11 @@ import com.ainigma100.departmentapi.dto.DepartmentDTO;
 import com.ainigma100.departmentapi.dto.DepartmentRequestDTO;
 import com.ainigma100.departmentapi.dto.DepartmentSearchCriteriaDTO;
 import com.ainigma100.departmentapi.enums.Status;
+import com.ainigma100.departmentapi.filter.RateLimitingFilter;
 import com.ainigma100.departmentapi.mapper.DepartmentMapper;
 import com.ainigma100.departmentapi.service.DepartmentService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -52,6 +54,9 @@ class DepartmentControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
+    @Autowired
+    private RateLimitingFilter rateLimitingFilter;
+
 
 
     private DepartmentDTO departmentDTO;
@@ -84,6 +89,11 @@ class DepartmentControllerTest {
         departmentRequestDTO.setDepartmentCode("ABC");
         departmentRequestDTO.setDepartmentName("Department 1");
         departmentRequestDTO.setDepartmentDescription("Description 1");
+    }
+
+    @AfterEach
+    void resetRateLimitBuckets() {
+        rateLimitingFilter.clearBuckets();
     }
 
 

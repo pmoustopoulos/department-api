@@ -1,6 +1,8 @@
 package com.ainigma100.departmentapi.integration;
 
 import com.ainigma100.departmentapi.enums.Status;
+import com.ainigma100.departmentapi.filter.RateLimitingFilter;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +30,14 @@ class EmailControllerIntegrationTest extends AbstractContainerBaseTest {
     @Autowired
     private MockMvc mockMvc;
 
+    @Autowired
+    private RateLimitingFilter rateLimitingFilter;
+
+
+    @AfterEach
+    void resetRateLimitBuckets() {
+        rateLimitingFilter.clearBuckets();
+    }
 
     @Test
     void givenNoInput_whenSendEmailWithoutAttachment_thenReturnTrue() throws Exception {

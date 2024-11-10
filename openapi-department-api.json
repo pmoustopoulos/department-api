@@ -6,7 +6,7 @@
     "version" : "2.6.0"
   },
   "servers" : [ {
-    "url" : "http://192.168.1.17:8080/department-api",
+    "url" : "http://192.168.1.6:8080/department-api",
     "description" : "Generated server url"
   } ],
   "paths" : {
@@ -760,11 +760,11 @@
             }
           },
           "results" : {
-            "$ref" : "#/components/schemas/PageEmployeeDTO"
+            "$ref" : "#/components/schemas/PageObject"
           }
         }
       },
-      "PageEmployeeDTO" : {
+      "PageObject" : {
         "type" : "object",
         "properties" : {
           "totalPages" : {
@@ -801,12 +801,12 @@
               "$ref" : "#/components/schemas/SortObject"
             }
           },
+          "pageable" : {
+            "$ref" : "#/components/schemas/PageableObject"
+          },
           "numberOfElements" : {
             "type" : "integer",
             "format" : "int32"
-          },
-          "pageable" : {
-            "$ref" : "#/components/schemas/PageableObject"
           },
           "empty" : {
             "type" : "boolean"
@@ -826,6 +826,12 @@
               "$ref" : "#/components/schemas/SortObject"
             }
           },
+          "unpaged" : {
+            "type" : "boolean"
+          },
+          "paged" : {
+            "type" : "boolean"
+          },
           "pageNumber" : {
             "type" : "integer",
             "format" : "int32"
@@ -833,12 +839,6 @@
           "pageSize" : {
             "type" : "integer",
             "format" : "int32"
-          },
-          "paged" : {
-            "type" : "boolean"
-          },
-          "unpaged" : {
-            "type" : "boolean"
           }
         }
       },
@@ -905,56 +905,7 @@
             }
           },
           "results" : {
-            "$ref" : "#/components/schemas/PageDepartmentDTO"
-          }
-        }
-      },
-      "PageDepartmentDTO" : {
-        "type" : "object",
-        "properties" : {
-          "totalPages" : {
-            "type" : "integer",
-            "format" : "int32"
-          },
-          "totalElements" : {
-            "type" : "integer",
-            "format" : "int64"
-          },
-          "first" : {
-            "type" : "boolean"
-          },
-          "last" : {
-            "type" : "boolean"
-          },
-          "size" : {
-            "type" : "integer",
-            "format" : "int32"
-          },
-          "content" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/DepartmentDTO"
-            }
-          },
-          "number" : {
-            "type" : "integer",
-            "format" : "int32"
-          },
-          "sort" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/SortObject"
-            }
-          },
-          "numberOfElements" : {
-            "type" : "integer",
-            "format" : "int32"
-          },
-          "pageable" : {
-            "$ref" : "#/components/schemas/PageableObject"
-          },
-          "empty" : {
-            "type" : "boolean"
+            "$ref" : "#/components/schemas/PageObject"
           }
         }
       },

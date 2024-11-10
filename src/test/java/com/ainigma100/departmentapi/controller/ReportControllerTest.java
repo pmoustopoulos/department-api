@@ -2,12 +2,10 @@ package com.ainigma100.departmentapi.controller;
 
 import com.ainigma100.departmentapi.dto.FileDTO;
 import com.ainigma100.departmentapi.enums.ReportLanguage;
+import com.ainigma100.departmentapi.filter.RateLimitingFilter;
 import com.ainigma100.departmentapi.service.ReportService;
 import com.ainigma100.departmentapi.utils.TestHelper;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -36,6 +34,9 @@ class ReportControllerTest {
     @MockBean
     private ReportService reportService;
 
+    @Autowired
+    private RateLimitingFilter rateLimitingFilter;
+
 
     private FileDTO report;
 
@@ -50,6 +51,11 @@ class ReportControllerTest {
 
         report = new FileDTO(fileName, fileContent);
 
+    }
+
+    @AfterEach
+    void resetRateLimitBuckets() {
+        rateLimitingFilter.clearBuckets();
     }
 
 

@@ -4,9 +4,11 @@ import com.ainigma100.departmentapi.dto.DepartmentRequestDTO;
 import com.ainigma100.departmentapi.dto.DepartmentSearchCriteriaDTO;
 import com.ainigma100.departmentapi.entity.Department;
 import com.ainigma100.departmentapi.enums.Status;
+import com.ainigma100.departmentapi.filter.RateLimitingFilter;
 import com.ainigma100.departmentapi.repository.DepartmentRepository;
 import com.ainigma100.departmentapi.repository.EmployeeRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -50,6 +52,9 @@ class DepartmentControllerIntegrationTest extends AbstractContainerBaseTest {
     @Autowired
     private EmployeeRepository employeeRepository;
 
+    @Autowired
+    private RateLimitingFilter rateLimitingFilter;
+
 
     @BeforeEach
     void setUp() {
@@ -57,6 +62,11 @@ class DepartmentControllerIntegrationTest extends AbstractContainerBaseTest {
         employeeRepository.deleteAll();
         departmentRepository.deleteAll();
 
+    }
+
+    @AfterEach
+    void resetRateLimitBuckets() {
+        rateLimitingFilter.clearBuckets();
     }
 
 

@@ -1,5 +1,6 @@
 package com.ainigma100.departmentapi.utils;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.data.domain.PageRequest;
@@ -94,6 +95,25 @@ public class Utils {
 
             return defaultValue;
         }
+    }
+
+    public static String getClientIP(HttpServletRequest request) {
+
+        String clientIP = request.getHeader("Client-IP");
+
+        if (clientIP == null || clientIP.isEmpty() || "unknown".equalsIgnoreCase(clientIP)) {
+            clientIP = request.getHeader("X-Forwarded-For");
+        }
+
+        if (clientIP == null || clientIP.isEmpty() || "unknown".equalsIgnoreCase(clientIP)) {
+            clientIP = request.getHeader("X-Real-IP");
+        }
+
+        if (clientIP == null || clientIP.isEmpty() || "unknown".equalsIgnoreCase(clientIP)) {
+            clientIP = request.getRemoteAddr();
+        }
+
+        return clientIP != null ? clientIP : "Unknown";
     }
 
 }
