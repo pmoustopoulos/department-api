@@ -3,8 +3,8 @@ package com.ainigma100.departmentapi.config;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import io.swagger.v3.oas.annotations.OpenAPIDefinition;
-import io.swagger.v3.oas.annotations.info.Info;
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.info.Info;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
@@ -22,20 +22,13 @@ import java.util.Optional;
 /**
  * Configuration class for generating OpenAPI documentation.
  *
- * This class is responsible for configuring and generating the OpenAPI documentation
- * for the Spring Batch API. It leverages the springdoc-openapi library to automatically
- * generate and format the OpenAPI JSON file based on the application's REST endpoints.
- *
- * The @OpenAPIDefinition annotation is used to provide metadata for the OpenAPI documentation
- * such as title, version, and description.
+ * <p>This class configures and generates the OpenAPI documentation for the application
+ * using the springdoc-openapi library. It automatically generates and formats the OpenAPI
+ * JSON file based on the application's REST endpoints. The generated JSON file is then
+ * stored in the root directory of the project for easy access and reference.</p>
  */
 @Slf4j
 @Configuration
-@OpenAPIDefinition(info = @Info(
-        title = "${springdoc.title}",
-        version = "${springdoc.version}",
-        description = "Documentation ${spring.application.name} v1.0"
-))
 public class OpenApiConfig {
 
 
@@ -55,6 +48,29 @@ public class OpenApiConfig {
     private static final String SERVER_SERVLET_CONTEXT_PATH = "server.servlet.context-path";
 
     @Bean
+    public OpenAPI customOpenAPI() {
+
+        String documentationVersion = environment.getProperty("springdoc.version", "1.0");
+        String appTitle = environment.getProperty("springdoc.title", "API Documentation");
+
+
+        String[] activeProfiles = environment.getActiveProfiles();
+        String profileInfo = activeProfiles.length > 0
+                ? String.join(", ", activeProfiles).toUpperCase()
+                : "DEFAULT";
+
+        String description = String.format("Active profile: %s", profileInfo);
+
+        return new OpenAPI()
+                .info(new Info()
+                        .title(appTitle)
+                        .version(documentationVersion)
+                        .description(description));
+    }
+
+
+
+    @Bean
     public CommandLineRunner generateOpenApiJson() {
         return args -> {
             String protocol = Optional.ofNullable(environment.getProperty(SERVER_SSL_KEY_STORE)).map(key -> "https").orElse("http");
@@ -63,6 +79,8 @@ public class OpenApiConfig {
 
             // Define the API docs URL
             String apiDocsUrl = String.format("%s://%s:%d%s/v3/api-docs", protocol, host, serverPort, contextPath);
+
+            log.info("Attempting to fetch OpenAPI docs from URL: {}", apiDocsUrl);
 
             try {
                 // Create RestClient instance
@@ -80,7 +98,7 @@ public class OpenApiConfig {
                 log.info("OpenAPI documentation generated successfully at {}", outputFileName);
 
             } catch (Exception e) {
-                log.error("Failed to generate OpenAPI documentation", e);
+                log.error("Failed to generate OpenAPI documentation from URL: {}", apiDocsUrl, e);
             }
         };
     }
