@@ -21,7 +21,6 @@ import net.sf.jasperreports.engine.JRParameter;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
-import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.context.MessageSource;
 import org.springframework.context.support.MessageSourceResourceBundle;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
@@ -66,12 +65,10 @@ public class ReportServiceImpl implements ReportService {
         byte[] reportAsByteArray = simpleReportExporter.exportReportToByteArray(
                 reportRecords, fileName, EXCEL_DEPARTMENT_JRXML_PATH);
 
-        String base64String = Base64.encodeBase64String(reportAsByteArray);
-
 
         FileDTO fileDTO = new FileDTO();
-        fileDTO.setFileContent(base64String);
         fileDTO.setFileName(fileName);
+        fileDTO.setFileContent(reportAsByteArray);
 
         return fileDTO;
     }
@@ -90,12 +87,10 @@ public class ReportServiceImpl implements ReportService {
         byte[] reportAsByteArray = simpleReportExporter.exportReportToByteArray(
                 reportRecords, fileName, EXCEL_EMPLOYEE_JRXML_PATH);
 
-        String base64String = Base64.encodeBase64String(reportAsByteArray);
-
 
         FileDTO fileDTO = new FileDTO();
-        fileDTO.setFileContent(base64String);
         fileDTO.setFileName(fileName);
+        fileDTO.setFileContent(reportAsByteArray);
 
         return fileDTO;
     }
@@ -139,12 +134,10 @@ public class ReportServiceImpl implements ReportService {
                 fileName,
                 JRXML_PDF_MAIN_REPORT);
 
-        String base64String = Base64.encodeBase64String(reportAsByteArray);
-
 
         FileDTO fileDTO = new FileDTO();
-        fileDTO.setFileContent(base64String);
         fileDTO.setFileName(fileName);
+        fileDTO.setFileContent(reportAsByteArray);
 
         return fileDTO;
     }
@@ -177,13 +170,11 @@ public class ReportServiceImpl implements ReportService {
         byte[] reportAsByteArray = simpleReportExporter.zipJasperPrintList(listOfJasperPrints);
 
 
-        String base64String = Base64.encodeBase64String(reportAsByteArray);
-
         String fileName = "Multiple_Reports_" + dateAsString + ".zip";
 
         FileDTO fileDTO = new FileDTO();
-        fileDTO.setFileContent(base64String);
         fileDTO.setFileName(fileName);
+        fileDTO.setFileContent(reportAsByteArray);
 
         return fileDTO;
     }
@@ -192,7 +183,7 @@ public class ReportServiceImpl implements ReportService {
     public FileDTO generateMultiSheetExcelReport() throws JRException {
 
         String dateAsString = Utils.getCurrentDateAsString();
-        String excelFileName = "Multi_Sheet_Report_" + dateAsString + FILE_EXTENSION_XLSX;
+        String fileName = "Multi_Sheet_Report_" + dateAsString + FILE_EXTENSION_XLSX;
 
         List<Department> departmentList = departmentRepository.findAll();
         List<DepartmentReportDTO> mappedDepartmentRecords = departmentMapper.departmentToDepartmentReportDto(departmentList);
@@ -223,14 +214,12 @@ public class ReportServiceImpl implements ReportService {
 
 
         byte[] reportAsByteArray = simpleReportExporter.exportReportToByteArray(
-                null, jasperParameters, excelFileName, MULTI_SHEET_EXCEL_JRXML_PATH);
-
-        String base64String = Base64.encodeBase64String(reportAsByteArray);
+                null, jasperParameters, fileName, MULTI_SHEET_EXCEL_JRXML_PATH);
 
 
         FileDTO fileDTO = new FileDTO();
-        fileDTO.setFileContent(base64String);
-        fileDTO.setFileName(excelFileName);
+        fileDTO.setFileName(fileName);
+        fileDTO.setFileContent(reportAsByteArray);
 
         return fileDTO;
     }
@@ -264,11 +253,10 @@ public class ReportServiceImpl implements ReportService {
         String dateAsString = Utils.getCurrentDateAsString();
         String fileName = language + "_Full_Combined_Report_" + dateAsString + ".pdf";
 
-        String base64String = Base64.encodeBase64String(combinedPdf);
 
         FileDTO fileDTO = new FileDTO();
-        fileDTO.setFileContent(base64String);
         fileDTO.setFileName(fileName);
+        fileDTO.setFileContent(combinedPdf);
 
         return fileDTO;
     }

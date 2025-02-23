@@ -6,12 +6,14 @@ import com.ainigma100.departmentapi.service.ReportService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.AllArgsConstructor;
 import net.sf.jasperreports.engine.JRException;
-import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -36,8 +38,7 @@ public class ReportController {
 
         FileDTO report = reportService.generateDepartmentsExcelReport();
 
-        byte[] file = Base64.decodeBase64(report.getFileContent());
-        InputStream targetStream = new ByteArrayInputStream(file);
+        InputStream targetStream = new ByteArrayInputStream(report.getFileContent());
 
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add(CONTENT_DISPOSITION, ATTACHMENT_FILENAME.concat(report.getFileName()));
@@ -46,7 +47,7 @@ public class ReportController {
                 .ok()
                 .headers(httpHeaders)
                 .contentType(MediaType.parseMediaType(MediaType.APPLICATION_OCTET_STREAM_VALUE))
-                .contentLength(file.length)
+                .contentLength(report.getFileContent().length)
                 .body(new InputStreamResource(targetStream));
 
     }
@@ -58,8 +59,7 @@ public class ReportController {
 
         FileDTO report = reportService.generateEmployeesExcelReport();
 
-        byte[] file = Base64.decodeBase64(report.getFileContent());
-        InputStream targetStream = new ByteArrayInputStream(file);
+        InputStream targetStream = new ByteArrayInputStream(report.getFileContent());
 
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add(CONTENT_DISPOSITION, ATTACHMENT_FILENAME.concat(report.getFileName()));
@@ -68,7 +68,7 @@ public class ReportController {
                 .ok()
                 .headers(httpHeaders)
                 .contentType(MediaType.parseMediaType(MediaType.APPLICATION_OCTET_STREAM_VALUE))
-                .contentLength(file.length)
+                .contentLength(report.getFileContent().length)
                 .body(new InputStreamResource(targetStream));
 
     }
@@ -81,8 +81,7 @@ public class ReportController {
 
         FileDTO report = reportService.generatePdfFullReport(language);
 
-        byte[] file = Base64.decodeBase64(report.getFileContent());
-        InputStream targetStream = new ByteArrayInputStream(file);
+        InputStream targetStream = new ByteArrayInputStream(report.getFileContent());
 
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add(CONTENT_DISPOSITION, ATTACHMENT_FILENAME.concat(report.getFileName()));
@@ -91,7 +90,7 @@ public class ReportController {
                 .ok()
                 .headers(httpHeaders)
                 .contentType(MediaType.parseMediaType(MediaType.APPLICATION_OCTET_STREAM_VALUE))
-                .contentLength(file.length)
+                .contentLength(report.getFileContent().length)
                 .body(new InputStreamResource(targetStream));
 
     }
@@ -103,8 +102,7 @@ public class ReportController {
 
         FileDTO report = reportService.generateCombinedPdfReport(language);
 
-        byte[] file = Base64.decodeBase64(report.getFileContent());
-        InputStream targetStream = new ByteArrayInputStream(file);
+        InputStream targetStream = new ByteArrayInputStream(report.getFileContent());
 
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add(CONTENT_DISPOSITION, ATTACHMENT_FILENAME.concat(report.getFileName()));
@@ -113,7 +111,7 @@ public class ReportController {
                 .ok()
                 .headers(httpHeaders)
                 .contentType(MediaType.parseMediaType(MediaType.APPLICATION_OCTET_STREAM_VALUE))
-                .contentLength(file.length)
+                .contentLength(report.getFileContent().length)
                 .body(new InputStreamResource(targetStream));
     }
 
@@ -124,8 +122,7 @@ public class ReportController {
 
         FileDTO report = reportService.generateAndZipReports();
 
-        byte[] file = Base64.decodeBase64(report.getFileContent());
-        InputStream targetStream = new ByteArrayInputStream(file);
+        InputStream targetStream = new ByteArrayInputStream(report.getFileContent());
 
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add(CONTENT_DISPOSITION, ATTACHMENT_FILENAME.concat(report.getFileName()));
@@ -134,7 +131,7 @@ public class ReportController {
                 .ok()
                 .headers(httpHeaders)
                 .contentType(MediaType.parseMediaType(MediaType.APPLICATION_OCTET_STREAM_VALUE))
-                .contentLength(file.length)
+                .contentLength(report.getFileContent().length)
                 .body(new InputStreamResource(targetStream));
 
     }
@@ -146,8 +143,7 @@ public class ReportController {
 
         FileDTO report = reportService.generateMultiSheetExcelReport();
 
-        byte[] file = Base64.decodeBase64(report.getFileContent());
-        InputStream targetStream = new ByteArrayInputStream(file);
+        InputStream targetStream = new ByteArrayInputStream(report.getFileContent());
 
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add(CONTENT_DISPOSITION, ATTACHMENT_FILENAME.concat(report.getFileName()));
@@ -156,7 +152,7 @@ public class ReportController {
                 .ok()
                 .headers(httpHeaders)
                 .contentType(MediaType.parseMediaType(MediaType.APPLICATION_OCTET_STREAM_VALUE))
-                .contentLength(file.length)
+                .contentLength(report.getFileContent().length)
                 .body(new InputStreamResource(targetStream));
     }
 
