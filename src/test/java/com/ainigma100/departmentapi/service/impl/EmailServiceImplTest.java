@@ -58,7 +58,7 @@ class EmailServiceImplTest {
         String filePath = "jsonfile/mockedFileDTO.json";
 
         String fileName = TestHelper.extractJsonPropertyFromFile(filePath, "fileName");
-        String fileContent = TestHelper.extractJsonPropertyFromFile(filePath, "fileContent");
+        byte[] fileContent = TestHelper.extractJsonPropertyFromFile(filePath, "fileContent").getBytes();
 
         fileDTO = new FileDTO(fileName, fileContent);
 

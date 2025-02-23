@@ -70,11 +70,11 @@ public class EmailServiceImpl implements EmailService {
 
         // generate the first attachment
         FileDTO excelAttachment = reportService.generateDepartmentsExcelReport();
-        DataSource excelDataSource = new ByteArrayDataSource(Base64.decodeBase64(excelAttachment.getFileContent()), "application/octet-stream");
+        DataSource excelDataSource = new ByteArrayDataSource(excelAttachment.getFileContent(), "application/octet-stream");
 
         // generate the second attachment
         FileDTO pdfAttachment = reportService.generatePdfFullReport(ReportLanguage.EN);
-        DataSource pdfDataSource = new ByteArrayDataSource(Base64.decodeBase64(pdfAttachment.getFileContent()), "application/octet-stream");
+        DataSource pdfDataSource = new ByteArrayDataSource(pdfAttachment.getFileContent(), "application/octet-stream");
 
 
         // Create a map of attachments

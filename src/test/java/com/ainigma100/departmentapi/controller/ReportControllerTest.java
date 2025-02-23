@@ -47,7 +47,7 @@ class ReportControllerTest {
         String filePath = "jsonfile/mockedFileDTO.json";
 
         String fileName = TestHelper.extractJsonPropertyFromFile(filePath, "fileName");
-        String fileContent = TestHelper.extractJsonPropertyFromFile(filePath, "fileContent");
+        byte[] fileContent = TestHelper.extractJsonPropertyFromFile(filePath, "fileContent").getBytes();
 
         report = new FileDTO(fileName, fileContent);
 
@@ -68,7 +68,7 @@ class ReportControllerTest {
 
 
         String fileName = TestHelper.extractJsonPropertyFromFile(filePath, "fileName");
-        String fileContent = TestHelper.extractJsonPropertyFromFile(filePath, "fileContent");
+        byte[] fileContent = TestHelper.extractJsonPropertyFromFile(filePath, "fileContent").getBytes();
 
         FileDTO report = new FileDTO(fileName, fileContent);
 
