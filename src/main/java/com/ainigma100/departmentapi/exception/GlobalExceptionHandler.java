@@ -3,16 +3,16 @@ package com.ainigma100.departmentapi.exception;
 import com.ainigma100.departmentapi.dto.APIResponse;
 import com.ainigma100.departmentapi.dto.ErrorDTO;
 import com.ainigma100.departmentapi.enums.Status;
-import jakarta.mail.MessagingException;
+import jakarta.persistence.EntityExistsException;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.eclipse.angus.mail.util.MailConnectException;
-import org.springframework.dao.DataAccessException;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
-import org.springframework.mail.MailSendException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -24,59 +24,54 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Stream;
 
 @Slf4j
 @ControllerAdvice
+@RequiredArgsConstructor
 public class GlobalExceptionHandler {
+
+    private final Environment environment;
+
+    /**
+     * Checks if the application is running in production mode.
+     * Returns true if the active profile is 'prod' or 'production'.
+     */
+    private boolean isProduction() {
+        return Stream.of(environment.getActiveProfiles())
+                .anyMatch(profile -> profile.equalsIgnoreCase("prod") || profile.equalsIgnoreCase("production"));
+    }
 
 
     @ExceptionHandler({RuntimeException.class, NullPointerException.class})
     public ResponseEntity<Object> handleRuntimeExceptions(RuntimeException exception) {
 
-        log.error(exception.getMessage());
-
         APIResponse<ErrorDTO> response = new APIResponse<>();
         response.setStatus(Status.FAILED.getValue());
-        response.setErrors(Collections.singletonList(new ErrorDTO("", "An internal server error occurred")));
+
+        String errorMessage = isProduction() ? "An internal server error occurred" : exception.getMessage();
+        response.setErrors(Collections.singletonList(new ErrorDTO("", errorMessage)));
+
+        log.error("RuntimeException or NullPointerException occurred {}", exception.getMessage());
 
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    @ExceptionHandler({ResourceNotFoundException.class})
-    public ResponseEntity<Object> handleResourceNotFoundExceptions(ResourceNotFoundException exception) {
-
-        log.error(exception.getMessage());
-
-        APIResponse<ErrorDTO> response = new APIResponse<>();
-        response.setStatus(Status.FAILED.getValue());
-        response.setErrors(Collections.singletonList(new ErrorDTO("", "The requested resource was not found")));
-
-        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
-    }
-
-    @ExceptionHandler({ResourceAlreadyExistException.class, BusinessLogicException.class, DataAccessException.class})
-    public ResponseEntity<Object> handleOtherExceptions(Exception exception) {
-
-        log.error(exception.getMessage());
-
-        APIResponse<ErrorDTO> response = new APIResponse<>();
-        response.setStatus(Status.FAILED.getValue());
-        response.setErrors(Collections.singletonList(new ErrorDTO("", "An error occurred while processing your request")));
-
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-    }
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public ResponseEntity<Object> handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException exception) {
 
-        log.error(exception.getMessage());
-
         APIResponse<ErrorDTO> response = new APIResponse<>();
         response.setStatus(Status.FAILED.getValue());
-        response.setErrors(Collections.singletonList(new ErrorDTO("", "The requested URL does not support this method")));
+
+        String errorMessage = isProduction() ? "Method not supported" : "The requested URL does not support this method";
+        response.setErrors(Collections.singletonList(new ErrorDTO("", errorMessage)));
+
+        log.error("HttpRequestMethodNotSupportedException occurred {}", exception.getMessage());
 
         return new ResponseEntity<>(response, HttpStatus.METHOD_NOT_ALLOWED);
     }
+
 
     @ExceptionHandler({MethodArgumentNotValidException.class, MissingServletRequestParameterException.class, MissingPathVariableException.class})
     public ResponseEntity<Object> handleValidationExceptions(Exception exception) {
@@ -89,36 +84,41 @@ public class GlobalExceptionHandler {
 
             ex.getBindingResult().getAllErrors().forEach(error -> {
                 String fieldName = ((FieldError) error).getField();
-                String errorMessage = error.getDefaultMessage();
+                String errorMessage = isProduction() ? "Invalid input value" : error.getDefaultMessage();
                 errors.add(new ErrorDTO(fieldName, errorMessage));
             });
 
         } else if (exception instanceof MissingServletRequestParameterException ex) {
 
-            String parameterName = ex.getParameterName();
-            errors.add(new ErrorDTO("", "Required parameter is missing: " + parameterName));
+            String errorMessage = isProduction() ? "Required parameter is missing" : "Missing parameter: " + ex.getParameterName();
+            errors.add(new ErrorDTO("", errorMessage));
 
         } else if (exception instanceof MissingPathVariableException ex) {
-
-            String variableName = ex.getVariableName();
-            errors.add(new ErrorDTO("", "Missing path variable: " + variableName));
+            String errorMessage = isProduction() ? "Missing path variable" : "Missing path variable: " + ex.getVariableName();
+            errors.add(new ErrorDTO("", errorMessage));
         }
+
+        log.error("Validation errors: {}", errors);
 
         response.setErrors(errors);
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
+
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<APIResponse<ErrorDTO>> handleHttpMessageNotReadableException(HttpMessageNotReadableException ex) {
 
-        log.error("Malformed JSON request: {}", ex.getMessage());
-
         APIResponse<ErrorDTO> response = new APIResponse<>();
         response.setStatus(Status.FAILED.getValue());
-        response.setErrors(Collections.singletonList(new ErrorDTO("", "Malformed JSON request")));
+
+        String errorMessage = isProduction() ? "Invalid request format" : "Malformed JSON request";
+        response.setErrors(Collections.singletonList(new ErrorDTO("", errorMessage)));
+
+        log.error("Malformed JSON request: {}", ex.getMessage());
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
+
 
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<APIResponse<ErrorDTO>> handleConstraintViolationException(ConstraintViolationException ex) {
@@ -126,51 +126,46 @@ public class GlobalExceptionHandler {
         List<ErrorDTO> errors = new ArrayList<>();
 
         for (ConstraintViolation<?> violation : ex.getConstraintViolations()) {
-            errors.add(new ErrorDTO(violation.getPropertyPath().toString(), violation.getMessage()));
+            errors.add(new ErrorDTO(violation.getPropertyPath().toString(),
+                    isProduction() ? "Invalid input data" : violation.getMessage()));
         }
 
         APIResponse<ErrorDTO> response = new APIResponse<>();
         response.setStatus(Status.FAILED.getValue());
         response.setErrors(errors);
 
+        log.error("Constraint violation errors: {}", errors);
+
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 
-    @ExceptionHandler(MessagingException.class)
-    public ResponseEntity<Object> handleMessagingException(MessagingException exception) {
 
-        log.error(exception.getMessage());
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity<Object> handleEntityNotFoundExceptions(EntityNotFoundException exception) {
 
         APIResponse<ErrorDTO> response = new APIResponse<>();
         response.setStatus(Status.FAILED.getValue());
-        response.setErrors(Collections.singletonList(new ErrorDTO("", "An internal server error occurred")));
 
-        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        String errorMessage = isProduction() ? "The requested resource was not found" : exception.getMessage();
+        response.setErrors(Collections.singletonList(new ErrorDTO("", errorMessage)));
+
+        log.error("EntityNotFoundException occurred {}", exception.getMessage());
+
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler(MailSendException.class)
-    public ResponseEntity<Object> handleMailSendException(MailSendException exception) {
-
-        log.error("Mail server connection failed", exception);
+    @ExceptionHandler(EntityExistsException.class)
+    public ResponseEntity<APIResponse<ErrorDTO>> handleEntityExistsException(EntityExistsException exception) {
 
         APIResponse<ErrorDTO> response = new APIResponse<>();
         response.setStatus(Status.FAILED.getValue());
-        response.setErrors(Collections.singletonList(new ErrorDTO("", "Mail server connection failed. Email-related functionality will not work.")));
 
-        return new ResponseEntity<>(response, HttpStatus.SERVICE_UNAVAILABLE);
-    }
+        String errorMessage = isProduction() ? "The entity already exists" : exception.getMessage();
+        response.setErrors(Collections.singletonList(new ErrorDTO("", errorMessage)));
 
-    @ExceptionHandler(MailConnectException.class)
-    public ResponseEntity<Object> handleMailConnectException(MailConnectException exception) {
+        log.error("EntityExistsException occurred: {}", exception.getMessage());
 
-        log.error("Mail server connection failed", exception);
-
-        APIResponse<ErrorDTO> response = new APIResponse<>();
-        response.setStatus(Status.FAILED.getValue());
-        response.setErrors(Collections.singletonList(new ErrorDTO("", "Mail server connection failed. Email-related functionality will not work.")));
-
-        return new ResponseEntity<>(response, HttpStatus.SERVICE_UNAVAILABLE);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 
 }
-

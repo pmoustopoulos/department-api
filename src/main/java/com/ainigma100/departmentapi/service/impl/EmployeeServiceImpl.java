@@ -6,14 +6,14 @@ import com.ainigma100.departmentapi.dto.EmployeeSearchCriteriaDTO;
 import com.ainigma100.departmentapi.entity.Department;
 import com.ainigma100.departmentapi.entity.Employee;
 import com.ainigma100.departmentapi.exception.BusinessLogicException;
-import com.ainigma100.departmentapi.exception.ResourceAlreadyExistException;
-import com.ainigma100.departmentapi.exception.ResourceNotFoundException;
 import com.ainigma100.departmentapi.mapper.EmployeeMapper;
 import com.ainigma100.departmentapi.repository.DepartmentRepository;
 import com.ainigma100.departmentapi.repository.EmployeeRepository;
 import com.ainigma100.departmentapi.service.EmployeeService;
 import com.ainigma100.departmentapi.utils.SortItem;
 import com.ainigma100.departmentapi.utils.Utils;
+import jakarta.persistence.EntityExistsException;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -21,7 +21,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-
 
 
 @AllArgsConstructor
@@ -32,10 +31,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     private final DepartmentRepository departmentRepository;
     private final EmployeeMapper employeeMapper;
 
-    private static final String DEPARTMENT = "Department";
-    private static final String EMPLOYEE = "Employee";
     private static final String EMPLOYEE_NOT_BELONG_TO_DEPARTMENT = "Employee does not belong to Department";
-
 
 
     @Override
@@ -44,13 +40,13 @@ public class EmployeeServiceImpl implements EmployeeService {
         Employee employeeRecordFromDB = employeeRepository.findByEmail(employeeDTO.getEmail());
 
         if (employeeRecordFromDB != null) {
-            throw new ResourceAlreadyExistException(EMPLOYEE, "email", employeeDTO.getEmail());
+            throw new EntityExistsException("Employee with email '" + employeeDTO.getEmail() + "' already exists");
         }
 
         Employee employee = employeeMapper.employeeDtoToEmployee(employeeDTO);
 
         Department departmentRecordFromDB = departmentRepository.findById(departmentId)
-                .orElseThrow(() -> new ResourceNotFoundException(DEPARTMENT, "id", departmentId));
+                .orElseThrow(() -> new EntityNotFoundException("Department with id '" + departmentId + "' not found"));
 
         employee.setDepartment(departmentRecordFromDB);
 
@@ -90,12 +86,13 @@ public class EmployeeServiceImpl implements EmployeeService {
     public EmployeeDTO getEmployeeById(Long departmentId, String employeeId) {
 
         Department departmentRecordFromDB = departmentRepository.findById(departmentId)
-                .orElseThrow(() -> new ResourceNotFoundException(DEPARTMENT, "id", departmentId));
+                .orElseThrow(() -> new EntityNotFoundException("Department with id '" + departmentId + "' not found"));
 
         Employee employeeRecordFromDB = employeeRepository.findById(employeeId)
-                .orElseThrow(() -> new ResourceNotFoundException(EMPLOYEE, "id", employeeId));
+                .orElseThrow(() -> new EntityNotFoundException("Employee with id '" + employeeId + "' not found"));
 
-        if ( !employeeBelongsToDepartment(departmentRecordFromDB, employeeRecordFromDB)) {
+
+        if (!employeeBelongsToDepartment(departmentRecordFromDB, employeeRecordFromDB)) {
             throw new BusinessLogicException(EMPLOYEE_NOT_BELONG_TO_DEPARTMENT);
         }
 
@@ -106,12 +103,12 @@ public class EmployeeServiceImpl implements EmployeeService {
     public EmployeeDTO updateEmployeeById(Long departmentId, String employeeId, EmployeeDTO employeeDTO) {
 
         Department departmentRecordFromDB = departmentRepository.findById(departmentId)
-                .orElseThrow(() -> new ResourceNotFoundException(DEPARTMENT, "id", departmentId));
+                .orElseThrow(() -> new EntityNotFoundException("Department with id '" + departmentId + "' not found"));
 
         Employee employeeRecordFromDB = employeeRepository.findById(employeeId)
-                .orElseThrow(() -> new ResourceNotFoundException(EMPLOYEE, "id", employeeId));
+                .orElseThrow(() -> new EntityNotFoundException("Employee with id '" + employeeId + "' not found"));
 
-        if ( !employeeBelongsToDepartment(departmentRecordFromDB, employeeRecordFromDB)) {
+        if (!employeeBelongsToDepartment(departmentRecordFromDB, employeeRecordFromDB)) {
             throw new BusinessLogicException(EMPLOYEE_NOT_BELONG_TO_DEPARTMENT);
         }
 
@@ -133,12 +130,12 @@ public class EmployeeServiceImpl implements EmployeeService {
     public void deleteEmployee(Long departmentId, String employeeId) {
 
         Department departmentRecordFromDB = departmentRepository.findById(departmentId)
-                .orElseThrow(() -> new ResourceNotFoundException(DEPARTMENT, "id", departmentId));
+                .orElseThrow(() -> new EntityNotFoundException("Department with id '" + departmentId + "' not found"));
 
         Employee employeeRecordFromDB = employeeRepository.findById(employeeId)
-                .orElseThrow(() -> new ResourceNotFoundException(EMPLOYEE, "id", employeeId));
+                .orElseThrow(() -> new EntityNotFoundException("Employee with id '" + employeeId + "' not found"));
 
-        if ( !employeeBelongsToDepartment(departmentRecordFromDB, employeeRecordFromDB)) {
+        if (!employeeBelongsToDepartment(departmentRecordFromDB, employeeRecordFromDB)) {
             throw new BusinessLogicException(EMPLOYEE_NOT_BELONG_TO_DEPARTMENT);
         }
 
@@ -152,7 +149,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         Employee employeeRecordFromDB = employeeRepository.getEmployeeAndDepartmentByEmployeeEmail(email);
 
         if (employeeRecordFromDB == null) {
-            throw new ResourceNotFoundException(EMPLOYEE, "email", email);
+            throw new EntityNotFoundException("Employee with email '" + email + "' not found");
         }
 
         return employeeMapper.employeeToEmployeeAndDepartmentDto(employeeRecordFromDB);
@@ -168,7 +165,6 @@ public class EmployeeServiceImpl implements EmployeeService {
         Long departmentId = employeeRecordFromDB.getDepartment().getId();
         return departmentId != null && departmentId.equals(departmentRecordFromDB.getId());
     }
-
 
 
 }

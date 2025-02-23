@@ -6,11 +6,11 @@ import com.ainigma100.departmentapi.dto.EmployeeSearchCriteriaDTO;
 import com.ainigma100.departmentapi.entity.Department;
 import com.ainigma100.departmentapi.entity.Employee;
 import com.ainigma100.departmentapi.exception.BusinessLogicException;
-import com.ainigma100.departmentapi.exception.ResourceAlreadyExistException;
-import com.ainigma100.departmentapi.exception.ResourceNotFoundException;
 import com.ainigma100.departmentapi.mapper.EmployeeMapper;
 import com.ainigma100.departmentapi.repository.DepartmentRepository;
 import com.ainigma100.departmentapi.repository.EmployeeRepository;
+import jakarta.persistence.EntityExistsException;
+import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
@@ -180,16 +180,16 @@ class EmployeeServiceImplTest {
     }
 
     @Test
-    @DisplayName("Given an existing employee email, when creating an employee, then throw ResourceAlreadyExistException")
-    void givenExistingEmployeeEmail_whenCreateEmployee_thenThrowResourceAlreadyExistException() {
+    @DisplayName("Given an existing employee email, when creating an employee, then throw EntityExistsException")
+    void givenExistingEmployeeEmail_whenCreateEmployee_thenThrowEntityExistsException() {
 
         // given - precondition or setup
         given(employeeRepository.findByEmail(employeeDTO.getEmail())).willReturn(employee);
 
-        // when/then - verify that the ResourceAlreadyExistException is thrown
-        assertThatExceptionOfType(ResourceAlreadyExistException.class)
+        // when/then - verify that the EntityExistsException is thrown
+        assertThatExceptionOfType(EntityExistsException.class)
                 .isThrownBy(() -> employeeService.createEmployee(department.getId(), employeeDTO))
-                .withMessage("Resource Employee with email : '" + employeeDTO.getEmail() + "' already exist");
+                .withMessage("Employee with email '" + employeeDTO.getEmail() + "' already exists");
 
         verify(employeeRepository, times(1)).findByEmail(employeeDTO.getEmail());
         verify(employeeMapper, never()).employeeDtoToEmployee(any(EmployeeDTO.class));
@@ -313,17 +313,17 @@ class EmployeeServiceImplTest {
     }
 
     @Test
-    @DisplayName("Given an invalid department id, when get employee by id, then throw ResourceNotFoundException")
-    void givenInvalidDepartmentId_whenGetEmployeeById_thenThrowResourceNotFoundException() {
+    @DisplayName("Given an invalid department id, when get employee by id, then throw EntityNotFoundException")
+    void givenInvalidDepartmentId_whenGetEmployeeById_thenThrowEntityNotFoundException() {
 
         // given - precondition or setup
         Long departmentId = 123L;
         given(departmentRepository.findById(departmentId)).willReturn(Optional.empty());
 
         // when / then - action or behavior that we are going to test
-        assertThatExceptionOfType(ResourceNotFoundException.class)
+        assertThatExceptionOfType(EntityNotFoundException.class)
                 .isThrownBy(() -> employeeService.getEmployeeById(departmentId, employee.getId()))
-                .withMessage("Department with id : '" + departmentId + "' not found");
+                .withMessage("Department with id '" + departmentId + "' not found");
 
 
         // then - verify the output
@@ -333,8 +333,8 @@ class EmployeeServiceImplTest {
     }
 
     @Test
-    @DisplayName("Given valid department id and invalid employee id, when get employee by id, then throw ResourceNotFoundException")
-    void givenValidDepartmentIdAndInvalidEmployeeId_whenGetEmployeeById_thenThrowResourceNotFoundException() {
+    @DisplayName("Given valid department id and invalid employee id, when get employee by id, then throw EntityNotFoundException")
+    void givenValidDepartmentIdAndInvalidEmployeeId_whenGetEmployeeById_thenThrowEntityNotFoundException() {
 
         // given - precondition or setup
         String employeeId = "invalid id";
@@ -342,9 +342,9 @@ class EmployeeServiceImplTest {
         given(employeeRepository.findById(employeeId)).willReturn(Optional.empty());
 
         // when - action or behaviour that we are going to test
-        assertThatExceptionOfType(ResourceNotFoundException.class)
+        assertThatExceptionOfType(EntityNotFoundException.class)
                 .isThrownBy(() -> employeeService.getEmployeeById(department.getId(), employeeId))
-                .withMessage("Employee with id : '" + employeeId + "' not found");
+                .withMessage("Employee with id '" + employeeId + "' not found");
 
         // then - verify the output
         verify(departmentRepository, times(1)).findById(department.getId());
@@ -397,18 +397,18 @@ class EmployeeServiceImplTest {
     }
 
     @Test
-    @DisplayName("Given invalid department id, when updating employee by ID, then throw ResourceNotFoundException")
-    void givenInvalidDepartmentId_whenUpdateEmployeeById_thenThenThrowResourceNotFoundException() {
+    @DisplayName("Given invalid department id, when updating employee by ID, then throw EntityNotFoundException")
+    void givenInvalidDepartmentId_whenUpdateEmployeeById_thenThenThrowEntityNotFoundException() {
 
         // given - precondition or setup
         Long departmentId = 123L;
         given(departmentRepository.findById(departmentId)).willReturn(Optional.empty());
 
 
-        // when/then - verify that ResourceNotFoundException is thrown
-        assertThatExceptionOfType(ResourceNotFoundException.class)
+        // when/then - verify that EntityNotFoundException is thrown
+        assertThatExceptionOfType(EntityNotFoundException.class)
                 .isThrownBy(() -> employeeService.updateEmployeeById(departmentId, employee.getId(), updatedEmployeeDTO))
-                .withMessage("Department with id : '" + departmentId + "' not found");
+                .withMessage("Department with id '" + departmentId + "' not found");
 
         verify(departmentRepository, times(1)).findById(departmentId);
         verify(employeeRepository, never()).findById(any(String.class));
@@ -418,8 +418,8 @@ class EmployeeServiceImplTest {
     }
 
     @Test
-    @DisplayName("Given invalid employee id, when updating employee by ID, then throw ResourceNotFoundException")
-    void givenInvalidEmployeeId_whenUpdateEmployeeById_thenThenThrowResourceNotFoundException() {
+    @DisplayName("Given invalid employee id, when updating employee by ID, then throw EntityNotFoundException")
+    void givenInvalidEmployeeId_whenUpdateEmployeeById_thenThenThrowEntityNotFoundException() {
 
         // given - precondition or setup
         String employeeId = "invalid emp id";
@@ -427,10 +427,10 @@ class EmployeeServiceImplTest {
         given(employeeRepository.findById(employeeId)).willReturn(Optional.empty());
 
 
-        // when/then - verify that ResourceNotFoundException is thrown
-        assertThatExceptionOfType(ResourceNotFoundException.class)
+        // when/then - verify that EntityNotFoundException is thrown
+        assertThatExceptionOfType(EntityNotFoundException.class)
                 .isThrownBy(() -> employeeService.updateEmployeeById(department.getId(), employeeId, updatedEmployeeDTO))
-                .withMessage("Employee with id : '" + employeeId + "' not found");
+                .withMessage("Employee with id '" + employeeId + "' not found");
 
         verify(departmentRepository, times(1)).findById(department.getId());
         verify(employeeRepository, times(1)).findById(employeeId);
@@ -448,7 +448,7 @@ class EmployeeServiceImplTest {
         given(employeeRepository.findById(employee.getId())).willReturn(Optional.of(employee));
 
 
-        // when/then - verify that ResourceNotFoundException is thrown
+        // when/then - verify that EntityNotFoundException is thrown
         assertThatExceptionOfType(BusinessLogicException.class)
                 .isThrownBy(() -> employeeService.updateEmployeeById(department2.getId(), employee.getId(), updatedEmployeeDTO))
                 .withMessage("Employee does not belong to Department");
@@ -477,26 +477,26 @@ class EmployeeServiceImplTest {
     }
 
     @Test
-    @DisplayName("Given an invalid department ID, when deleting an employee, then throw ResourceNotFoundException")
-    void givenInvalidDepartmentId_whenDeleteEmployee_thenThrowResourceNotFoundException() {
+    @DisplayName("Given an invalid department ID, when deleting an employee, then throw EntityNotFoundException")
+    void givenInvalidDepartmentId_whenDeleteEmployee_thenThrowEntityNotFoundException() {
 
         // given - precondition or setup
         Long departmentId = 123L;
 
         given(departmentRepository.findById(departmentId)).willReturn(Optional.empty());
 
-        // when/then - verify that ResourceNotFoundException is thrown
-        assertThatExceptionOfType(ResourceNotFoundException.class)
+        // when/then - verify that EntityNotFoundException is thrown
+        assertThatExceptionOfType(EntityNotFoundException.class)
                 .isThrownBy(() -> employeeService.deleteEmployee(departmentId, employee.getId()))
-                .withMessage("Department with id : '" + departmentId + "' not found");
+                .withMessage("Department with id '" + departmentId + "' not found");
 
         verify(employeeRepository, never()).findById(anyString());
         verify(employeeRepository, never()).delete(any(Employee.class));
     }
 
     @Test
-    @DisplayName("Given an invalid employee ID, when deleting an employee, then throw ResourceNotFoundException")
-    void givenInvalidEmployeeId_whenDeleteEmployee_thenThrowResourceNotFoundException() {
+    @DisplayName("Given an invalid employee ID, when deleting an employee, then throw EntityNotFoundException")
+    void givenInvalidEmployeeId_whenDeleteEmployee_thenThrowEntityNotFoundException() {
 
         // given - precondition or setup
         String employeeId = "456";
@@ -504,10 +504,10 @@ class EmployeeServiceImplTest {
         given(departmentRepository.findById(department.getId())).willReturn(Optional.of(department));
         given(employeeRepository.findById(employeeId)).willReturn(Optional.empty());
 
-        // when/then - verify that ResourceNotFoundException is thrown
-        assertThatExceptionOfType(ResourceNotFoundException.class)
+        // when/then - verify that EntityNotFoundException is thrown
+        assertThatExceptionOfType(EntityNotFoundException.class)
                 .isThrownBy(() -> employeeService.deleteEmployee(department.getId(), employeeId))
-                .withMessage("Employee with id : '" + employeeId + "' not found");
+                .withMessage("Employee with id '" + employeeId + "' not found");
 
         verify(employeeRepository, times(1)).findById(employeeId);
         verify(employeeRepository, never()).delete(any(Employee.class));
@@ -572,16 +572,16 @@ class EmployeeServiceImplTest {
     }
 
     @Test
-    @DisplayName("Given invalid employee email, when get employee and department by employee email, then throw ResourceNotFoundException")
-    void givenInvalidEmployeeEmail_whenGetEmployeeAndDepartmentByEmployeeEmail_thenThrowResourceNotFoundException() {
+    @DisplayName("Given invalid employee email, when get employee and department by employee email, then throw EntityNotFoundException")
+    void givenInvalidEmployeeEmail_whenGetEmployeeAndDepartmentByEmployeeEmail_thenThrowEntityNotFoundException() {
 
         // given - precondition or setup
         given(employeeRepository.getEmployeeAndDepartmentByEmployeeEmail(employee.getEmail())).willReturn(null);
 
         // when - action or behaviour that we are going to test
-        assertThatExceptionOfType(ResourceNotFoundException.class)
+        assertThatExceptionOfType(EntityNotFoundException.class)
                 .isThrownBy(() -> employeeService.getEmployeeAndDepartmentByEmployeeEmail(employee.getEmail()))
-                .withMessage("Employee with email : '" + employee.getEmail() + "' not found");
+                .withMessage("Employee with email '" + employee.getEmail() + "' not found");
 
         // then - verify the output
         verify(employeeRepository, times(1)).getEmployeeAndDepartmentByEmployeeEmail(employee.getEmail());
