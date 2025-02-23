@@ -1,12 +1,12 @@
 {
-  "openapi" : "3.0.1",
+  "openapi" : "3.1.0",
   "info" : {
     "title" : "Department API",
     "description" : "Active profile: DEFAULT",
-    "version" : "2.7.0"
+    "version" : "2.8.5"
   },
   "servers" : [ {
-    "url" : "http://192.168.1.63:8080/department-api",
+    "url" : "http://192.168.1.11:8080/department-api",
     "description" : "Generated server url"
   } ],
   "paths" : {
@@ -572,25 +572,25 @@
   "components" : {
     "schemas" : {
       "DepartmentRequestDTO" : {
-        "required" : [ "departmentCode", "departmentDescription", "departmentName" ],
         "type" : "object",
         "properties" : {
           "departmentCode" : {
+            "type" : "string",
             "maxLength" : 2147483647,
-            "minLength" : 2,
-            "type" : "string"
+            "minLength" : 2
           },
           "departmentName" : {
+            "type" : "string",
             "maxLength" : 2147483647,
-            "minLength" : 2,
-            "type" : "string"
+            "minLength" : 2
           },
           "departmentDescription" : {
+            "type" : "string",
             "maxLength" : 2147483647,
-            "minLength" : 10,
-            "type" : "string"
+            "minLength" : 10
           }
-        }
+        },
+        "required" : [ "departmentCode", "departmentDescription", "departmentName" ]
       },
       "APIResponseDepartmentDTO" : {
         "type" : "object",
@@ -626,11 +626,11 @@
             "type" : "string"
           },
           "employees" : {
-            "uniqueItems" : true,
             "type" : "array",
             "items" : {
               "$ref" : "#/components/schemas/EmployeeDTO"
-            }
+            },
+            "uniqueItems" : true
           }
         }
       },
@@ -666,18 +666,17 @@
         }
       },
       "EmployeeRequestDTO" : {
-        "required" : [ "email", "firstName", "lastName" ],
         "type" : "object",
         "properties" : {
           "firstName" : {
+            "type" : "string",
             "maxLength" : 2147483647,
-            "minLength" : 2,
-            "type" : "string"
+            "minLength" : 2
           },
           "lastName" : {
+            "type" : "string",
             "maxLength" : 2147483647,
-            "minLength" : 2,
-            "type" : "string"
+            "minLength" : 2
           },
           "email" : {
             "type" : "string"
@@ -685,7 +684,8 @@
           "salary" : {
             "type" : "number"
           }
-        }
+        },
+        "required" : [ "email", "firstName", "lastName" ]
       },
       "APIResponseEmployeeDTO" : {
         "type" : "object",
@@ -705,7 +705,6 @@
         }
       },
       "EmployeeSearchCriteriaDTO" : {
-        "required" : [ "page", "size" ],
         "type" : "object",
         "properties" : {
           "firstName" : {
@@ -732,7 +731,8 @@
               "$ref" : "#/components/schemas/SortItem"
             }
           }
-        }
+        },
+        "required" : [ "page", "size" ]
       },
       "SortItem" : {
         "type" : "object",
@@ -798,12 +798,12 @@
           "sort" : {
             "$ref" : "#/components/schemas/SortObject"
           },
-          "pageable" : {
-            "$ref" : "#/components/schemas/PageableObject"
-          },
           "numberOfElements" : {
             "type" : "integer",
             "format" : "int32"
+          },
+          "pageable" : {
+            "$ref" : "#/components/schemas/PageableObject"
           },
           "empty" : {
             "type" : "boolean"
@@ -820,6 +820,15 @@
           "sort" : {
             "$ref" : "#/components/schemas/SortObject"
           },
+<<<<<<< HEAD
+=======
+          "paged" : {
+            "type" : "boolean"
+          },
+          "unpaged" : {
+            "type" : "boolean"
+          },
+>>>>>>> 767326b (Update Java version to 21 and improve logging in ServerDetails)
           "pageNumber" : {
             "type" : "integer",
             "format" : "int32"
@@ -851,7 +860,6 @@
         }
       },
       "DepartmentSearchCriteriaDTO" : {
-        "required" : [ "page", "size" ],
         "type" : "object",
         "properties" : {
           "departmentCode" : {
@@ -878,7 +886,8 @@
               "$ref" : "#/components/schemas/SortItem"
             }
           }
-        }
+        },
+        "required" : [ "page", "size" ]
       },
       "APIResponsePageDepartmentDTO" : {
         "type" : "object",
