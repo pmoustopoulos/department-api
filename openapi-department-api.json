@@ -718,7 +718,8 @@
           },
           "page" : {
             "type" : "integer",
-            "format" : "int32"
+            "format" : "int32",
+            "example" : 0
           },
           "size" : {
             "type" : "integer",
@@ -823,9 +824,6 @@
           "paged" : {
             "type" : "boolean"
           },
-          "unpaged" : {
-            "type" : "boolean"
-          },
           "pageNumber" : {
             "type" : "integer",
             "format" : "int32"
@@ -833,6 +831,9 @@
           "pageSize" : {
             "type" : "integer",
             "format" : "int32"
+          },
+          "unpaged" : {
+            "type" : "boolean"
           }
         }
       },
@@ -842,10 +843,10 @@
           "empty" : {
             "type" : "boolean"
           },
-          "unsorted" : {
+          "sorted" : {
             "type" : "boolean"
           },
-          "sorted" : {
+          "unsorted" : {
             "type" : "boolean"
           }
         }
@@ -864,7 +865,8 @@
           },
           "page" : {
             "type" : "integer",
-            "format" : "int32"
+            "format" : "int32",
+            "example" : 0
           },
           "size" : {
             "type" : "integer",

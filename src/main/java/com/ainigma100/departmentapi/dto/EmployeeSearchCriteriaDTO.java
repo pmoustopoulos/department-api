@@ -19,7 +19,7 @@ public class EmployeeSearchCriteriaDTO {
 
     private String email;
 
-
+    @Schema(example = "0")
     @NotNull(message = "page cannot be null")
     @PositiveOrZero(message = "page must be a zero or a positive number")
     private Integer page;
