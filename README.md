@@ -34,10 +34,10 @@ file on the local file system.
 ## Prerequisites
 Make sure you have installed all the following prerequisites on your development machine:
 
-* **Java 17** - You will need at least Java 17 installed on your machine because it is required by **Spring Boot 3**.
+* **Java 21** - You will need at least Java 21 installed on your machine because it is required by **Spring Boot 3**.
   If you are using IntelliJ, you can easily download it directly from the IDE.
   `File -> Project Structure -> Project -> SDK -> Add SDK -> Download JDK...`. Alternatively, you can download it from
-  here: [Download & Install Java 17](https://www.oracle.com/java/technologies/downloads/#java17)
+  here: [Download & Install Java 21](https://www.oracle.com/java/technologies/downloads/#java21)
 
 
 * **Docker Desktop** - `Integration tests use Testcontainers`, which requires Docker Desktop to be installed and running 
