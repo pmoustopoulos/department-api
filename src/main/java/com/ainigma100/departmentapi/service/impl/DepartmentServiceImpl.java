@@ -3,13 +3,13 @@ package com.ainigma100.departmentapi.service.impl;
 import com.ainigma100.departmentapi.dto.DepartmentDTO;
 import com.ainigma100.departmentapi.dto.DepartmentSearchCriteriaDTO;
 import com.ainigma100.departmentapi.entity.Department;
-import com.ainigma100.departmentapi.exception.ResourceAlreadyExistException;
-import com.ainigma100.departmentapi.exception.ResourceNotFoundException;
 import com.ainigma100.departmentapi.mapper.DepartmentMapper;
 import com.ainigma100.departmentapi.repository.DepartmentRepository;
 import com.ainigma100.departmentapi.service.DepartmentService;
 import com.ainigma100.departmentapi.utils.SortItem;
 import com.ainigma100.departmentapi.utils.Utils;
+import jakarta.persistence.EntityExistsException;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -26,8 +26,6 @@ public class DepartmentServiceImpl implements DepartmentService {
     private final DepartmentRepository departmentRepository;
     private final DepartmentMapper departmentMapper;
 
-    private static final String DEPARTMENT = "Department";
-
 
     @Override
     public DepartmentDTO createDepartment(DepartmentDTO departmentDTO) {
@@ -35,7 +33,7 @@ public class DepartmentServiceImpl implements DepartmentService {
         Department recordFromDB = departmentRepository.findByDepartmentCode(departmentDTO.getDepartmentCode());
 
         if (recordFromDB != null) {
-            throw new ResourceAlreadyExistException(DEPARTMENT, "departmentCode", departmentDTO.getDepartmentCode());
+            throw new EntityExistsException("Department with departmentCode '" + departmentDTO.getDepartmentCode() + "' already exists");
         }
 
         Department recordToBeSaved = departmentMapper.departmentDtoToDepartment(departmentDTO);
@@ -69,7 +67,7 @@ public class DepartmentServiceImpl implements DepartmentService {
 
 
         Department recordFromDB = departmentRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException(DEPARTMENT, "id", id));
+                .orElseThrow(() -> new EntityNotFoundException("Department with id '" + id + "' not found"));
 
         return departmentMapper.departmentToDepartmentDto(recordFromDB);
     }
@@ -79,7 +77,7 @@ public class DepartmentServiceImpl implements DepartmentService {
 
 
         Department recordFromDB = departmentRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException(DEPARTMENT, "id", id));
+                .orElseThrow(() -> new EntityNotFoundException("Department with id '" + id + "' not found"));
 
         // just to be safe that the object does not have another id
         departmentDTO.setId(id);
@@ -98,7 +96,7 @@ public class DepartmentServiceImpl implements DepartmentService {
     public void deleteDepartment(Long id) {
 
         Department recordFromDB = departmentRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException(DEPARTMENT, "id", id));
+                .orElseThrow(() -> new EntityNotFoundException("Department with id '" + id + "' not found"));
 
         departmentRepository.delete(recordFromDB);
 

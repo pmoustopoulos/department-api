@@ -3,10 +3,10 @@ package com.ainigma100.departmentapi.service.impl;
 import com.ainigma100.departmentapi.dto.DepartmentDTO;
 import com.ainigma100.departmentapi.dto.DepartmentSearchCriteriaDTO;
 import com.ainigma100.departmentapi.entity.Department;
-import com.ainigma100.departmentapi.exception.ResourceAlreadyExistException;
-import com.ainigma100.departmentapi.exception.ResourceNotFoundException;
 import com.ainigma100.departmentapi.mapper.DepartmentMapper;
 import com.ainigma100.departmentapi.repository.DepartmentRepository;
+import jakarta.persistence.EntityExistsException;
+import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -115,7 +115,7 @@ class DepartmentServiceImplTest {
     }
 
     @Test
-    void givenExistingDepartmentDTO_whenCreateDepartment_thenThrowResourceAlreadyExistException() {
+    void givenExistingDepartmentDTO_whenCreateDepartment_thenThrowEntityExistsException() {
 
         // given - precondition or setup
         String departmentCode = "ABC";
@@ -123,8 +123,8 @@ class DepartmentServiceImplTest {
 
         // when / then
         assertThatThrownBy(() -> departmentService.createDepartment(departmentDTO))
-                .isInstanceOf(ResourceAlreadyExistException.class)
-                .hasMessageContaining("Resource Department with departmentCode : '" + departmentCode + "' already exist");
+                .isInstanceOf(EntityExistsException.class)
+                .hasMessageContaining("Department with departmentCode '" + departmentCode + "' already exists");
 
         verify(departmentRepository, times(1)).findByDepartmentCode(departmentCode);
         verify(departmentMapper, never()).departmentDtoToDepartment(any(DepartmentDTO.class));
@@ -174,7 +174,7 @@ class DepartmentServiceImplTest {
     }
 
     @Test
-    void givenInvalidDepartmentId_whenGetDepartmentById_thenThrowResourceNotFoundException() {
+    void givenInvalidDepartmentId_whenGetDepartmentById_thenThrowEntityNotFoundException() {
 
         // given - precondition or setup
         Long departmentId = 123L;
@@ -182,8 +182,8 @@ class DepartmentServiceImplTest {
 
         // when/then - action or behavior that we are going to test
         assertThatThrownBy(() -> departmentService.getDepartmentById(departmentId))
-                .isInstanceOf(ResourceNotFoundException.class)
-                .hasMessage("Department with id : '" + departmentId + "' not found");
+                .isInstanceOf(EntityNotFoundException.class)
+                .hasMessage("Department with id '" + departmentId + "' not found");
 
         verify(departmentRepository, times(1)).findById(departmentId);
         verify(departmentMapper, never()).departmentToDepartmentDto(any(Department.class));
@@ -215,7 +215,7 @@ class DepartmentServiceImplTest {
     }
 
     @Test
-    void givenInvalidDepartmentDTOOrId_whenUpdateDepartment_thenThrowResourceNotFoundException() {
+    void givenInvalidDepartmentDTOOrId_whenUpdateDepartment_thenThrowEntityNotFoundException() {
 
         // given - precondition or setup
         Long departmentId = 123L;
@@ -223,8 +223,8 @@ class DepartmentServiceImplTest {
 
         // when / then - action or behavior that we are going to test
         assertThatThrownBy(() -> departmentService.updateDepartment(updatedDepartmentDTO, departmentId))
-                .isInstanceOf(ResourceNotFoundException.class)
-                .hasMessage("Department with id : '" + departmentId + "' not found");
+                .isInstanceOf(EntityNotFoundException.class)
+                .hasMessage("Department with id '" + departmentId + "' not found");
 
         verify(departmentRepository, times(1)).findById(departmentId);
         verify(departmentMapper, never()).departmentDtoToDepartment(any(DepartmentDTO.class));
@@ -247,7 +247,7 @@ class DepartmentServiceImplTest {
     }
 
     @Test
-    void givenNonexistentDepartmentId_whenDeleteDepartment_thenThrowResourceNotFoundException() {
+    void givenNonexistentDepartmentId_whenDeleteDepartment_thenThrowEntityNotFoundException() {
 
         // given - precondition or setup
         Long departmentId = 123L;
@@ -255,10 +255,10 @@ class DepartmentServiceImplTest {
         // Mocking the behavior of departmentRepository
         given(departmentRepository.findById(departmentId)).willReturn(Optional.empty());
 
-        // when/then - verify that the ResourceNotFoundException is thrown
+        // when/then - verify that the EntityNotFoundException is thrown
         assertThatThrownBy(() -> departmentService.deleteDepartment(departmentId))
-                .isInstanceOf(ResourceNotFoundException.class)
-                .hasMessageContaining("Department with id : '" + departmentId + "' not found");
+                .isInstanceOf(EntityNotFoundException.class)
+                .hasMessageContaining("Department with id '" + departmentId + "' not found");
 
         verify(departmentRepository, times(1)).findById(departmentId);
         verify(departmentRepository, never()).delete(any(Department.class));
