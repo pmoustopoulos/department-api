@@ -718,7 +718,8 @@
           },
           "page" : {
             "type" : "integer",
-            "format" : "int32"
+            "format" : "int32",
+            "example" : 0
           },
           "size" : {
             "type" : "integer",
@@ -825,10 +826,13 @@
           "paged" : {
             "type" : "boolean"
           },
+<<<<<<< HEAD
           "unpaged" : {
             "type" : "boolean"
           },
 >>>>>>> 767326b (Update Java version to 21 and improve logging in ServerDetails)
+=======
+>>>>>>> 164b911 (Add example annotation for 'page' field in DTOs)
           "pageNumber" : {
             "type" : "integer",
             "format" : "int32"
@@ -839,9 +843,12 @@
           },
           "unpaged" : {
             "type" : "boolean"
+<<<<<<< HEAD
           },
           "paged" : {
             "type" : "boolean"
+=======
+>>>>>>> 164b911 (Add example annotation for 'page' field in DTOs)
           }
         }
       },
@@ -851,10 +858,10 @@
           "empty" : {
             "type" : "boolean"
           },
-          "unsorted" : {
+          "sorted" : {
             "type" : "boolean"
           },
-          "sorted" : {
+          "unsorted" : {
             "type" : "boolean"
           }
         }
@@ -873,7 +880,8 @@
           },
           "page" : {
             "type" : "integer",
-            "format" : "int32"
+            "format" : "int32",
+            "example" : 0
           },
           "size" : {
             "type" : "integer",
