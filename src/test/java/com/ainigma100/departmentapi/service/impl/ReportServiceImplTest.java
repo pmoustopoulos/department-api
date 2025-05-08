@@ -340,24 +340,22 @@ class ReportServiceImplTest {
     }
 
 
-    // TODO: Fix unit test
-    @Disabled
-    @Test
-    @DisplayName("Test method is currently not working!!! Generate empty department and empty employee excel reports and then zip the reports")
-    void givenNoInput_whenGenerateAndZipReports_thenReturnFileDTOWithEmptyContent() throws JRException, IOException {
+	@Test
+	@DisplayName("Generate empty department and empty employee excel reports and then zip the reports")
+	void givenNoInput_whenGenerateAndZipReports_thenReturnFileDTOWithEmptyContent() throws JRException, IOException {
 
-        // given - precondition or setup
-        given(employeeRepository.findAll()).willReturn(Collections.emptyList());
-        given(employeeMapper.employeeToEmployeeReportDto(Collections.emptyList())).willReturn(Collections.emptyList());
-        JasperPrint mockEmployeeJasperPrint = mock(JasperPrint.class);
-        given(simpleReportExporter.extractResultsToJasperPrint(eq(Collections.emptyList()), eq("Employee_Report_26-05-2023.xlsx"), eq("employee")))
-                .willReturn(mockEmployeeJasperPrint);
+		// given - precondition or setup
+		given(employeeRepository.findAll()).willReturn(Collections.emptyList());
+		given(employeeMapper.employeeToEmployeeReportDto(Collections.emptyList())).willReturn(Collections.emptyList());
+		JasperPrint mockEmployeeJasperPrint = mock(JasperPrint.class);
+		given(simpleReportExporter.extractResultsToJasperPrint(eq(Collections.emptyList()), contains("Employee_Report_"), eq("jrxml/excel/employeesExcelReport")))
+				.willReturn(mockEmployeeJasperPrint);
 
-        given(departmentRepository.findAll()).willReturn(Collections.emptyList());
-        given(departmentMapper.departmentToDepartmentReportDto(Collections.emptyList())).willReturn(Collections.emptyList());
-        JasperPrint mockDepartmentJasperPrint = mock(JasperPrint.class);
-        given(simpleReportExporter.extractResultsToJasperPrint(eq(Collections.emptyList()), eq("Department_Report_26-05-2023.xlsx"), eq("department")))
-                .willReturn(mockDepartmentJasperPrint);
+		given(departmentRepository.findAll()).willReturn(Collections.emptyList());
+		given(departmentMapper.departmentToDepartmentReportDto(Collections.emptyList())).willReturn(Collections.emptyList());
+		JasperPrint mockDepartmentJasperPrint = mock(JasperPrint.class);
+		given(simpleReportExporter.extractResultsToJasperPrint(eq(Collections.emptyList()), contains("Department_Report_"), eq("jrxml/excel/departmentsExcelReport")))
+				.willReturn(mockDepartmentJasperPrint);
 
         List<JasperPrint> jasperPrintList = Arrays.asList(mockEmployeeJasperPrint, mockDepartmentJasperPrint);
         byte[] reportAsByteArray = "Mocked Zip Data".getBytes();
@@ -372,14 +370,14 @@ class ReportServiceImplTest {
         assertThat(fileDTO.getFileName()).isNotNull();
         assertThat(fileDTO.getFileContent()).isNotNull();
 
-        // then - verify the interactions
-        verify(employeeRepository, times(1)).findAll();
-        verify(employeeMapper, times(1)).employeeToEmployeeReportDto(Collections.emptyList());
-        verify(simpleReportExporter, times(1)).extractResultsToJasperPrint(eq(Collections.emptyList()), eq("Employee_Report_26-05-2023.xlsx"), eq("jrxml/excel/employeesExcelReport"));
+		// then - verify the interactions
+		verify(employeeRepository, times(1)).findAll();
+		verify(employeeMapper, times(1)).employeeToEmployeeReportDto(Collections.emptyList());
+		verify(simpleReportExporter, times(1)).extractResultsToJasperPrint(eq(Collections.emptyList()), contains("Employee_Report_"), eq("jrxml/excel/employeesExcelReport"));
 
-        verify(departmentRepository, times(1)).findAll();
-        verify(departmentMapper, times(1)).departmentToDepartmentReportDto(Collections.emptyList());
-        verify(simpleReportExporter, times(1)).extractResultsToJasperPrint(eq(Collections.emptyList()), eq("Department_Report_26-05-2023.xlsx"), eq("jrxml/excel/departmentsExcelReport"));
+		verify(departmentRepository, times(1)).findAll();
+		verify(departmentMapper, times(1)).departmentToDepartmentReportDto(Collections.emptyList());
+		verify(simpleReportExporter, times(1)).extractResultsToJasperPrint(eq(Collections.emptyList()), contains("Department_Report_"), eq("jrxml/excel/departmentsExcelReport"));
 
         verify(simpleReportExporter, times(1)).zipJasperPrintList(jasperPrintList);
     }
@@ -438,10 +436,9 @@ class ReportServiceImplTest {
     }
 
 
-    // TODO: Fix unit test
-    @Disabled
+
     @Test
-    @DisplayName("Test method is currently not working!!! Generate empty multi-sheet Excel report which only contains the sheets without records")
+    @DisplayName("Generate empty multi-sheet Excel report which only contains the sheets without records")
     void givenNoInput_whenGenerateMultiSheetExcelReport_thenReturnFileDTOWithEmptyContent() throws JRException {
 
         // given - precondition or setup
@@ -469,7 +466,7 @@ class ReportServiceImplTest {
         jasperParameters.put("secondSheetName", "EMPLOYEES_REPORT");
 
         given(simpleReportExporter.exportReportToByteArray(
-                any(), eq(jasperParameters), eq("Multi_Sheet_Report_26-05-2023.xlsx"), eq("jrxml/excel/multiSheetExcelReport")))
+                any(), any(), contains("Multi_Sheet_Report_"), eq("jrxml/excel/multiSheetExcelReport")))
                 .willReturn(new byte[]{}); // Provide empty byte array for simplicity
 
         // when - action or behavior that we are going to test
@@ -478,17 +475,16 @@ class ReportServiceImplTest {
         // then - verify the output
         assertThat(fileDTO).isNotNull();
         assertThat(fileDTO.getFileName()).startsWith("Multi_Sheet_Report_");
-        assertThat(fileDTO.getFileContent()).isNull();
+        assertThat(fileDTO.getFileContent()).isNotNull();
 
         verify(departmentRepository, times(1)).findAll();
-        verify(departmentMapper, times(1)).departmentToDepartmentReportDto(departmentList);
+        verify(departmentMapper, times(1)).departmentToDepartmentReportDto(Collections.emptyList());
         verify(employeeRepository, times(1)).findAll();
-        verify(employeeMapper, times(1)).employeeToEmployeeReportDto(employeeList);
+        verify(employeeMapper, times(1)).employeeToEmployeeReportDto(Collections.emptyList());
         verify(simpleReportFiller, times(1)).compileReport("jrxml/excel/departmentsExcelReport");
         verify(simpleReportFiller, times(1)).compileReport("jrxml/excel/employeesExcelReport");
-        verify(simpleReportExporter, times(1)).getSubReportDataSource(departmentReportDTOList);
-        verify(simpleReportExporter, times(1)).getSubReportDataSource(employeeReportDTOList);
-        verify(simpleReportExporter, times(1)).exportReportToByteArray(any(), eq(jasperParameters), anyString(), eq("jrxml/excel/multiSheetExcelReport"));
+        verify(simpleReportExporter, times(2)).getSubReportDataSource(Collections.emptyList());
+        verify(simpleReportExporter, times(1)).exportReportToByteArray(any(), any(), contains("Multi_Sheet_Report_"), eq("jrxml/excel/multiSheetExcelReport"));
     }
 
     @Test
