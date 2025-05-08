@@ -340,23 +340,21 @@ class ReportServiceImplTest {
 	}
 
 
-	// TODO: Fix unit test
-	@Disabled
 	@Test
-	@DisplayName("Test method is currently not working!!! Generate empty department and empty employee excel reports and then zip the reports")
+	@DisplayName("Generate empty department and empty employee excel reports and then zip the reports")
 	void givenNoInput_whenGenerateAndZipReports_thenReturnFileDTOWithEmptyContent() throws JRException, IOException {
 
 		// given - precondition or setup
 		given(employeeRepository.findAll()).willReturn(Collections.emptyList());
 		given(employeeMapper.employeeToEmployeeReportDto(Collections.emptyList())).willReturn(Collections.emptyList());
 		JasperPrint mockEmployeeJasperPrint = mock(JasperPrint.class);
-		given(simpleReportExporter.extractResultsToJasperPrint(eq(Collections.emptyList()), eq("Employee_Report_26-05-2023.xlsx"), eq("employee")))
+		given(simpleReportExporter.extractResultsToJasperPrint(eq(Collections.emptyList()), contains("Employee_Report_"), eq("jrxml/excel/employeesExcelReport")))
 				.willReturn(mockEmployeeJasperPrint);
 
 		given(departmentRepository.findAll()).willReturn(Collections.emptyList());
 		given(departmentMapper.departmentToDepartmentReportDto(Collections.emptyList())).willReturn(Collections.emptyList());
 		JasperPrint mockDepartmentJasperPrint = mock(JasperPrint.class);
-		given(simpleReportExporter.extractResultsToJasperPrint(eq(Collections.emptyList()), eq("Department_Report_26-05-2023.xlsx"), eq("department")))
+		given(simpleReportExporter.extractResultsToJasperPrint(eq(Collections.emptyList()), contains("Department_Report_"), eq("jrxml/excel/departmentsExcelReport")))
 				.willReturn(mockDepartmentJasperPrint);
 
 		List<JasperPrint> jasperPrintList = Arrays.asList(mockEmployeeJasperPrint, mockDepartmentJasperPrint);
@@ -375,11 +373,11 @@ class ReportServiceImplTest {
 		// then - verify the interactions
 		verify(employeeRepository, times(1)).findAll();
 		verify(employeeMapper, times(1)).employeeToEmployeeReportDto(Collections.emptyList());
-		verify(simpleReportExporter, times(1)).extractResultsToJasperPrint(eq(Collections.emptyList()), eq("Employee_Report_26-05-2023.xlsx"), eq("jrxml/excel/employeesExcelReport"));
+		verify(simpleReportExporter, times(1)).extractResultsToJasperPrint(eq(Collections.emptyList()), contains("Employee_Report_"), eq("jrxml/excel/employeesExcelReport"));
 
 		verify(departmentRepository, times(1)).findAll();
 		verify(departmentMapper, times(1)).departmentToDepartmentReportDto(Collections.emptyList());
-		verify(simpleReportExporter, times(1)).extractResultsToJasperPrint(eq(Collections.emptyList()), eq("Department_Report_26-05-2023.xlsx"), eq("jrxml/excel/departmentsExcelReport"));
+		verify(simpleReportExporter, times(1)).extractResultsToJasperPrint(eq(Collections.emptyList()), contains("Department_Report_"), eq("jrxml/excel/departmentsExcelReport"));
 
 		verify(simpleReportExporter, times(1)).zipJasperPrintList(jasperPrintList);
 	}
