@@ -52,7 +52,7 @@ public class GlobalExceptionHandler {
         String errorMessage = isProduction() ? "An internal server error occurred" : exception.getMessage();
         response.setErrors(Collections.singletonList(new ErrorDTO("", errorMessage)));
 
-        log.error("RuntimeException or NullPointerException occurred {}", exception.getMessage());
+        log.error("RuntimeException or NullPointerException occurred: {}", exception.getMessage(), exception);
 
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
@@ -67,7 +67,7 @@ public class GlobalExceptionHandler {
         String errorMessage = isProduction() ? "Method not supported" : "The requested URL does not support this method";
         response.setErrors(Collections.singletonList(new ErrorDTO("", errorMessage)));
 
-        log.error("HttpRequestMethodNotSupportedException occurred {}", exception.getMessage());
+        log.error("HttpRequestMethodNotSupportedException occurred: {}", exception.getMessage(), exception);
 
         return new ResponseEntity<>(response, HttpStatus.METHOD_NOT_ALLOWED);
     }
@@ -98,7 +98,7 @@ public class GlobalExceptionHandler {
             errors.add(new ErrorDTO("", errorMessage));
         }
 
-        log.error("Validation errors: {}", errors);
+        log.error("Validation errors: {}", exception.getMessage(), exception);
 
         response.setErrors(errors);
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
@@ -114,7 +114,7 @@ public class GlobalExceptionHandler {
         String errorMessage = isProduction() ? "Invalid request format" : "Malformed JSON request";
         response.setErrors(Collections.singletonList(new ErrorDTO("", errorMessage)));
 
-        log.error("Malformed JSON request: {}", ex.getMessage());
+        log.error("Malformed JSON request: {}", ex.getMessage(), ex);
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
@@ -134,7 +134,7 @@ public class GlobalExceptionHandler {
         response.setStatus(Status.FAILED.getValue());
         response.setErrors(errors);
 
-        log.error("Constraint violation errors: {}", errors);
+        log.error("Constraint violation errors: {}", ex.getMessage(), ex);
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
@@ -149,7 +149,7 @@ public class GlobalExceptionHandler {
         String errorMessage = isProduction() ? "The requested resource was not found" : exception.getMessage();
         response.setErrors(Collections.singletonList(new ErrorDTO("", errorMessage)));
 
-        log.error("EntityNotFoundException occurred {}", exception.getMessage());
+        log.error("EntityNotFoundException occurred: {}", exception.getMessage(), exception);
 
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
@@ -163,7 +163,7 @@ public class GlobalExceptionHandler {
         String errorMessage = isProduction() ? "The entity already exists" : exception.getMessage();
         response.setErrors(Collections.singletonList(new ErrorDTO("", errorMessage)));
 
-        log.error("EntityExistsException occurred: {}", exception.getMessage());
+        log.error("EntityExistsException occurred: {}", exception.getMessage(), exception);
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
