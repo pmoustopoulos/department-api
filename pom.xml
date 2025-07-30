@@ -19,7 +19,7 @@
         <org.mapstruct.version>1.6.3</org.mapstruct.version>
         <lombok-mapstruct-binding.version>0.2.0</lombok-mapstruct-binding.version>
         <springdoc-openapi-starter-webmvc-ui.version>2.8.9</springdoc-openapi-starter-webmvc-ui.version>
-        <net.sf.jasperreports.version>6.21.4</net.sf.jasperreports.version>
+        <net.sf.jasperreports.version>6.21.5</net.sf.jasperreports.version>
         <poi.version>5.4.1</poi.version>
         <jacoco-maven-plugin.version>0.8.13</jacoco-maven-plugin.version>
         <sonar-maven-plugin.version>3.10.0.2594</sonar-maven-plugin.version>
