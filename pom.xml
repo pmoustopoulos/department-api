@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.5.0</version>
+        <version>3.5.6</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.ainigma100</groupId>
@@ -18,8 +18,8 @@
         <java.version>21</java.version>
         <org.mapstruct.version>1.6.3</org.mapstruct.version>
         <lombok-mapstruct-binding.version>0.2.0</lombok-mapstruct-binding.version>
-        <springdoc-openapi-starter-webmvc-ui.version>2.8.9</springdoc-openapi-starter-webmvc-ui.version>
-        <net.sf.jasperreports.version>6.21.4</net.sf.jasperreports.version>
+        <springdoc-openapi-starter-webmvc-ui.version>2.8.13</springdoc-openapi-starter-webmvc-ui.version>
+        <net.sf.jasperreports.version>6.21.5</net.sf.jasperreports.version>
         <poi.version>5.4.1</poi.version>
         <jacoco-maven-plugin.version>0.8.13</jacoco-maven-plugin.version>
         <sonar-maven-plugin.version>3.10.0.2594</sonar-maven-plugin.version>
@@ -28,7 +28,7 @@
             **/entity/**,
             **/exception/**
         </sonar.exclusions>
-        <bucket4j_jdk17-core.version>8.14.0</bucket4j_jdk17-core.version>
+        <bucket4j_jdk17-core.version>8.15.0</bucket4j_jdk17-core.version>
     </properties>
 
     <dependencies>
