@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import lombok.AllArgsConstructor;
 import net.sf.jasperreports.engine.JRException;
 import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 
 @AllArgsConstructor
 @RequestMapping("/api/v1/reports")
@@ -26,9 +28,6 @@ public class ReportController {
 
 
     private final ReportService reportService;
-
-    private static final String CONTENT_DISPOSITION = "Content-Disposition";
-    private static final String ATTACHMENT_FILENAME = "attachment; filename=";
 
 
 
@@ -41,7 +40,9 @@ public class ReportController {
         InputStream targetStream = new ByteArrayInputStream(report.getFileContent());
 
         HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.add(CONTENT_DISPOSITION, ATTACHMENT_FILENAME.concat(report.getFileName()));
+                httpHeaders.setContentDisposition(ContentDisposition.attachment()
+                .filename(report.getFileName(), StandardCharsets.UTF_8)
+                .build());
 
         return ResponseEntity
                 .ok()
@@ -62,7 +63,9 @@ public class ReportController {
         InputStream targetStream = new ByteArrayInputStream(report.getFileContent());
 
         HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.add(CONTENT_DISPOSITION, ATTACHMENT_FILENAME.concat(report.getFileName()));
+                httpHeaders.setContentDisposition(ContentDisposition.attachment()
+                .filename(report.getFileName(), StandardCharsets.UTF_8)
+                .build());
 
         return ResponseEntity
                 .ok()
@@ -84,7 +87,9 @@ public class ReportController {
         InputStream targetStream = new ByteArrayInputStream(report.getFileContent());
 
         HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.add(CONTENT_DISPOSITION, ATTACHMENT_FILENAME.concat(report.getFileName()));
+                httpHeaders.setContentDisposition(ContentDisposition.attachment()
+                .filename(report.getFileName(), StandardCharsets.UTF_8)
+                .build());
 
         return ResponseEntity
                 .ok()
@@ -105,7 +110,9 @@ public class ReportController {
         InputStream targetStream = new ByteArrayInputStream(report.getFileContent());
 
         HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.add(CONTENT_DISPOSITION, ATTACHMENT_FILENAME.concat(report.getFileName()));
+                httpHeaders.setContentDisposition(ContentDisposition.attachment()
+                .filename(report.getFileName(), StandardCharsets.UTF_8)
+                .build());
 
         return ResponseEntity
                 .ok()
@@ -125,7 +132,9 @@ public class ReportController {
         InputStream targetStream = new ByteArrayInputStream(report.getFileContent());
 
         HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.add(CONTENT_DISPOSITION, ATTACHMENT_FILENAME.concat(report.getFileName()));
+                httpHeaders.setContentDisposition(ContentDisposition.attachment()
+                .filename(report.getFileName(), StandardCharsets.UTF_8)
+                .build());
 
         return ResponseEntity
                 .ok()
@@ -146,7 +155,9 @@ public class ReportController {
         InputStream targetStream = new ByteArrayInputStream(report.getFileContent());
 
         HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.add(CONTENT_DISPOSITION, ATTACHMENT_FILENAME.concat(report.getFileName()));
+                httpHeaders.setContentDisposition(ContentDisposition.attachment()
+                .filename(report.getFileName(), StandardCharsets.UTF_8)
+                .build());
 
         return ResponseEntity
                 .ok()
