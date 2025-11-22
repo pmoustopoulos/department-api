@@ -12,9 +12,9 @@ spring:
   flyway:
     enabled: true
     validate-on-migrate: true
-    locations: classpath:db/migration/h2
+    locations: classpath:db/migration
   datasource:
-    url: jdbc:h2:file:./data/my-db;AUTO_SERVER=true
+    url: jdbc:h2:file:./data/my-db;AUTO_SERVER=true;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE
     username: root
     password: pass
     driver-class-name: org.h2.Driver
