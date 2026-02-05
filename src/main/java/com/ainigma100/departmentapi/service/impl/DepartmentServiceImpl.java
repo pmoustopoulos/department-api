@@ -44,21 +44,27 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
     @Override
-    public Page<DepartmentDTO> getAllDepartmentsUsingPagination(
-            DepartmentSearchCriteriaDTO departmentSearchCriteriaDTO) {
+    public Page<DepartmentDTO> getAllDepartmentsUsingPagination(DepartmentSearchCriteriaDTO departmentSearchCriteriaDTO) {
 
-
-        Integer page = departmentSearchCriteriaDTO.getPage();
-        Integer size = departmentSearchCriteriaDTO.getSize();
+        // defensive defaults
+        Integer page = departmentSearchCriteriaDTO.getPage() == null ? 0 : departmentSearchCriteriaDTO.getPage();
+        Integer size = departmentSearchCriteriaDTO.getSize() == null ? 10 : departmentSearchCriteriaDTO.getSize();
         List<SortItem> sortList = departmentSearchCriteriaDTO.getSortList();
 
-        // this pageable will be used for the pagination.
+        // create Pageable using existing utility (keeps your sorting logic)
         Pageable pageable = Utils.createPageableBasedOnPageAndSizeAndSorting(sortList, page, size);
 
-        Page<Department> recordsFromDb = departmentRepository.getAllDepartmentsUsingPagination(departmentSearchCriteriaDTO, pageable);
+        // Build Specification from criteria
+        var spec = com.ainigma100.departmentapi.specification.DepartmentSpecification.fromCriteria(departmentSearchCriteriaDTO);
 
+        // Query repository using Specification + Pageable
+        Page<com.ainigma100.departmentapi.entity.Department> recordsFromDb =
+                departmentRepository.findAll(spec, pageable);
+
+        // Map entity list to DTO list
         List<DepartmentDTO> result = departmentMapper.departmentToDepartmentDto(recordsFromDb.getContent());
 
+        // Return a page preserving the paging metadata
         return new PageImpl<>(result, pageable, recordsFromDb.getTotalElements());
     }
 
